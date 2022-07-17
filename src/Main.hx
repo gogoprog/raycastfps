@@ -25,7 +25,7 @@ class Main {
         var mx:Int = 0;
         var mmove:Int = 0;
         var textureCanvas:js.html.CanvasElement;
-        var backbuffer = context.createImageData(screenWidth, screenHeight);
+        var backbuffer:Framebuffer = Framebuffer.createEmpty(context, screenWidth, screenHeight);
         var textureBuffer:js.html.ImageData;
         inline function createTexture() {
             textureCanvas = untyped document.createElement("canvas");
@@ -184,7 +184,7 @@ class Main {
                     context.fillText("WIN !", 32, 32);
                 }
             }
-            context.putImageData(backbuffer, 0, 0);
+            context.putImageData(backbuffer.getImageData(), 0, 0);
 
             for(i in 0...200) {
                 backbuffer.data[i*4 +0] = 0;
