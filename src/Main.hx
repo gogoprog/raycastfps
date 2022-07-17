@@ -1,11 +1,4 @@
-abstract Point(Array<Float>) from Array<Float> to Array<Float> {
-    public var x(get, set):Float;
-    inline function get_x() return this[0];
-    inline function set_x(value) return this[0] = value;
-    public var y(get, set):Float;
-    inline function get_y() return this[1];
-    inline function set_y(value) return this[1] = value;
-}
+package;
 
 class Main {
     static function main() {
@@ -16,11 +9,10 @@ class Main {
         var halfScreenHeight = Std.int(screenHeight / 2);
         canvas.width = screenWidth;
         canvas.height = screenHeight;
-        var randomSeed = 0;
-        var time:Int = 0;
         var walls:Array<Dynamic> = [];
-        var camPos:Point = [512, 512];
-        var camAngle:Float = 0;
+        var cameraTransform = new Transform();
+        cameraTransform.position = [512, 512];
+        cameraTransform.angle = 1.44;
         var keys:Dynamic = {};
         var mx:Int = 0;
         var mmove:Int = 0;
@@ -95,10 +87,11 @@ class Main {
             var wallH = 26;
             var hfov = Math.PI * 0.25;
             var d = halfScreenHeight / Math.tan(hfov);
+            var camPos = cameraTransform.position;
 
             for(x in 0...screenWidth) {
                 var a2 = Math.atan2(x - halfScreenHeight, d);
-                var a = camAngle + a2;
+                var a = cameraTransform.angle + a2;
                 var dx = Math.cos(a) * 1024;
                 var dy = Math.sin(a) * 1024;
                 var camTarget = [camPos[0]+dx, camPos[1]+dy];
@@ -130,7 +123,8 @@ class Main {
         function loop(t:Float) {
             // controls
             {
-                var a = camAngle;
+                var camPos = cameraTransform.position;
+                var a = cameraTransform.angle;
                 var dir:Point = [Math.cos(a), Math.sin(a)];
                 var lat = {x:Math.cos(a + Math.PI/2), y:Math.sin(a + Math.PI/2)};
                 var prevPos = [camPos.x, camPos.y];
@@ -157,7 +151,7 @@ class Main {
                 camPos.y += dir.y * move.y * s;
                 camPos.x += lat.x * move.x * s;
                 camPos.y += lat.y * move.x * s;
-                camAngle = mx / 32;//* 0.04;
+                cameraTransform.angle = mx / 32;//* 0.04;
 
                 for(w in walls) {
                     var r = segmentToSegmentIntersection(prevPos, camPos, w[0], w[1]);
@@ -179,10 +173,6 @@ class Main {
                 /* drawRect(halfSize - 12, screenSize * 0.96, 24, screenSize); */
                 /* col('#222'); */
                 /* drawRect(halfSize - 8, screenSize * 0.95, 16, screenSize); */
-
-                if(camPos.x < -1100) {
-                    context.fillText("WIN !", 32, 32);
-                }
             }
             context.putImageData(backbuffer.getImageData(), 0, 0);
 
