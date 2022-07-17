@@ -2,22 +2,22 @@ package;
 
 class Main {
     static function main() {
+        var context = new Context();
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
-        var context:js.html.CanvasRenderingContext2D = canvas.getContext("2d");
+        var rcontext:js.html.CanvasRenderingContext2D = canvas.getContext("2d");
         var screenWidth = 1024;
         var screenHeight = 640;
         var halfScreenHeight = Std.int(screenHeight / 2);
         canvas.width = screenWidth;
         canvas.height = screenHeight;
         var walls:Array<Dynamic> = [];
-        var cameraTransform = new Transform();
+        var cameraTransform = context.cameraTransform;
         cameraTransform.position = [512, 512];
         cameraTransform.angle = 1.44;
         var keys:Dynamic = {};
         var mx:Int = 0;
-        var mmove:Int = 0;
         var textureCanvas:js.html.CanvasElement;
-        var backbuffer:Framebuffer = Framebuffer.createEmpty(context, screenWidth, screenHeight);
+        var backbuffer:Framebuffer = Framebuffer.createEmpty(rcontext, screenWidth, screenHeight);
         var textureBuffer:js.html.ImageData;
         inline function createTexture() {
             textureCanvas = untyped document.createElement("canvas");
@@ -31,15 +31,8 @@ class Main {
             textureBuffer = textureContext.getImageData(0, 0, 64, 64);
         }
         createTexture();
-        inline function col(n : Dynamic) {
-            context.fillStyle = n;
-        }
-        inline function drawRect(x:Float, y:Float, w:Float, h:Float) {
-            context.fillRect(x, y, w, h);
-        }
         untyped onmousemove = onmousedown = onmouseup = function(e) {
             mx = e.clientX;
-            mmove = (e.buttons);
         }
         untyped onkeydown = onkeyup = function(e) {
             keys[e.key] = e.type[3] == 'd';
@@ -164,24 +157,9 @@ class Main {
             // rendering
             {
                 backbuffer.data.fill(0);
-                col('#666');
-                /* drawRect(0, 0, screenSize, halfSize); */
-                col('#999');
-                /* drawRect(0, halfSize, screenSize, halfSize); */
                 drawWalls();
-                /* col('#841'); */
-                /* drawRect(halfSize - 12, screenSize * 0.96, 24, screenSize); */
-                /* col('#222'); */
-                /* drawRect(halfSize - 8, screenSize * 0.95, 16, screenSize); */
             }
-            context.putImageData(backbuffer.getImageData(), 0, 0);
-
-            for(i in 0...200) {
-                backbuffer.data[i*4 +0] = 0;
-                backbuffer.data[i*4 +1] = 0;
-                backbuffer.data[i*4 +2] = 0;
-                backbuffer.data[i*4 +3] = 255;
-            }
+            rcontext.putImageData(backbuffer.getImageData(), 0, 0);
 
             untyped requestAnimationFrame(loop);
         }
