@@ -8,6 +8,7 @@ class Main {
         var screenWidth = 1024;
         var screenHeight = 640;
         var halfScreenHeight = Std.int(screenHeight / 2);
+        var halfScreenWidth = Std.int(screenWidth / 2);
         canvas.width = screenWidth;
         canvas.height = screenHeight;
         var walls:Array<Dynamic> = [];
@@ -19,7 +20,7 @@ class Main {
         var textureCanvas:js.html.CanvasElement;
         var backbuffer:Framebuffer = Framebuffer.createEmpty(rcontext, screenWidth, screenHeight);
         var textureBuffer:js.html.ImageData;
-        inline function createTexture() {
+        {
             textureCanvas = untyped document.createElement("canvas");
             textureCanvas.width = textureCanvas.height = 64;
             var textureContext = textureCanvas.getContext("2d");
@@ -30,7 +31,20 @@ class Main {
             textureContext.fillRect(32, 50, 32, 13);
             textureBuffer = textureContext.getImageData(0, 0, 64, 64);
         }
-        createTexture();
+        var textureBuffer2:js.html.ImageData;
+        {
+            textureCanvas = untyped document.createElement("canvas");
+            textureCanvas.width = textureCanvas.height = 64;
+            var textureContext = textureCanvas.getContext("2d");
+            textureContext.fillRect(0, 0, 64, 64);
+            textureContext.fillStyle = '#888';
+            textureContext.fillRect(2, 2, 62, 30);
+            textureContext.fillRect(0, 34, 30, 29);
+            textureContext.fillRect(32, 50, 32, 13);
+            textureContext.fillStyle = 'red';
+            textureContext.fillText("FLOOR", 0, 12);
+            textureBuffer2 = textureContext.getImageData(0, 0, 64, 64);
+        }
         untyped onmousemove = onmousedown = onmouseup = function(e) {
             mx = e.clientX;
         }
@@ -54,6 +68,40 @@ class Main {
             var n = walls.length;
             var len = Math.sqrt((c-a)*(c-a)+(d-b)*(d-b));
             walls[n] = [[a* 100, b * 100], [c * 100, d * 100], len * 100];
+        }
+        function drawFloor(texture:js.html.ImageData) {
+            var spaceZ = 135;
+            var scaleX = 100;
+            var scaleY = 100;
+            var angle = context.cameraTransform.angle;
+            var horizon = 0;
+            var cx = context.cameraTransform.position.x;
+            var cy = context.cameraTransform.position.y;
+
+            for(screenY in halfScreenHeight+ 1...screenHeight) {
+                var distance = (spaceZ * scaleY) / (screenY - halfScreenHeight + horizon);
+                var horizontalScale = distance / scaleX;
+                var dx = - Math.sin(angle) * horizontalScale;
+                var dy = Math.cos(angle) * horizontalScale;
+                var spaceX = cx + (distance * Math.cos(angle)) - halfScreenWidth * dx;
+                var spaceY = cy + (distance * Math.sin(angle)) - halfScreenWidth * dy;
+
+                for(screenX in 0...screenWidth) {
+                    var rSpaceX = Math.round(spaceX);
+                    var rSpaceY = Math.round(spaceY);
+                    var pixelData;
+                    rSpaceX %= texture.width;
+                    rSpaceY %= texture.height;
+                    var index:Int = (screenY * screenWidth + screenX) * 4;
+                    var texIndex = (rSpaceY * texture.width + rSpaceX) * 4;
+                    backbuffer.data[index + 0] = texture.data[texIndex + 0];
+                    backbuffer.data[index + 1] = texture.data[texIndex + 1];
+                    backbuffer.data[index + 2] = texture.data[texIndex + 2];
+                    backbuffer.data[index + 3] = texture.data[texIndex + 3];
+                    spaceX += dx;
+                    spaceY += dy;
+                }
+            }
         }
         function drawWallColumn(texture:js.html.ImageData, tx, x, h) {
             var h2 = Std.int(h/2);
@@ -83,7 +131,7 @@ class Main {
             var camPos = cameraTransform.position;
 
             for(x in 0...screenWidth) {
-                var a2 = Math.atan2(x - halfScreenHeight, d);
+                var a2 = Math.atan2(x - halfScreenWidth, d);
                 var a = cameraTransform.angle + a2;
                 var dx = Math.cos(a) * 1024;
                 var dy = Math.sin(a) * 1024;
@@ -157,10 +205,10 @@ class Main {
             // rendering
             {
                 backbuffer.data.fill(0);
+                drawFloor(textureBuffer2);
                 drawWalls();
             }
             rcontext.putImageData(backbuffer.getImageData(), 0, 0);
-
             untyped requestAnimationFrame(loop);
         }
         {
