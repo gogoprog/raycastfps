@@ -19,7 +19,7 @@ class Main {
         var mx:Int = 0;
         var textureCanvas:js.html.CanvasElement;
         var backbuffer:Framebuffer = Framebuffer.createEmpty(rcontext, screenWidth, screenHeight);
-        var textureBuffer:js.html.ImageData;
+        var textureBuffer:Framebuffer;
         {
             textureCanvas = untyped document.createElement("canvas");
             textureCanvas.width = textureCanvas.height = 64;
@@ -29,9 +29,9 @@ class Main {
             textureContext.fillRect(2, 2, 62, 30);
             textureContext.fillRect(0, 34, 30, 29);
             textureContext.fillRect(32, 50, 32, 13);
-            textureBuffer = textureContext.getImageData(0, 0, 64, 64);
+            textureBuffer = Framebuffer.create(textureContext, 64, 64);
         }
-        var textureBuffer2:js.html.ImageData;
+        var textureBuffer2:Framebuffer;
         {
             textureCanvas = untyped document.createElement("canvas");
             textureCanvas.width = textureCanvas.height = 64;
@@ -44,7 +44,7 @@ class Main {
             textureContext.fillRect(32, 50, 32, 13);
             textureContext.fillStyle = 'red';
             textureContext.fillText("FLOOR", 0, 12);
-            textureBuffer2 = textureContext.getImageData(0, 0, 64, 64);
+            textureBuffer2 = Framebuffer.create(textureContext, 64, 64);
         }
         untyped onmousemove = onmousedown = onmouseup = function(e) {
             mx = e.clientX;
@@ -70,19 +70,21 @@ class Main {
             var len = Math.sqrt((c-a)*(c-a)+(d-b)*(d-b));
             walls[n] = [[a* 100, b * 100], [c * 100, d * 100], len * 100];
         }
-        inline function copyPixel(fromBuffer:js.html.ImageData, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
-            toBuffer.data[toIndex + 0] = fromBuffer.data[fromIndex + 0];
-            toBuffer.data[toIndex + 1] = fromBuffer.data[fromIndex + 1];
-            toBuffer.data[toIndex + 2] = fromBuffer.data[fromIndex + 2];
-            toBuffer.data[toIndex + 3] = fromBuffer.data[fromIndex + 3];
+        inline function copyPixel(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
+            toBuffer.data[toIndex * 4 + 0] = fromBuffer.data[fromIndex * 4 + 0];
+            toBuffer.data[toIndex * 4 + 1] = fromBuffer.data[fromIndex * 4 + 1];
+            toBuffer.data[toIndex * 4 + 2] = fromBuffer.data[fromIndex * 4 + 2];
+            toBuffer.data[toIndex * 4 + 3] = fromBuffer.data[fromIndex * 4 + 3];
         }
-        function drawFloor(texture:js.html.ImageData) {
+        inline function copyPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
+            toBuffer.data32[toIndex] = fromBuffer.data32[fromIndex];
+        }
+        function drawFloor(texture:Framebuffer) {
             var camPos = cameraTransform.position;
             var a = cameraTransform.angle;
             var dir:Point = [Math.cos(a), Math.sin(a)];
             var oldPlaneX = 0;
             var rotSpeed = cameraTransform.angle;
-
             var o = 0.66;
             var plane:Point = [ - o * Math.sin(a), o * Math.cos(a)];
             var rayDirX0 = dir.x - plane.x;
@@ -106,13 +108,13 @@ class Main {
                     var ty = Std.int(texture.height * (floorY - cellY)) & (texture.height - 1);
                     floorX += floorStepX;
                     floorY += floorStepY;
-                    var texIndex = (texture.width * ty + tx) * 4;
-                    var backbufferIndex = (y * screenWidth + x) * 4;
-                    copyPixel(texture, backbuffer, texIndex, backbufferIndex);
+                    var texIndex = (texture.width * ty + tx);
+                    var backbufferIndex = (y * screenWidth + x);
+                    copyPixel32(texture, backbuffer, texIndex, backbufferIndex);
                 }
             }
         }
-        function drawWallColumn(texture:js.html.ImageData, tx, x, h) {
+        function drawWallColumn(texture:Framebuffer, tx, x, h) {
             var h2 = Std.int(h/2);
             var fromi = 0;
             var toi = h+1;
@@ -124,13 +126,10 @@ class Main {
 
             for(i in fromi...toi) {
                 var y:Int = halfScreenHeight - h2 + i;
-                var index:Int = (y * screenWidth + x)*4;
+                var index:Int = (y * screenWidth + x);
                 var texY = Std.int((i/h) * texture.height);
-                var texIndex = (texY * texture.width + tx) *4;
-                backbuffer.data[index + 0] = texture.data[texIndex + 0];
-                backbuffer.data[index + 1] = texture.data[texIndex + 1];
-                backbuffer.data[index + 2] = texture.data[texIndex + 2];
-                backbuffer.data[index + 3] = texture.data[texIndex + 3];
+                var texIndex = (texY * texture.width + tx);
+                copyPixel32(texture, backbuffer, texIndex, index);
             }
         }
         function drawWalls() {
@@ -237,10 +236,10 @@ class Main {
             addWall(-12, 3, 0, 3);
             addWall(0, 0, 0, 3);
             /* // Pillar */
-            /* addWall(1, 1, 8, 1, 7); */
-            /* addWall(8, 2, 8, 1, 1); */
-            /* addWall(8, 2, 1, 2, 7); */
-            /* addWall(1, 1, 1, 2, 1); */
+            addWall(1, 1, 8, 1);
+            addWall(8, 2, 8, 1);
+            addWall(8, 2, 1, 2);
+            addWall(1, 1, 1, 2);
         }
         loop(0);
     }
