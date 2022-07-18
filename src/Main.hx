@@ -96,8 +96,8 @@ class Main {
                 var rowDistance = posZ / p;
                 var floorStepX = rowDistance * (rayDirX1 - rayDirX0) / screenWidth;
                 var floorStepY = rowDistance * (rayDirY1 - rayDirY0) / screenWidth;
-                var floorX = camPos.x * 0.025 + rowDistance * rayDirX0;
-                var floorY = camPos.y * 0.025 + rowDistance * rayDirY0;
+                var floorX = camPos.x * 0.0125 + rowDistance * rayDirX0;
+                var floorY = camPos.y * 0.0125 + rowDistance * rayDirY0;
                 var cellX = Std.int(floorX);
                 var cellY = Std.int(floorY);
 
@@ -134,7 +134,7 @@ class Main {
             }
         }
         function drawWalls() {
-            var wallH = 26;
+            var wallH = 13;
             var hfov = Math.PI * 0.125;
             var d = halfScreenHeight / Math.tan(hfov);
             var camPos = cameraTransform.position;
