@@ -14,7 +14,7 @@ class Main {
         var walls:Array<Dynamic> = [];
         var cameraTransform = context.cameraTransform;
         cameraTransform.position = [512, 512];
-        cameraTransform.angle = 1.44;
+        cameraTransform.angle = 0;
         var keys:Dynamic = {};
         var mx:Int = 0;
         var textureCanvas:js.html.CanvasElement;
@@ -36,6 +36,7 @@ class Main {
             textureCanvas = untyped document.createElement("canvas");
             textureCanvas.width = textureCanvas.height = 64;
             var textureContext = textureCanvas.getContext("2d");
+            textureContext.fillStyle = '#555';
             textureContext.fillRect(0, 0, 64, 64);
             textureContext.fillStyle = '#888';
             textureContext.fillRect(2, 2, 62, 30);
@@ -69,37 +70,45 @@ class Main {
             var len = Math.sqrt((c-a)*(c-a)+(d-b)*(d-b));
             walls[n] = [[a* 100, b * 100], [c * 100, d * 100], len * 100];
         }
+        inline function copyPixel(fromBuffer:js.html.ImageData, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
+            toBuffer.data[toIndex + 0] = fromBuffer.data[fromIndex + 0];
+            toBuffer.data[toIndex + 1] = fromBuffer.data[fromIndex + 1];
+            toBuffer.data[toIndex + 2] = fromBuffer.data[fromIndex + 2];
+            toBuffer.data[toIndex + 3] = fromBuffer.data[fromIndex + 3];
+        }
         function drawFloor(texture:js.html.ImageData) {
-            var spaceZ = 135;
-            var scaleX = 100;
-            var scaleY = 100;
-            var angle = context.cameraTransform.angle;
-            var horizon = 0;
-            var cx = context.cameraTransform.position.x;
-            var cy = context.cameraTransform.position.y;
+            var camPos = cameraTransform.position;
+            var a = cameraTransform.angle;
+            var dir:Point = [Math.cos(a), Math.sin(a)];
+            var oldPlaneX = 0;
+            var rotSpeed = cameraTransform.angle;
 
-            for(screenY in halfScreenHeight+ 1...screenHeight) {
-                var distance = (spaceZ * scaleY) / (screenY - halfScreenHeight + horizon);
-                var horizontalScale = distance / scaleX;
-                var dx = - Math.sin(angle) * horizontalScale;
-                var dy = Math.cos(angle) * horizontalScale;
-                var spaceX = cx + (distance * Math.cos(angle)) - halfScreenWidth * dx;
-                var spaceY = cy + (distance * Math.sin(angle)) - halfScreenWidth * dy;
+            var o = 0.66;
+            var plane:Point = [ - o * Math.sin(a), o * Math.cos(a)];
+            var rayDirX0 = dir.x - plane.x;
+            var rayDirY0 = dir.y - plane.y;
+            var rayDirX1 = dir.x + plane.x;
+            var rayDirY1 = dir.y + plane.y;
 
-                for(screenX in 0...screenWidth) {
-                    var rSpaceX = Math.round(spaceX);
-                    var rSpaceY = Math.round(spaceY);
-                    var pixelData;
-                    rSpaceX %= texture.width;
-                    rSpaceY %= texture.height;
-                    var index:Int = (screenY * screenWidth + screenX) * 4;
-                    var texIndex = (rSpaceY * texture.width + rSpaceX) * 4;
-                    backbuffer.data[index + 0] = texture.data[texIndex + 0];
-                    backbuffer.data[index + 1] = texture.data[texIndex + 1];
-                    backbuffer.data[index + 2] = texture.data[texIndex + 2];
-                    backbuffer.data[index + 3] = texture.data[texIndex + 3];
-                    spaceX += dx;
-                    spaceY += dy;
+            for(y in halfScreenHeight + 1...screenHeight) {
+                var p = Std.int(y - halfScreenHeight);
+                var posZ = 0.5 * screenHeight;
+                var rowDistance = posZ / p;
+                var floorStepX = rowDistance * (rayDirX1 - rayDirX0) / screenWidth;
+                var floorStepY = rowDistance * (rayDirY1 - rayDirY0) / screenWidth;
+                var floorX = camPos.x * 0.025 + rowDistance * rayDirX0;
+                var floorY = camPos.y * 0.025 + rowDistance * rayDirY0;
+                var cellX = Std.int(floorX);
+                var cellY = Std.int(floorY);
+
+                for(x in 0...screenWidth) {
+                    var tx = Std.int(texture.width * (floorX - cellX)) & (texture.width - 1);
+                    var ty = Std.int(texture.height * (floorY - cellY)) & (texture.height - 1);
+                    floorX += floorStepX;
+                    floorY += floorStepY;
+                    var texIndex = (texture.width * ty + tx) * 4;
+                    var backbufferIndex = (y * screenWidth + x) * 4;
+                    copyPixel(texture, backbuffer, texIndex, backbufferIndex);
                 }
             }
         }
@@ -126,7 +135,7 @@ class Main {
         }
         function drawWalls() {
             var wallH = 26;
-            var hfov = Math.PI * 0.25;
+            var hfov = Math.PI * 0.125;
             var d = halfScreenHeight / Math.tan(hfov);
             var camPos = cameraTransform.position;
 
@@ -192,13 +201,14 @@ class Main {
                 camPos.y += dir.y * move.y * s;
                 camPos.x += lat.x * move.x * s;
                 camPos.y += lat.y * move.x * s;
-                cameraTransform.angle = mx / 32;//* 0.04;
+                cameraTransform.angle = mx / 32;
+                /* cameraTransform.angle += 0.01; */
 
                 for(w in walls) {
                     var r = segmentToSegmentIntersection(prevPos, camPos, w[0], w[1]);
 
                     if(r != null && r[0] < 1) {
-                        camPos = prevPos;
+                        cameraTransform.position = prevPos;
                     }
                 }
             }
