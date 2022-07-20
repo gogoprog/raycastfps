@@ -26,7 +26,7 @@ class Framebuffer {
         return result;
     }
 
-    static public function create(context, width, height) {
+    static public function create(context:js.html.CanvasRenderingContext2D, width:Int, height:Int) {
         var result = new Framebuffer();
         result.imageData = context.getImageData(0, 0, width, height);
         result.width = width;

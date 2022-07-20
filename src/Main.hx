@@ -17,13 +17,12 @@ class Main {
         cameraTransform.angle = 0;
         var keys:Dynamic = {};
         var mx:Int = 0;
-        var textureCanvas:js.html.CanvasElement;
+        var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
+        var textureContext:js.html.CanvasRenderingContext2D = textureCanvas.getContext("2d");
         var backbuffer:Framebuffer = Framebuffer.createEmpty(rcontext, screenWidth, screenHeight);
         var textureBuffer:Framebuffer;
         {
-            textureCanvas = untyped document.createElement("canvas");
             textureCanvas.width = textureCanvas.height = 64;
-            var textureContext = textureCanvas.getContext("2d");
             textureContext.fillRect(0, 0, 64, 64);
             textureContext.fillStyle = '#a22';
             textureContext.fillRect(2, 2, 62, 30);
@@ -33,9 +32,7 @@ class Main {
         }
         var textureBuffer2:Framebuffer;
         {
-            textureCanvas = untyped document.createElement("canvas");
             textureCanvas.width = textureCanvas.height = 64;
-            var textureContext = textureCanvas.getContext("2d");
             textureContext.fillStyle = '#555';
             textureContext.fillRect(0, 0, 64, 64);
             textureContext.fillStyle = '#888';
@@ -45,6 +42,18 @@ class Main {
             textureContext.fillStyle = 'red';
             textureContext.fillText("FLOOR", 0, 12);
             textureBuffer2 = Framebuffer.create(textureContext, 64, 64);
+        }
+        var thingBuffer:Framebuffer;
+        {
+            thingBuffer = Framebuffer.create(textureContext, 64, 64); // temp
+            var img = new js.html.Image();
+            img.src = "../data/doomguy.png";
+            img.onload = function() {
+                textureCanvas.width = img.width;
+                textureCanvas.height = img.height;
+                textureContext.drawImage(img, 0, 0, img.width, img.height);
+                thingBuffer = Framebuffer.create(textureContext, img.width, img.height);
+            }
         }
         untyped onmousemove = onmousedown = onmouseup = function(e) {
             mx = e.clientX;
@@ -78,6 +87,17 @@ class Main {
         }
         inline function copyPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
             toBuffer.data32[toIndex] = fromBuffer.data32[fromIndex];
+        }
+        function fixAngle(angle:Float) {
+            while(angle > Math.PI) {
+                angle -= 2 * Math.PI;
+            }
+
+            while(angle < -Math.PI) {
+                angle += 2 * Math.PI;
+            }
+
+            return angle;
         }
         function drawFloor(texture:Framebuffer) {
             var camPos = cameraTransform.position;
@@ -132,10 +152,11 @@ class Main {
                 copyPixel32(texture, backbuffer, texIndex, index);
             }
         }
+        var halfVerticalFov = Math.PI * 0.125;
+        var d = halfScreenHeight / Math.tan(halfVerticalFov);
+        var halfHorizontalFov = Math.atan2(halfScreenWidth, d);
         function drawWalls() {
             var wallH = 13;
-            var hfov = Math.PI * 0.125;
-            var d = halfScreenHeight / Math.tan(hfov);
             var camPos = cameraTransform.position;
 
             for(x in 0...screenWidth) {
@@ -151,7 +172,7 @@ class Main {
                 for(w in walls) {
                     var r = segmentToSegmentIntersection(camPos, camTarget, w[0], w[1]);
 
-                    if(untyped r) {
+                    if(r != null) {
                         var f = Math.cos(a2) * r[0];
 
                         if(f<bestDistance) {
@@ -164,8 +185,28 @@ class Main {
 
                 if(best != null) {
                     var h = (screenHeight/ wallH) / bestDistance;
-                    var tx = Std.int(bestGamma * best[2]) % 64;
+                    var tx = Std.int(bestGamma * best[2]) % textureBuffer.width;
                     drawWallColumn(textureBuffer, tx, x, Std.int(h));
+                }
+            }
+        }
+        function drawSprite(buffer, position:Point) {
+            var cam_pos = cameraTransform.position;
+            var cam_ang = cameraTransform.angle;
+            var delta = position - cam_pos;
+            var distance = delta.getLength();
+            var angle = delta.getAngle();
+            var delta_angle = fixAngle(angle - cam_ang);
+
+            if(Math.abs(delta_angle) < halfHorizontalFov) {
+                var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
+                var hh = (screenHeight / distance) * 32;
+                var w = Std.int(buffer.width * (hh/buffer.height));
+                var h = Std.int(hh);
+
+                for(xx in 0...w) {
+                    var tx = Std.int((xx / w) * buffer.width);
+                    drawWallColumn(buffer, tx, Std.int(x + xx - w/ 2), h);
                 }
             }
         }
@@ -216,6 +257,7 @@ class Main {
                 backbuffer.data.fill(0);
                 drawFloor(textureBuffer2);
                 drawWalls();
+                drawSprite(thingBuffer, [256, 256]);
             }
             rcontext.putImageData(backbuffer.getImageData(), 0, 0);
             untyped requestAnimationFrame(loop);
