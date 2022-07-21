@@ -16,10 +16,12 @@ class Main {
         cameraTransform.position = [512, 512];
         cameraTransform.angle = 0;
         var keys:Dynamic = {};
+        var previousMx:Int = 0;
         var mx:Int = 0;
         var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
         var textureContext:js.html.CanvasRenderingContext2D = textureCanvas.getContext("2d");
         var backbuffer:Framebuffer = Framebuffer.createEmpty(rcontext, screenWidth, screenHeight);
+        var depth = new js.lib.Float32Array(screenWidth);
         var textureBuffer:Framebuffer;
         {
             textureCanvas.width = textureCanvas.height = 64;
@@ -55,8 +57,11 @@ class Main {
                 thingBuffer = Framebuffer.create(textureContext, img.width, img.height);
             }
         }
-        untyped onmousemove = onmousedown = onmouseup = function(e) {
+        canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
             mx = e.clientX;
+        }
+        canvas.onmouseenter = function(e) {
+            previousMx = mx = e.clientX;
         }
         untyped onkeydown = onkeyup = function(e) {
             keys[e.key] = e.type[3] == 'd';
@@ -87,6 +92,13 @@ class Main {
         }
         inline function copyPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
             toBuffer.data32[toIndex] = fromBuffer.data32[fromIndex];
+        }
+        inline function blitPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
+            var value = fromBuffer.data32[fromIndex];
+
+            if((value & 0x00000011) != 0) {
+                toBuffer.data32[toIndex] = value;
+            }
         }
         function fixAngle(angle:Float) {
             while(angle > Math.PI) {
@@ -184,13 +196,35 @@ class Main {
                 }
 
                 if(best != null) {
+                    depth[x] = bestDistance * 1024;
                     var h = (screenHeight/ wallH) / bestDistance;
                     var tx = Std.int(bestGamma * best[2]) % textureBuffer.width;
                     drawWallColumn(textureBuffer, tx, x, Std.int(h));
                 }
             }
         }
+        function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH) {
+            if(x < 0 || x >= screenWidth) { return; }
+
+            var h2 = Std.int(h/2);
+            var fromi = 0;
+            var toi = h+1;
+
+            if(h > screenHeight) {
+                fromi = Std.int((h-screenHeight) /2);
+                toi = h - fromi;
+            }
+
+            for(i in fromi...toi) {
+                var y:Int = halfScreenHeight - h + i + offsetH;
+                var index:Int = (y * screenWidth + x);
+                var texY = Std.int((i/h) * texture.height);
+                var texIndex = (texY * texture.width + tx);
+                blitPixel32(texture, backbuffer, texIndex, index);
+            }
+        }
         function drawSprite(buffer, position:Point) {
+            var floorHeight = 330;
             var cam_pos = cameraTransform.position;
             var cam_ang = cameraTransform.angle;
             var delta = position - cam_pos;
@@ -200,13 +234,19 @@ class Main {
 
             if(Math.abs(delta_angle) < halfHorizontalFov) {
                 var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
-                var hh = (screenHeight / distance) * 32;
-                var w = Std.int(buffer.width * (hh/buffer.height));
+                distance = Math.cos(delta_angle) * distance;
+                var hh = (screenHeight / distance) * 55;
+                var ratio = hh/buffer.height;
+                var w = Std.int(buffer.width * ratio);
                 var h = Std.int(hh);
 
                 for(xx in 0...w) {
-                    var tx = Std.int((xx / w) * buffer.width);
-                    drawWallColumn(buffer, tx, Std.int(x + xx - w/ 2), h);
+                    var dest_x = Std.int(x + xx - w/ 2);
+
+                    if(depth[dest_x] > distance) {
+                        var tx = Std.int((xx / w) * buffer.width);
+                        drawSpriteColumn(buffer, tx, dest_x, h, Std.int(floorHeight * ratio));
+                    }
                 }
             }
         }
@@ -241,7 +281,7 @@ class Main {
                 camPos.y += dir.y * move.y * s;
                 camPos.x += lat.x * move.x * s;
                 camPos.y += lat.y * move.x * s;
-                cameraTransform.angle = mx / 32;
+                cameraTransform.angle += (mx-previousMx) * 0.01;
                 /* cameraTransform.angle += 0.01; */
 
                 for(w in walls) {
@@ -261,6 +301,7 @@ class Main {
             }
             rcontext.putImageData(backbuffer.getImageData(), 0, 0);
             untyped requestAnimationFrame(loop);
+            previousMx = mx;
         }
         {
             /* addWall(0, 0, 9, 0, 9); */
