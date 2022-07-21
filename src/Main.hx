@@ -14,7 +14,7 @@ class Main {
         var mx:Int = 0;
         var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
         var textureContext:js.html.CanvasRenderingContext2D = textureCanvas.getContext("2d");
-        context.renderer.initialize();
+        context.renderer.initialize(cameraTransform);
         var textureBuffer:Framebuffer;
         {
             textureCanvas.width = textureCanvas.height = 64;
@@ -109,13 +109,15 @@ class Main {
             }
             // rendering
             {
+                context.renderer.pushSprite(thingBuffer, [256, 256]);
+                context.renderer.pushSprite(thingBuffer, [312, 356]);
                 context.renderer.clear();
                 context.renderer.drawFloor(textureBuffer2);
                 context.renderer.drawWalls(textureBuffer, walls);
-                context.renderer.drawSprite(thingBuffer, [256, 256]);
+                context.renderer.drawSprites();
                 context.renderer.flush();
             }
-            untyped requestAnimationFrame(loop);
+            js.Browser.window.requestAnimationFrame(loop);
             previousMx = mx;
         }
         {

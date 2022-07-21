@@ -12,11 +12,13 @@ class Renderer {
     var halfScreenHeightByTanFov:Float;
     var halfHorizontalFov:Float;
     var depth:js.lib.Float32Array;
+    var cameraTransform:Transform;
+    var sprites:Array<Sprite> = [];
 
     public function new() {
     }
 
-    public function initialize() {
+    public function initialize(cameraTransform) {
         halfScreenHeight = Std.int(screenHeight / 2);
         halfScreenWidth = Std.int(screenWidth / 2);
         canvasContext = canvas.getContext("2d");
@@ -27,8 +29,8 @@ class Renderer {
         halfVerticalFov = Math.PI * 0.125;
         halfScreenHeightByTanFov = halfScreenHeight / Math.tan(halfVerticalFov);
         halfHorizontalFov = Math.atan2(halfScreenWidth, halfScreenHeightByTanFov);
+        this.cameraTransform = cameraTransform;
     }
-
 
     inline function copyPixel(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
         toBuffer.data[toIndex * 4 + 0] = fromBuffer.data[fromIndex * 4 + 0];
@@ -36,9 +38,11 @@ class Renderer {
         toBuffer.data[toIndex * 4 + 2] = fromBuffer.data[fromIndex * 4 + 2];
         toBuffer.data[toIndex * 4 + 3] = fromBuffer.data[fromIndex * 4 + 3];
     }
+
     inline function copyPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
         toBuffer.data32[toIndex] = fromBuffer.data32[fromIndex];
     }
+
     inline function blitPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
         var value = fromBuffer.data32[fromIndex];
 
@@ -46,6 +50,7 @@ class Renderer {
             toBuffer.data32[toIndex] = value;
         }
     }
+
     static public function segmentToSegmentIntersection(from1:Point, to1:Point, from2:Point, to2:Point) {
         var dX = to1.x - from1.x;
         var dY = to1.y - from1.y;
@@ -58,6 +63,7 @@ class Renderer {
 
         return [lambda, gamma];
     }
+
     static function fixAngle(angle:Float) {
         while(angle > Math.PI) {
             angle -= 2 * Math.PI;
@@ -69,9 +75,10 @@ class Renderer {
 
         return angle;
     }
+
     public function drawFloor(texture:Framebuffer) {
-        var camPos = Main.context.cameraTransform.position;
-        var a = Main.context.cameraTransform.angle;
+        var camPos = cameraTransform.position;
+        var a = cameraTransform.angle;
         var dir:Point = [Math.cos(a), Math.sin(a)];
         var oldPlaneX = 0;
         var o = 0.66;
@@ -103,6 +110,7 @@ class Renderer {
             }
         }
     }
+
     function drawWallColumn(texture:Framebuffer, tx, x, h) {
         var h2 = Std.int(h/2);
         var fromi = 0;
@@ -121,13 +129,14 @@ class Renderer {
             copyPixel32(texture, backbuffer, texIndex, index);
         }
     }
+
     public function drawWalls(textureBuffer, walls:Array<Dynamic>) {
         var wallH = 13;
-        var camPos = Main.context.cameraTransform.position;
+        var camPos = cameraTransform.position;
 
         for(x in 0...screenWidth) {
             var a2 = Math.atan2(x - halfScreenWidth, halfScreenHeightByTanFov);
-            var a = Main.context.cameraTransform.angle + a2;
+            var a = cameraTransform.angle + a2;
             var dx = Math.cos(a) * 1024;
             var dy = Math.sin(a) * 1024;
             var camTarget = [camPos[0]+dx, camPos[1]+dy];
@@ -157,6 +166,7 @@ class Renderer {
             }
         }
     }
+
     function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH) {
         if(x < 0 || x >= screenWidth) { return; }
 
@@ -177,10 +187,11 @@ class Renderer {
             blitPixel32(texture, backbuffer, texIndex, index);
         }
     }
-    public function drawSprite(buffer, position:Point) {
+
+    function drawSprite(buffer, position:Point) {
         var floorHeight = 330;
-        var cam_pos = Main.context.cameraTransform.position;
-        var cam_ang = Main.context.cameraTransform.angle;
+        var cam_pos = cameraTransform.position;
+        var cam_ang = cameraTransform.angle;
         var delta = position - cam_pos;
         var distance = delta.getLength();
         var angle = delta.getAngle();
@@ -205,11 +216,25 @@ class Renderer {
         }
     }
 
+    public function drawSprites() {
+        for(sprite in sprites) {
+            drawSprite(sprite.texture, sprite.position);
+        }
+    }
+
     public function clear() {
         backbuffer.data32.fill(0);
     }
 
     public function flush() {
         canvasContext.putImageData(backbuffer.getImageData(), 0, 0);
+        sprites = [];
+    }
+
+    public function pushSprite(texture:Framebuffer, position:Point) {
+        var sprite = new Sprite();
+        sprite.texture = texture;
+        sprite.position = position;
+        sprites.push(sprite);
     }
 }
