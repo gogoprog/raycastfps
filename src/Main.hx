@@ -5,7 +5,6 @@ class Main {
 
     static function main() {
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
-        var walls:Array<Dynamic> = [];
         var cameraTransform = context.cameraTransform;
         cameraTransform.position = [512, 512];
         cameraTransform.angle = 0;
@@ -24,11 +23,6 @@ class Main {
             keys[e.key] = e.type[3] == 'd';
         }
         canvas.oncontextmenu = e->false;
-        function addWall(a:Float, b:Float, c:Float, d:Float) {
-            var n = walls.length;
-            var len = Math.sqrt((c-a)*(c-a)+(d-b)*(d-b));
-            walls[n] = [[a* 100, b * 100], [c * 100, d * 100], len * 100];
-        }
         function loop(t:Float) {
             // controls
             {
@@ -63,7 +57,7 @@ class Main {
                 cameraTransform.angle += (mx-previousMx) * 0.01;
                 /* cameraTransform.angle += 0.01; */
 
-                for(w in walls) {
+                for(w in context.level.walls) {
                     var r = Renderer.segmentToSegmentIntersection(prevPos, camPos, w[0], w[1]);
 
                     if(r != null && r[0] < 1) {
@@ -77,34 +71,11 @@ class Main {
                 context.renderer.pushSprite(texture, [256, 256]);
                 context.renderer.pushSprite(texture, [312, 356]);
                 context.renderer.clear();
-                context.renderer.drawFloor(context.textureManager.get("floor"));
-                context.renderer.drawWalls(context.textureManager.get("wall"), walls);
-                context.renderer.drawSprites();
+                context.renderer.draw(context.level, context.textureManager);
                 context.renderer.flush();
             }
             js.Browser.window.requestAnimationFrame(loop);
             previousMx = mx;
-        }
-        {
-            /* addWall(0, 0, 9, 0, 9); */
-            /* addWall(0, 0, 0, 9, 9); */
-            /* addWall(0, 9, 9, 9, 9); */
-            /* addWall(9, 0, 9, 9, 9); */
-            // T
-            addWall(0, 0, 9, 4);
-            addWall(9, 4, 6, 4);
-            addWall(6, 9, 6, 4);
-            addWall(6, 9, 4, 9);
-            addWall(4, 4, 4, 9);
-            addWall(4, 4, -12, 4);
-            addWall(-12, 3, -12, 4);
-            addWall(-12, 3, 0, 3);
-            addWall(0, 0, 0, 3);
-            /* // Pillar */
-            addWall(1, 1, 8, 1);
-            addWall(8, 2, 8, 1);
-            addWall(8, 2, 1, 2);
-            addWall(1, 1, 1, 2);
         }
         loop(0);
     }

@@ -226,6 +226,12 @@ class Renderer {
         backbuffer.data32.fill(0);
     }
 
+    public function draw(level:Level, textureManager) {
+        drawFloor(textureManager.get(level.floorTexture));
+        drawWalls(textureManager.get("wall"), level.walls);
+        drawSprites();
+    }
+
     public function flush() {
         canvasContext.putImageData(backbuffer.getImageData(), 0, 0);
         sprites = [];
