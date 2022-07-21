@@ -12,44 +12,8 @@ class Main {
         var keys:Dynamic = {};
         var previousMx:Int = 0;
         var mx:Int = 0;
-        var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
-        var textureContext:js.html.CanvasRenderingContext2D = textureCanvas.getContext("2d");
         context.renderer.initialize(cameraTransform);
-        var textureBuffer:Framebuffer;
-        {
-            textureCanvas.width = textureCanvas.height = 64;
-            textureContext.fillRect(0, 0, 64, 64);
-            textureContext.fillStyle = '#a22';
-            textureContext.fillRect(2, 2, 62, 30);
-            textureContext.fillRect(0, 34, 30, 29);
-            textureContext.fillRect(32, 50, 32, 13);
-            textureBuffer = Framebuffer.create(textureContext, 64, 64);
-        }
-        var textureBuffer2:Framebuffer;
-        {
-            textureCanvas.width = textureCanvas.height = 64;
-            textureContext.fillStyle = '#555';
-            textureContext.fillRect(0, 0, 64, 64);
-            textureContext.fillStyle = '#888';
-            textureContext.fillRect(2, 2, 62, 30);
-            textureContext.fillRect(0, 34, 30, 29);
-            textureContext.fillRect(32, 50, 32, 13);
-            textureContext.fillStyle = 'red';
-            textureContext.fillText("FLOOR", 0, 12);
-            textureBuffer2 = Framebuffer.create(textureContext, 64, 64);
-        }
-        var thingBuffer:Framebuffer;
-        {
-            thingBuffer = Framebuffer.create(textureContext, 64, 64); // temp
-            var img = new js.html.Image();
-            img.src = "../data/doomguy.png";
-            img.onload = function() {
-                textureCanvas.width = img.width;
-                textureCanvas.height = img.height;
-                textureContext.drawImage(img, 0, 0, img.width, img.height);
-                thingBuffer = Framebuffer.create(textureContext, img.width, img.height);
-            }
-        }
+        context.textureManager.initialize();
         canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
             mx = e.clientX;
         }
@@ -109,11 +73,12 @@ class Main {
             }
             // rendering
             {
-                context.renderer.pushSprite(thingBuffer, [256, 256]);
-                context.renderer.pushSprite(thingBuffer, [312, 356]);
+                var texture = context.textureManager.get("doomguy");
+                context.renderer.pushSprite(texture, [256, 256]);
+                context.renderer.pushSprite(texture, [312, 356]);
                 context.renderer.clear();
-                context.renderer.drawFloor(textureBuffer2);
-                context.renderer.drawWalls(textureBuffer, walls);
+                context.renderer.drawFloor(context.textureManager.get("floor"));
+                context.renderer.drawWalls(context.textureManager.get("wall"), walls);
                 context.renderer.drawSprites();
                 context.renderer.flush();
             }
