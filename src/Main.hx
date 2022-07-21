@@ -13,6 +13,7 @@ class Main {
         var mx:Int = 0;
         context.renderer.initialize(cameraTransform);
         context.textureManager.initialize();
+        context.level.load();
         canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
             mx = e.clientX;
         }
@@ -58,7 +59,7 @@ class Main {
                 /* cameraTransform.angle += 0.01; */
 
                 for(w in context.level.walls) {
-                    var r = Renderer.segmentToSegmentIntersection(prevPos, camPos, w[0], w[1]);
+                    var r = Renderer.segmentToSegmentIntersection(prevPos, camPos, w.a, w.b);
 
                     if(r != null && r[0] < 1) {
                         cameraTransform.position = prevPos;
@@ -71,7 +72,7 @@ class Main {
                 context.renderer.pushSprite(texture, [256, 256]);
                 context.renderer.pushSprite(texture, [312, 356]);
                 context.renderer.clear();
-                context.renderer.draw(context.level, context.textureManager);
+                context.renderer.draw(context.level);
                 context.renderer.flush();
             }
             js.Browser.window.requestAnimationFrame(loop);

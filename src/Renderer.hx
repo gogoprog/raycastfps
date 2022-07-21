@@ -130,7 +130,7 @@ class Renderer {
         }
     }
 
-    public function drawWalls(textureBuffer, walls:Array<Dynamic>) {
+    public function drawWalls(walls:Array<Wall>) {
         var wallH = 13;
         var camPos = cameraTransform.position;
 
@@ -145,7 +145,7 @@ class Renderer {
             var bestGamma:Float = 0;
 
             for(w in walls) {
-                var r = segmentToSegmentIntersection(camPos, camTarget, w[0], w[1]);
+                var r = segmentToSegmentIntersection(camPos, camTarget, w.a, w.b);
 
                 if(r != null) {
                     var f = Math.cos(a2) * r[0];
@@ -159,10 +159,11 @@ class Renderer {
             }
 
             if(best != null) {
+                var texture = best.texture;
                 depth[x] = bestDistance * 1024;
                 var h = (screenHeight/ wallH) / bestDistance;
-                var tx = Std.int(bestGamma * best[2]) % textureBuffer.width;
-                drawWallColumn(textureBuffer, tx, x, Std.int(h));
+                var tx = Std.int(bestGamma * best.length) % texture.width;
+                drawWallColumn(texture, tx, x, Std.int(h));
             }
         }
     }
@@ -226,9 +227,9 @@ class Renderer {
         backbuffer.data32.fill(0);
     }
 
-    public function draw(level:Level, textureManager) {
-        drawFloor(textureManager.get(level.floorTexture));
-        drawWalls(textureManager.get("wall"), level.walls);
+    public function draw(level:Level) {
+        drawFloor(level.floorTexture);
+        drawWalls(level.walls);
         drawSprites();
     }
 
