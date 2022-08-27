@@ -58,3 +58,15 @@ For the depth I just keep the wall distance from camera for every column, assumi
 ![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-sprite2.gif)
 
 
+### Sprite rotations and ECS
+
+Adding useful stuff for the future:
+  * ECS architecture
+  * Sprite System with rotation handling
+  * Sorted sprite rendering
+
+I introduced ECS to have a Sprite system which will take care of animations and rotations. This system is feeding the renderer with sprites, and now the renderer sorts the sprites.
+
+![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-rotations.gif)
+
+
