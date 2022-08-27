@@ -1,5 +1,7 @@
 package;
 
+import math.Point;
+
 class Main {
     static public var context = new Context();
 
@@ -18,9 +20,9 @@ class Main {
             context.level.load();
         }
         {
-            engine.addSystem(new SpriteSystem(), 10);
+            engine.addSystem(new core.SpriteSystem(), 10);
             {
-                var spriteDef = new SpriteDef();
+                var spriteDef = new core.SpriteDef();
                 spriteDef.textures.push({name:"grell-1"});
                 spriteDef.textures.push({name:"grell-0"});
                 spriteDef.textures.push({name:"grell-2"});
@@ -30,23 +32,13 @@ class Main {
                 spriteDef.textures.push({name:"grell-2", flip:true});
                 spriteDef.textures.push({name:"grell-0", flip:true});
                 spriteDef.heightOffset = 10;
-                var e = new ash.core.Entity();
-                e.add(spriteDef);
-                e.add(new Transform());
-                e.get(Transform).position = [512, 512];
-                engine.addEntity(e);
-                var e = new ash.core.Entity();
-                e.add(spriteDef);
-                e.add(new Transform());
-                e.get(Transform).position = [512, 700];
-                engine.addEntity(e);
-
                 for(i in 0...100) {
-                var e = new ash.core.Entity();
-                e.add(spriteDef);
-                e.add(new Transform());
-                e.get(Transform).position = [Math.random() * 4000, Math.random() * 4000];
-                engine.addEntity(e);
+                    var e = new ash.core.Entity();
+                    e.add(spriteDef);
+                    e.add(new math.Transform());
+                    e.get(math.Transform).position = [Math.random() * 4000, Math.random() * 4000];
+                    e.get(math.Transform).angle = Math.random() * Math.PI * 2;
+                    engine.addEntity(e);
                 }
             }
         }
@@ -94,11 +86,13 @@ class Main {
                 cameraTransform.angle += (mx-previousMx) * 0.01;
                 /* cameraTransform.angle += 0.01; */
 
-                for(w in context.level.walls) {
-                    var r = Renderer.segmentToSegmentIntersection(prevPos, camPos, w.a, w.b);
+                if(untyped !window.noclip) {
+                    for(w in context.level.walls) {
+                        var r = display.Renderer.segmentToSegmentIntersection(prevPos, camPos, w.a, w.b);
 
-                    if(r != null && r[0] < 1) {
-                        cameraTransform.position = prevPos;
+                        if(r != null && r[0] < 1) {
+                            cameraTransform.position = prevPos;
+                        }
                     }
                 }
             }

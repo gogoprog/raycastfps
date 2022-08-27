@@ -1,4 +1,4 @@
-package;
+package math;
 
 class Transform {
     public var position:Point;

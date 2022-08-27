@@ -1,4 +1,4 @@
-package;
+package display;
 
 class Framebuffer {
     private var imageData:js.html.ImageData;

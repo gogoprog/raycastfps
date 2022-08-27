@@ -1,4 +1,4 @@
-package;
+package math;
 
 class Utils {
 

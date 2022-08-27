@@ -1,4 +1,4 @@
-package;
+package math;
 
 abstract Point(Array<Float>) from Array<Float> to Array<Float> {
     public function new(x, y) {

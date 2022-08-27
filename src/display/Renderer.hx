@@ -1,4 +1,18 @@
-package;
+package display;
+
+import math.Point;
+
+@:allow(display.Renderer)
+private class Sprite {
+    public var position:Point;
+    public var texture:Framebuffer;
+    public var heightOffset = 0;
+    public var flip:Bool;
+    private var distance:Float;
+
+    public function new() {
+    }
+}
 
 class Renderer {
     var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
@@ -12,7 +26,7 @@ class Renderer {
     var halfScreenHeightByTanFov:Float;
     public var halfHorizontalFov:Float;
     var depth:js.lib.Float32Array;
-    var cameraTransform:Transform;
+    var cameraTransform:math.Transform;
     var sprites:Array<Sprite> = [];
 
     public function new() {
@@ -118,7 +132,7 @@ class Renderer {
         }
     }
 
-    public function drawWalls(walls:Array<Wall>) {
+    public function drawWalls(walls:Array<world.Wall>) {
         var wallH = 13;
         var camPos = cameraTransform.position;
 
@@ -182,7 +196,7 @@ class Renderer {
         var cam_ang = cameraTransform.angle;
         var delta = position - cam_pos;
         var angle = delta.getAngle();
-        var delta_angle = Utils.fixAngle(angle - cam_ang);
+        var delta_angle = math.Utils.fixAngle(angle - cam_ang);
 
         if(Math.abs(delta_angle) < halfHorizontalFov + 0.1) {
             var distance = delta.getLength();
@@ -233,7 +247,7 @@ class Renderer {
         backbuffer.data32.fill(0);
     }
 
-    public function draw(level:Level) {
+    public function draw(level:world.Level) {
         drawFloor(level.floorTexture);
         drawWalls(level.walls);
         drawSprites();

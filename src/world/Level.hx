@@ -1,8 +1,8 @@
-package;
+package world;
 
 class Level {
     public var walls:Array<Wall> = [];
-    public var floorTexture:Framebuffer;
+    public var floorTexture:display.Framebuffer;
 
     public function new() {
     }

@@ -1,4 +1,4 @@
-package;
+package core;
 
 typedef Texture = {
     var name:String;

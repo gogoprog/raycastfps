@@ -1,4 +1,4 @@
-package;
+package display;
 
 typedef Frame = {
     var x:Int;
