@@ -19,12 +19,23 @@ class Main {
         }
         {
             engine.addSystem(new SpriteSystem(), 10);
-            var e = new ash.core.Entity();
-            e.add(new SpriteDef());
-            e.add(new Transform());
-            e.get(Transform).position = [256, 256];
-            e.get(SpriteDef).textures.push("doomguy");
-            engine.addEntity(e);
+            {
+                var e = new ash.core.Entity();
+                e.add(new SpriteDef());
+                e.add(new Transform());
+                e.get(Transform).position = [256, 256];
+                e.get(SpriteDef).textures.push("grell-2");
+                e.get(SpriteDef).heightOffset = 10;
+                engine.addEntity(e);
+            }
+            {
+                var e = new ash.core.Entity();
+                e.add(new SpriteDef());
+                e.add(new Transform());
+                e.get(Transform).position = [356, 312];
+                e.get(SpriteDef).textures.push("doomguy");
+                engine.addEntity(e);
+            }
         }
         canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
             mx = e.clientX;
@@ -81,7 +92,7 @@ class Main {
             // rendering
             {
                 context.renderer.clear();
-                var texture = context.textureManager.get("doomguy");
+                /* var texture = context.textureManager.get("doomguy"); */
                 /* context.renderer.pushSprite(texture, [256, 256]); */
                 /* context.renderer.pushSprite(texture, [312, 356]); */
                 engine.update(1/60.0);

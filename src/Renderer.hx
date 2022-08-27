@@ -46,7 +46,7 @@ class Renderer {
     inline function blitPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
         var value = fromBuffer.data32[fromIndex];
 
-        if((value & 0x00000011) != 0) {
+        if((value & 0x11000000) != 0) {
             toBuffer.data32[toIndex] = value;
         }
     }
@@ -189,22 +189,22 @@ class Renderer {
         }
     }
 
-    function drawSprite(buffer, position:Point) {
-        var floorHeight = 330;
+    function drawSprite(buffer, position:Point, heightOffset:Int) {
         var cam_pos = cameraTransform.position;
         var cam_ang = cameraTransform.angle;
         var delta = position - cam_pos;
-        var distance = delta.getLength();
         var angle = delta.getAngle();
         var delta_angle = fixAngle(angle - cam_ang);
 
         if(Math.abs(delta_angle) < halfHorizontalFov) {
+            var distance = delta.getLength();
             var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
             distance = Math.cos(delta_angle) * distance;
             var hh = (screenHeight / distance) * 55;
             var ratio = hh/buffer.height;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);
+            var floorHeight = buffer.height * 0.75 - heightOffset;
 
             for(xx in 0...w) {
                 var dest_x = Std.int(x + xx - w/ 2);
@@ -219,7 +219,7 @@ class Renderer {
 
     public function drawSprites() {
         for(sprite in sprites) {
-            drawSprite(sprite.texture, sprite.position);
+            drawSprite(sprite.texture, sprite.position, sprite.heightOffset);
         }
     }
 
@@ -238,10 +238,13 @@ class Renderer {
         sprites = [];
     }
 
-    public function pushSprite(texture:Framebuffer, position:Point) {
-        var sprite = new Sprite();
-        sprite.texture = texture;
-        sprite.position = position;
-        sprites.push(sprite);
+    public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int) {
+        if(texture != null) {
+            var sprite = new Sprite();
+            sprite.texture = texture;
+            sprite.position = position;
+            sprite.heightOffset = heightOffset;
+            sprites.push(sprite);
+        }
     }
 }

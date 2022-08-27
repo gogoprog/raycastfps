@@ -1,5 +1,20 @@
 package;
 
+typedef Frame = {
+    var x:Int;
+    var y:Int;
+    var w:Int;
+    var h:Int;
+}
+
+typedef FrameEntry = {
+    var frame:Frame;
+}
+
+typedef Sheet = {
+    var frames:Array<FrameEntry>;
+}
+
 class TextureManager {
     var textures:Map<String, Framebuffer> = new Map();
     var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
@@ -35,6 +50,7 @@ class TextureManager {
             add("floor", textureBuffer);
         }
         load("doomguy");
+        loadSheet("grell");
     }
 
     function add(name:String, texture:Framebuffer) {
@@ -55,7 +71,35 @@ class TextureManager {
             var buffer = Framebuffer.create(textureContext, img.width, img.height);
 
             add(name, buffer);
+
+            trace('Loaded texture ${name}');
         }
+    }
+
+    function loadSheet(name) {
+        var img = new js.html.Image();
+        img.src = '../data/${name}.png';
+        img.onload = function() {
+            var req = new haxe.Http('../data/${name}.json');
+            req.onData = function(datatxt) {
+                var data:Sheet = haxe.Json.parse(datatxt);
+                var index = 0;
+
+                for(frameEntry in data.frames) {
+                    var frame = frameEntry.frame;
+                    textureCanvas.width = frame.w;
+                    textureCanvas.height = frame.h;
+                    textureContext.drawImage(img, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
+                    var buffer = Framebuffer.create(textureContext, frame.w, frame.h);
+
+                    add('${name}-${index}', buffer);
+
+                    index++;
+                    trace('Loaded texture ${name}-${index}');
+                }
+            }
+            req.request(false);
+        };
     }
 
     public function get(name:String) {
