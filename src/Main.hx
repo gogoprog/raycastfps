@@ -11,7 +11,7 @@ class Main {
         var previousMx:Int = 0;
         var mx:Int = 0;
         {
-            cameraTransform.position = [512, 512];
+            cameraTransform.position = [1024, 1024];
             cameraTransform.angle = 0;
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
@@ -33,13 +33,21 @@ class Main {
                 var e = new ash.core.Entity();
                 e.add(spriteDef);
                 e.add(new Transform());
-                e.get(Transform).position = [256, 256];
+                e.get(Transform).position = [512, 512];
                 engine.addEntity(e);
                 var e = new ash.core.Entity();
                 e.add(spriteDef);
                 e.add(new Transform());
-                e.get(Transform).position = [226, 356];
+                e.get(Transform).position = [512, 700];
                 engine.addEntity(e);
+
+                for(i in 0...100) {
+                var e = new ash.core.Entity();
+                e.add(spriteDef);
+                e.add(new Transform());
+                e.get(Transform).position = [Math.random() * 4000, Math.random() * 4000];
+                engine.addEntity(e);
+                }
             }
         }
         canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {

@@ -184,7 +184,7 @@ class Renderer {
         var angle = delta.getAngle();
         var delta_angle = Utils.fixAngle(angle - cam_ang);
 
-        if(Math.abs(delta_angle) < halfHorizontalFov) {
+        if(Math.abs(delta_angle) < halfHorizontalFov + 0.1) {
             var distance = delta.getLength();
             var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
             distance = Math.cos(delta_angle) * distance;
@@ -211,6 +211,19 @@ class Renderer {
     }
 
     public function drawSprites() {
+        function sort(a:Sprite, b:Sprite) {
+            if(a.distance < b.distance) { return 1; }
+            else if(a.distance > b.distance) { return -1; }
+            else { return 0; }
+        }
+
+        for(sprite in sprites) {
+            var delta = sprite.position - cameraTransform.position;
+            sprite.distance = delta.getSquareLength();
+        }
+
+        sprites.sort(sort);
+
         for(sprite in sprites) {
             drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip);
         }

@@ -27,7 +27,7 @@ class Level {
     }
 
     function addWall(a:Float, b:Float, c:Float, d:Float, texName:String = "wall") {
-        var wall = new Wall([a* 100, b * 100], [c * 100, d * 100], Main.context.textureManager.get(texName));
+        var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], Main.context.textureManager.get(texName));
         walls.push(wall);
     }
 }
