@@ -18,7 +18,19 @@ class SpriteSystem extends ash.tools.ListIteratingSystem<SpriteNode> {
     }
 
     private function updateNode(node:SpriteNode, dt:Float):Void {
-        renderer.pushSprite(textureManager.get(node.sprite.textures[0]), node.transform.position, node.sprite.heightOffset);
+        var sprite = node.sprite;
+        var position = node.transform.position;
+
+        var cam_ang = cameraTransform.angle;
+        var angle = node.transform.angle;
+        var delta_angle = Utils.fixAngle(angle - cam_ang + renderer.halfHorizontalFov);
+
+        delta_angle += Math.PI;
+
+        var frameIndex = Std.int((delta_angle / (Math.PI * 2)) * sprite.textures.length);
+        var texture = sprite.textures[frameIndex];
+
+        renderer.pushSprite(textureManager.get(texture.name), node.transform.position, node.sprite.heightOffset, texture.flip);
     }
 
     private function onNodeAdded(node:SpriteNode) {

@@ -10,7 +10,7 @@ class Renderer {
     var halfScreenWidth:Int;
     var halfVerticalFov:Float;
     var halfScreenHeightByTanFov:Float;
-    var halfHorizontalFov:Float;
+    public var halfHorizontalFov:Float;
     var depth:js.lib.Float32Array;
     var cameraTransform:Transform;
     var sprites:Array<Sprite> = [];
@@ -62,18 +62,6 @@ class Renderer {
         if(lambda<0 || !(0 <= gamma && gamma <= 1)) { return null; }
 
         return [lambda, gamma];
-    }
-
-    static function fixAngle(angle:Float) {
-        while(angle > Math.PI) {
-            angle -= 2 * Math.PI;
-        }
-
-        while(angle < -Math.PI) {
-            angle += 2 * Math.PI;
-        }
-
-        return angle;
     }
 
     public function drawFloor(texture:Framebuffer) {
@@ -189,12 +177,12 @@ class Renderer {
         }
     }
 
-    function drawSprite(buffer, position:Point, heightOffset:Int) {
+    function drawSprite(buffer, position:Point, heightOffset:Int, flip:Bool) {
         var cam_pos = cameraTransform.position;
         var cam_ang = cameraTransform.angle;
         var delta = position - cam_pos;
         var angle = delta.getAngle();
-        var delta_angle = fixAngle(angle - cam_ang);
+        var delta_angle = Utils.fixAngle(angle - cam_ang);
 
         if(Math.abs(delta_angle) < halfHorizontalFov) {
             var distance = delta.getLength();
@@ -211,6 +199,11 @@ class Renderer {
 
                 if(depth[dest_x] > distance) {
                     var tx = Std.int((xx / w) * buffer.width);
+
+                    if(flip) {
+                        tx = buffer.width - tx;
+                    }
+
                     drawSpriteColumn(buffer, tx, dest_x, h, Std.int(floorHeight * ratio));
                 }
             }
@@ -219,7 +212,7 @@ class Renderer {
 
     public function drawSprites() {
         for(sprite in sprites) {
-            drawSprite(sprite.texture, sprite.position, sprite.heightOffset);
+            drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip);
         }
     }
 
@@ -238,12 +231,13 @@ class Renderer {
         sprites = [];
     }
 
-    public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int) {
+    public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int, flip:Bool) {
         if(texture != null) {
             var sprite = new Sprite();
             sprite.texture = texture;
             sprite.position = position;
             sprite.heightOffset = heightOffset;
+            sprite.flip = flip;
             sprites.push(sprite);
         }
     }

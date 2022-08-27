@@ -20,20 +20,25 @@ class Main {
         {
             engine.addSystem(new SpriteSystem(), 10);
             {
+                var spriteDef = new SpriteDef();
+                spriteDef.textures.push({name:"grell-1"});
+                spriteDef.textures.push({name:"grell-0"});
+                spriteDef.textures.push({name:"grell-2"});
+                spriteDef.textures.push({name:"grell-3"});
+                spriteDef.textures.push({name:"grell-4"});
+                spriteDef.textures.push({name:"grell-3", flip:true});
+                spriteDef.textures.push({name:"grell-2", flip:true});
+                spriteDef.textures.push({name:"grell-0", flip:true});
+                spriteDef.heightOffset = 10;
                 var e = new ash.core.Entity();
-                e.add(new SpriteDef());
+                e.add(spriteDef);
                 e.add(new Transform());
                 e.get(Transform).position = [256, 256];
-                e.get(SpriteDef).textures.push("grell-2");
-                e.get(SpriteDef).heightOffset = 10;
                 engine.addEntity(e);
-            }
-            {
                 var e = new ash.core.Entity();
-                e.add(new SpriteDef());
+                e.add(spriteDef);
                 e.add(new Transform());
-                e.get(Transform).position = [356, 312];
-                e.get(SpriteDef).textures.push("doomguy");
+                e.get(Transform).position = [226, 356];
                 engine.addEntity(e);
             }
         }
