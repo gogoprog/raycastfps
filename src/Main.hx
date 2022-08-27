@@ -5,15 +5,27 @@ class Main {
 
     static function main() {
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
+        var engine = new ash.core.Engine();
         var cameraTransform = context.cameraTransform;
-        cameraTransform.position = [512, 512];
-        cameraTransform.angle = 0;
         var keys:Dynamic = {};
         var previousMx:Int = 0;
         var mx:Int = 0;
-        context.renderer.initialize(cameraTransform);
-        context.textureManager.initialize();
-        context.level.load();
+        {
+            cameraTransform.position = [512, 512];
+            cameraTransform.angle = 0;
+            context.renderer.initialize(cameraTransform);
+            context.textureManager.initialize();
+            context.level.load();
+        }
+        {
+            engine.addSystem(new SpriteSystem(), 10);
+            var e = new ash.core.Entity();
+            e.add(new SpriteDef());
+            e.add(new Transform());
+            e.get(Transform).position = [256, 256];
+            e.get(SpriteDef).textures.push("doomguy");
+            engine.addEntity(e);
+        }
         canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
             mx = e.clientX;
         }
@@ -68,10 +80,11 @@ class Main {
             }
             // rendering
             {
-                var texture = context.textureManager.get("doomguy");
-                context.renderer.pushSprite(texture, [256, 256]);
-                context.renderer.pushSprite(texture, [312, 356]);
                 context.renderer.clear();
+                var texture = context.textureManager.get("doomguy");
+                /* context.renderer.pushSprite(texture, [256, 256]); */
+                /* context.renderer.pushSprite(texture, [312, 356]); */
+                engine.update(1/60.0);
                 context.renderer.draw(context.level);
                 context.renderer.flush();
             }
