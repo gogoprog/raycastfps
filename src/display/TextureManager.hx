@@ -66,7 +66,7 @@ class TextureManager {
         img.src = '../data/${name}.png';
         img.onload = function() {
             var loader = new def.Loader<def.Sheet>();
-            loader.load('../data/${name}.json', function(data) {
+            loader.load('../data/sheets/${name}.json', function(data) {
                 var index = 0;
 
                 for(frameEntry in data.frames) {
