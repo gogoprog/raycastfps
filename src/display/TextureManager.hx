@@ -48,7 +48,7 @@ class TextureManager {
         add(name, tempBuffer);
 
         var img = new js.html.Image();
-        img.src = '../data/${name}.png';
+        img.src = '../data/textures/${name}.png';
         img.onload = function() {
             textureCanvas.width = img.width;
             textureCanvas.height = img.height;
@@ -63,7 +63,7 @@ class TextureManager {
 
     function loadSheet(name) {
         var img = new js.html.Image();
-        img.src = '../data/${name}.png';
+        img.src = '../data/textures/${name}.png';
         img.onload = function() {
             var loader = new def.Loader<def.Sheet>();
             loader.load('../data/sheets/${name}.json', function(data) {

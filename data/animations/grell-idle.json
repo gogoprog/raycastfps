@@ -79,15 +79,15 @@
                 "flip": false
             },
             {
-                "name": "grell-13",
-                "flip": false
-            },
-            {
                 "name": "grell-14",
                 "flip": false
             },
             {
                 "name": "grell-13",
+                "flip": false
+            },
+            {
+                "name": "grell-14",
                 "flip": true
             },
             {
