@@ -5,7 +5,7 @@ typedef Texture = {
     @:optional var flip:Bool;
 }
 
-class SpriteDef {
+class Sprite {
     public var textures: Array<Texture> = [];
     public var heightOffset = 0;
 

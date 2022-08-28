@@ -5,7 +5,7 @@ import math.Transform;
 
 class SpriteNode extends ash.core.Node<SpriteNode> {
     public var transform:Transform;
-    public var sprite:SpriteDef;
+    public var sprite:Sprite;
 }
 
 class SpriteSystem extends ash.tools.ListIteratingSystem<SpriteNode> {

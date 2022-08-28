@@ -22,19 +22,19 @@ class Main {
         {
             engine.addSystem(new core.SpriteSystem(), 10);
             {
-                var spriteDef = new core.SpriteDef();
-                spriteDef.textures.push({name:"grell-1"});
-                spriteDef.textures.push({name:"grell-0"});
-                spriteDef.textures.push({name:"grell-2"});
-                spriteDef.textures.push({name:"grell-3"});
-                spriteDef.textures.push({name:"grell-4"});
-                spriteDef.textures.push({name:"grell-3", flip:true});
-                spriteDef.textures.push({name:"grell-2", flip:true});
-                spriteDef.textures.push({name:"grell-0", flip:true});
-                spriteDef.heightOffset = 10;
+                var sprite = new core.Sprite();
+                sprite.textures.push({name:"grell-1"});
+                sprite.textures.push({name:"grell-0"});
+                sprite.textures.push({name:"grell-2"});
+                sprite.textures.push({name:"grell-3"});
+                sprite.textures.push({name:"grell-4"});
+                sprite.textures.push({name:"grell-3", flip:true});
+                sprite.textures.push({name:"grell-2", flip:true});
+                sprite.textures.push({name:"grell-0", flip:true});
+                sprite.heightOffset = 10;
                 for(i in 0...100) {
                     var e = new ash.core.Entity();
-                    e.add(spriteDef);
+                    e.add(sprite);
                     e.add(new math.Transform());
                     e.get(math.Transform).position = [Math.random() * 4000, Math.random() * 4000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
