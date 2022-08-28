@@ -69,6 +69,15 @@ I introduced ECS to have a Sprite system which will take care of animations and 
 
 ![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-rotations.gif)
 
+### It is getting alive!
+
+  * Definitions loader : basically helpers to load the json data files.
+  * SpriteAnimationSystem : updates the Sprite component to display the correct animation frame.
+  * Sky rendering
+
+The code is getting cleaner and is ready to be completely data-drive. I also updated the textures to make it look better.
+
+![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-life.gif)
 
 ## Credits
 

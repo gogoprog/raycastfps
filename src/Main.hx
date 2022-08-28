@@ -23,12 +23,12 @@ class Main {
             engine.addSystem(new core.SpriteAnimationSystem(), 9);
             engine.addSystem(new core.SpriteSystem(), 10);
             {
-                for(i in 0...100) {
+                for(i in 0...128) {
                     var e = new ash.core.Entity();
                     e.add(new core.Sprite());
                     e.get(core.Sprite).heightOffset = 10;
                     e.add(new math.Transform());
-                    e.get(math.Transform).position = [Math.random() * 4000, Math.random() * 4000];
+                    e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
                     e.add(new core.SpriteAnimation());
                     e.get(core.SpriteAnimation).name = "grell-idle";
