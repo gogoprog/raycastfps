@@ -4,6 +4,7 @@ class TextureManager {
     var textures:Map<String, Framebuffer> = new Map();
     var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
     var textureContext:js.html.CanvasRenderingContext2D;
+    var loadCount = 0;
 
     public function new() {
     }
@@ -11,30 +12,34 @@ class TextureManager {
     public function initialize() {
         textureContext = textureCanvas.getContext("2d");
         {
-            textureCanvas.width = textureCanvas.height = 64;
-            textureContext.fillRect(0, 0, 64, 64);
-            textureContext.fillStyle = '#a22';
-            textureContext.fillRect(2, 2, 62, 30);
-            textureContext.fillRect(0, 34, 30, 29);
-            textureContext.fillRect(32, 50, 32, 13);
-            var textureBuffer = Framebuffer.create(textureContext, 64, 64);
+            /*
+                textureCanvas.width = textureCanvas.height = 64;
+                textureContext.fillRect(0, 0, 64, 64);
+                textureContext.fillStyle = '#a22';
+                textureContext.fillRect(2, 2, 62, 30);
+                textureContext.fillRect(0, 34, 30, 29);
+                textureContext.fillRect(32, 50, 32, 13);
+                var textureBuffer = Framebuffer.create(textureContext, 64, 64);
 
-            add("wall", textureBuffer);
+                add("wall", textureBuffer);
 
-            textureCanvas.width = textureCanvas.height = 64;
-            textureContext.fillStyle = '#555';
-            textureContext.fillRect(0, 0, 64, 64);
-            textureContext.fillStyle = '#888';
-            textureContext.fillRect(2, 2, 62, 30);
-            textureContext.fillRect(0, 34, 30, 29);
-            textureContext.fillRect(32, 50, 32, 13);
-            textureContext.fillStyle = 'red';
-            textureContext.fillText("FLOOR", 0, 12);
-            var textureBuffer = Framebuffer.create(textureContext, 64, 64);
+                textureCanvas.width = textureCanvas.height = 64;
+                textureContext.fillStyle = '#555';
+                textureContext.fillRect(0, 0, 64, 64);
+                textureContext.fillStyle = '#888';
+                textureContext.fillRect(2, 2, 62, 30);
+                textureContext.fillRect(0, 34, 30, 29);
+                textureContext.fillRect(32, 50, 32, 13);
+                textureContext.fillStyle = 'red';
+                textureContext.fillText("FLOOR", 0, 12);
+                var textureBuffer = Framebuffer.create(textureContext, 64, 64);
 
-            add("floor", textureBuffer);
+                add("floor", textureBuffer);
+                */
         }
         load("doomguy");
+        load("floor");
+        load("wall");
         loadSheet("grell");
     }
 
@@ -43,10 +48,7 @@ class TextureManager {
     }
 
     function load(name) {
-        var tempBuffer = Framebuffer.create(textureContext, 64, 64); // temp
-
-        add(name, tempBuffer);
-
+        loadCount++;
         var img = new js.html.Image();
         img.src = '../data/textures/${name}.png';
         img.onload = function() {
@@ -58,10 +60,12 @@ class TextureManager {
             add(name, buffer);
 
             trace('Loaded texture ${name}');
+            loadCount--;
         }
     }
 
     function loadSheet(name) {
+        loadCount++;
         var img = new js.html.Image();
         img.src = '../data/textures/${name}.png';
         img.onload = function() {
@@ -81,11 +85,16 @@ class TextureManager {
                     index++;
                     trace('Loaded texture ${name}-${index}');
                 }
+
+                loadCount--;
             });
         };
     }
 
     public function get(name:String) {
         return textures[name];
+    }
+    public function isLoading() {
+        return loadCount > 0;
     }
 }

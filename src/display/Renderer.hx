@@ -162,10 +162,13 @@ class Renderer {
 
             if(best != null) {
                 var texture = best.texture;
-                depth[x] = bestDistance * 1024;
-                var h = (screenHeight/ wallH) / bestDistance;
-                var tx = Std.int(bestGamma * best.length) % texture.width;
-                drawWallColumn(texture, tx, x, Std.int(h));
+
+                if(texture != null) {
+                    depth[x] = bestDistance * 1024;
+                    var h = (screenHeight/ wallH) / bestDistance;
+                    var tx = Std.int(bestGamma * best.length * 4) % texture.width;
+                    drawWallColumn(texture, tx, x, Std.int(h));
+                }
             } else {
                 depth[x] = 1000000;
             }
@@ -250,7 +253,10 @@ class Renderer {
     }
 
     public function draw(level:world.Level) {
-        drawFloor(level.floorTexture);
+        if(level.floorTexture != null) {
+            drawFloor(level.floorTexture);
+        }
+
         drawWalls(level.walls);
         drawSprites();
     }

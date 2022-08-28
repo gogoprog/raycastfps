@@ -12,6 +12,16 @@ class Main {
         var keys:Dynamic = {};
         var previousMx:Int = 0;
         var mx:Int = 0;
+        canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
+            mx = e.clientX;
+        }
+        canvas.onmouseenter = function(e) {
+            previousMx = mx = e.clientX;
+        }
+        untyped onkeydown = onkeyup = function(e) {
+            keys[e.key] = e.type[3] == 'd';
+        }
+        canvas.oncontextmenu = e->false;
         {
             cameraTransform.position = [1024, 1024];
             cameraTransform.angle = 0;
@@ -36,16 +46,6 @@ class Main {
                 }
             }
         }
-        canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
-            mx = e.clientX;
-        }
-        canvas.onmouseenter = function(e) {
-            previousMx = mx = e.clientX;
-        }
-        untyped onkeydown = onkeyup = function(e) {
-            keys[e.key] = e.type[3] == 'd';
-        }
-        canvas.oncontextmenu = e->false;
         function loop(t:Float) {
             // controls
             {
@@ -92,6 +92,7 @@ class Main {
             }
             // rendering
             {
+                context.level.update();
                 context.renderer.clear();
                 /* var texture = context.textureManager.get("doomguy"); */
                 /* context.renderer.pushSprite(texture, [256, 256]); */

@@ -2,6 +2,7 @@ package world;
 
 class Level {
     public var walls:Array<Wall> = [];
+    public var floorTextureName:String;
     public var floorTexture:display.Framebuffer;
 
     public function new() {
@@ -23,11 +24,23 @@ class Level {
         addWall(8, 2, 8, 1);
         addWall(8, 2, 1, 2);
         addWall(1, 1, 1, 2);
-        floorTexture = Main.context.textureManager.get("floor");
+        floorTextureName = "floor";
     }
 
     function addWall(a:Float, b:Float, c:Float, d:Float, texName:String = "wall") {
-        var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], Main.context.textureManager.get(texName));
+        var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], texName);
         walls.push(wall);
+    }
+
+    public function update() {
+        if(floorTexture == null) {
+            floorTexture = Main.context.textureManager.get(floorTextureName);
+        }
+
+        for(wall in walls) {
+            if(wall.texture == null) {
+                wall.texture = Main.context.textureManager.get(wall.textureName);
+            }
+        }
     }
 }
