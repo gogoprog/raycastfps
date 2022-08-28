@@ -1,12 +1,10 @@
 package core;
 
-typedef Texture = {
-    var name:String;
-    @:optional var flip:Bool;
-}
+
+import def.Animation;
 
 class Sprite {
-    public var textures: Array<Texture> = [];
+    public var textures:def.Textures = [];
     public var heightOffset = 0;
 
     public function new() {

@@ -1,20 +1,5 @@
 package display;
 
-typedef Frame = {
-    var x:Int;
-    var y:Int;
-    var w:Int;
-    var h:Int;
-}
-
-typedef FrameEntry = {
-    var frame:Frame;
-}
-
-typedef Sheet = {
-    var frames:Array<FrameEntry>;
-}
-
 class TextureManager {
     var textures:Map<String, Framebuffer> = new Map();
     var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
@@ -80,9 +65,8 @@ class TextureManager {
         var img = new js.html.Image();
         img.src = '../data/${name}.png';
         img.onload = function() {
-            var req = new haxe.Http('../data/${name}.json');
-            req.onData = function(datatxt) {
-                var data:Sheet = haxe.Json.parse(datatxt);
+            var loader = new def.Loader<def.Sheet>();
+            loader.load('../data/${name}.json', function(data) {
                 var index = 0;
 
                 for(frameEntry in data.frames) {
@@ -97,8 +81,7 @@ class TextureManager {
                     index++;
                     trace('Loaded texture ${name}-${index}');
                 }
-            }
-            req.request(false);
+            });
         };
     }
 
