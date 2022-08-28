@@ -143,7 +143,7 @@ class Renderer {
             var dy = Math.sin(a) * 1024;
             var camTarget = [camPos[0]+dx, camPos[1]+dy];
             var best = null;
-            var bestDistance = 100000.0;
+            var bestDistance = 1000000.0;
             var bestGamma:Float = 0;
 
             for(w in walls) {
@@ -166,6 +166,8 @@ class Renderer {
                 var h = (screenHeight/ wallH) / bestDistance;
                 var tx = Std.int(bestGamma * best.length) % texture.width;
                 drawWallColumn(texture, tx, x, Std.int(h));
+            } else {
+                depth[x] = 1000000;
             }
         }
     }
