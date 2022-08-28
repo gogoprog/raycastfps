@@ -12,16 +12,6 @@ class Main {
         var keys:Dynamic = {};
         var previousMx:Int = 0;
         var mx:Int = 0;
-        canvas.onmousemove = canvas.onmousedown = canvas.onmouseup = function(e) {
-            mx = e.clientX;
-        }
-        canvas.onmouseenter = function(e) {
-            previousMx = mx = e.clientX;
-        }
-        untyped onkeydown = onkeyup = function(e) {
-            keys[e.key] = e.type[3] == 'd';
-        }
-        canvas.oncontextmenu = e->false;
         {
             cameraTransform.position = [1024, 1024];
             cameraTransform.angle = 0;
@@ -46,6 +36,17 @@ class Main {
                 }
             }
         }
+        function setupControls() {
+            canvas.onclick = e->canvas.requestPointerLock();
+            canvas.onmousemove = function(e) {
+                mx += e.movementX;
+            }
+            untyped onkeydown = onkeyup = function(e) {
+                keys[e.key] = e.type[3] == 'd';
+            }
+            canvas.oncontextmenu = e->false;
+        }
+        setupControls();
         function loop(t:Float) {
             // controls
             {
@@ -77,7 +78,8 @@ class Main {
                 camPos.y += dir.y * move.y * s;
                 camPos.x += lat.x * move.x * s;
                 camPos.y += lat.y * move.x * s;
-                cameraTransform.angle += (mx-previousMx) * 0.01;
+                cameraTransform.angle += mx * 0.01;
+                mx = 0;
                 /* cameraTransform.angle += 0.01; */
 
                 if(untyped !window.noclip) {

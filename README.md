@@ -74,6 +74,7 @@ I introduced ECS to have a Sprite system which will take care of animations and 
 
   * Monster: https://opengameart.org/content/monster-for-3d-shooter-sprite (Pawel "Nmn" Zarczynski)
   * Shotgun: https://forum.zdoom.org/viewtopic.php?f=37&t=67971 (Sgt. Shivers, Skelegant, Wartorn)
-  * Floor: https://opengameart.org/content/grey-stone-wall-256px
-  * Wall: https://opengameart.org/content/dusty-exterior-wall-01
+  * Floor: https://opengameart.org/content/grey-stone-wall-256px (Tiziana)
+  * Wall: https://opengameart.org/content/dusty-exterior-wall-01 (Sindwiller)
+  * Sky: https://www.doomworld.com/forum/topic/93966-post-your-sky-textures/ (Fuzzball)
 

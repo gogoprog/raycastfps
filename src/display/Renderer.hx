@@ -78,7 +78,28 @@ class Renderer {
         return [lambda, gamma];
     }
 
-    public function drawFloor(texture:Framebuffer) {
+    function drawSkyColumn(texture:Framebuffer, tx, x) {
+        for(y in 0...halfScreenHeight) {
+            var index:Int = (y * screenWidth + x);
+            var texY = Std.int((y/(screenHeight * 0.75)) * texture.height);
+            var texIndex = (texY * texture.width + tx);
+            copyPixel32(texture, backbuffer, texIndex, index);
+        }
+    }
+
+    function drawSky(texture:Framebuffer) {
+        var w = ((halfHorizontalFov * 2) / (2*Math.PI)) * texture.width;
+        var atx = screenWidth / w;
+        var a = cameraTransform.angle;
+
+        for(x in 0...screenWidth) {
+            var h = halfScreenHeight;
+            var tx = Std.int(x / atx + (a / (Math.PI * 2)) * texture.width) % texture.width;
+            drawSkyColumn(texture, tx, x);
+        }
+    }
+
+    function drawFloor(texture:Framebuffer) {
         var camPos = cameraTransform.position;
         var a = cameraTransform.angle;
         var dir:Point = [Math.cos(a), Math.sin(a)];
@@ -253,6 +274,10 @@ class Renderer {
     }
 
     public function draw(level:world.Level) {
+        if(level.skyTexture != null) {
+            drawSky(level.skyTexture);
+        }
+
         if(level.floorTexture != null) {
             drawFloor(level.floorTexture);
         }

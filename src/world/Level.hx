@@ -4,6 +4,8 @@ class Level {
     public var walls:Array<Wall> = [];
     public var floorTextureName:String;
     public var floorTexture:display.Framebuffer;
+    public var skyTextureName:String;
+    public var skyTexture:display.Framebuffer;
 
     public function new() {
     }
@@ -25,6 +27,7 @@ class Level {
         addWall(8, 2, 1, 2);
         addWall(1, 1, 1, 2);
         floorTextureName = "floor";
+        skyTextureName = "sky";
     }
 
     function addWall(a:Float, b:Float, c:Float, d:Float, texName:String = "wall") {
@@ -35,6 +38,10 @@ class Level {
     public function update() {
         if(floorTexture == null) {
             floorTexture = Main.context.textureManager.get(floorTextureName);
+        }
+
+        if(skyTexture == null) {
+            skyTexture = Main.context.textureManager.get(skyTextureName);
         }
 
         for(wall in walls) {
