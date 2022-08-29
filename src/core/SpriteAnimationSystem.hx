@@ -9,7 +9,7 @@ class SpriteAnimationNode extends ash.core.Node<SpriteAnimationNode> {
 }
 
 class SpriteAnimationSystem extends ash.tools.ListIteratingSystem<SpriteAnimationNode> {
-    private var loader = new def.Loader<def.Animation>();
+    private var loader = new def.Loader<def.Animation>(Main.context.dataRoot);
     private var animations:Map<String, def.Animation> = new Map();
 
     public function new() {
@@ -46,7 +46,7 @@ class SpriteAnimationSystem extends ash.tools.ListIteratingSystem<SpriteAnimatio
     }
 
     private function load(name) {
-        loader.load('../data/animations/${name}.json', function(data) {
+        loader.load(name, function(data) {
             animations[name] = data;
         });
     }

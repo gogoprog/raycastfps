@@ -15,6 +15,7 @@ class Main {
         {
             cameraTransform.position = [1024, 1024];
             cameraTransform.angle = 0;
+            context.dataRoot = "../data/";
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
             context.level.load();

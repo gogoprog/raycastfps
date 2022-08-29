@@ -70,8 +70,8 @@ class TextureManager {
         var img = new js.html.Image();
         img.src = '../data/textures/${name}.png';
         img.onload = function() {
-            var loader = new def.Loader<def.Sheet>();
-            loader.load('../data/sheets/${name}.json', function(data) {
+            var loader = new def.Loader<def.Sheet>(Main.context.dataRoot);
+            loader.load(name, function(data) {
                 var index = 0;
 
                 for(frameEntry in data.frames) {
