@@ -7,7 +7,7 @@ class Main {
 
     static function main() {
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
-        var engine = new ash.core.Engine();
+        var engine = new ecs.Engine();
         var cameraTransform = context.cameraTransform;
         var keys:Dynamic = {};
         var previousMx:Int = 0;
@@ -25,7 +25,7 @@ class Main {
             engine.addSystem(new core.SpriteSystem(), 10);
             {
                 for(i in 0...128) {
-                    var e = new ash.core.Entity();
+                    var e = new ecs.Entity();
                     e.add(new core.Sprite());
                     e.get(core.Sprite).heightOffset = 10;
                     e.add(new math.Transform());
