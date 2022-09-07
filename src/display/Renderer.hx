@@ -14,6 +14,16 @@ private class Sprite {
     }
 }
 
+@:allow(display.Renderer)
+private class Quad {
+    public var position:Point;
+    public var extent:Point;
+    public var texture:Framebuffer;
+
+    public function new() {
+    }
+}
+
 class Renderer {
     var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
     var backbuffer:Framebuffer;
@@ -28,6 +38,7 @@ class Renderer {
     var depth:js.lib.Float32Array;
     var cameraTransform:math.Transform;
     var sprites:Array<Sprite> = [];
+    var quads:Array<Quad> = [];
 
     public function new() {
     }
@@ -217,7 +228,7 @@ class Renderer {
         }
     }
 
-    function drawSprite(buffer, position:Point, heightOffset:Int, flip:Bool) {
+    function drawSprite(buffer:Framebuffer, position:Point, heightOffset:Int, flip:Bool) {
         var cam_pos = cameraTransform.position;
         var cam_ang = cameraTransform.angle;
         var delta = position - cam_pos;
@@ -250,6 +261,9 @@ class Renderer {
         }
     }
 
+    function drawQuad(texture:Framebuffer, position:Point, extent:Point) {
+    }
+
     public function drawSprites() {
         function sort(a:Sprite, b:Sprite) {
             if(a.distance < b.distance) { return 1; }
@@ -266,6 +280,12 @@ class Renderer {
 
         for(sprite in sprites) {
             drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip);
+        }
+    }
+
+    public function drawQuads() {
+        for(quad in quads) {
+            drawQuad(quad.texture, quad.position, quad.extent);
         }
     }
 
@@ -299,6 +319,16 @@ class Renderer {
             sprite.heightOffset = heightOffset;
             sprite.flip = flip;
             sprites.push(sprite);
+        }
+    }
+
+    public function pushQuad(texture:Framebuffer, position:Point, extent:Point) {
+        if(texture != null) {
+            var quad = new Quad();
+            quad.texture = texture;
+            quad.position = position;
+            quad.extent = extent;
+            quads.push(quad);
         }
     }
 }
