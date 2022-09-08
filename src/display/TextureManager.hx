@@ -42,6 +42,10 @@ class TextureManager {
         load("wall");
         load("sky");
         loadSheet("grell");
+
+        for(i in 0...14) {
+            load('shotgun/${i}');
+        }
     }
 
     function add(name:String, texture:Framebuffer) {

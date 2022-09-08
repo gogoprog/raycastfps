@@ -97,8 +97,8 @@ class Main {
             {
                 context.level.update();
                 context.renderer.clear();
-                /* var texture = context.textureManager.get("doomguy"); */
-                /* context.renderer.pushSprite(texture, [256, 256]); */
+                var texture = context.textureManager.get("shotgun/0");
+                context.renderer.pushQuad(texture, [1024 / 2 - 320, 640 - 400], [640, 400]);
                 /* context.renderer.pushSprite(texture, [312, 356]); */
                 engine.update(1/60.0);
                 context.renderer.draw(context.level);

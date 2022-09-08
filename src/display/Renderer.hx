@@ -262,6 +262,21 @@ class Renderer {
     }
 
     function drawQuad(texture:Framebuffer, position:Point, extent:Point) {
+        var w = Std.int(extent.x);
+        var h = Std.int(extent.y);
+        var ox = Std.int(position.x);
+        var oy = Std.int(position.y);
+
+        for(x in 0...w) {
+            var tx = Std.int((x / w) * texture.width);
+
+            for(y in 0...h) {
+                var ty = Std.int((y / h) * texture.height);
+                var dst_index:Int = ((oy + y) * screenWidth + (ox + x));
+                var src_index = (ty * texture.width + tx);
+                blitPixel32(texture, backbuffer, src_index, dst_index);
+            }
+        }
     }
 
     public function drawSprites() {
@@ -304,11 +319,13 @@ class Renderer {
 
         drawWalls(level.walls);
         drawSprites();
+        drawQuads();
     }
 
     public function flush() {
         canvasContext.putImageData(backbuffer.getImageData(), 0, 0);
         sprites = [];
+        quads = [];
     }
 
     public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int, flip:Bool) {
