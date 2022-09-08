@@ -44,4 +44,14 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
     public function getSquareLength() : Float{
         return this[0] * this[0] + this[1] * this[1];
     }
+
+    public function copyFrom(other:Point) {
+        this[0] = other[0];
+        this[1] = other[1];
+    }
+
+    public function set(x, y) {
+        this[0] = x;
+        this[1] = y;
+    }
 }
