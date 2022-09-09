@@ -17,6 +17,7 @@ class MoveSystem extends ecs.System {
         var move = e.get(core.Move);
         var object = e.get(core.Object);
         var test_position:Point = transform.position + move.translation;
+        object.lastTranslation.copyFrom(move.translation);
 
         if(untyped !window.noclip) {
             var collides = true;

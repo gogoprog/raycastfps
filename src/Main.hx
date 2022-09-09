@@ -25,6 +25,7 @@ class Main {
             engine.addSystem(new core.CameraSystem(), 3);
             engine.addSystem(new core.SpriteAnimationSystem(), 9);
             engine.addSystem(new core.SpriteSystem(), 10);
+            engine.addSystem(new core.HudSystem(), 11);
             {
                 for(i in 0...128) {
                     var e = new ecs.Entity();
@@ -63,8 +64,8 @@ class Main {
         function loop(t:Float) {
             context.level.update();
             context.renderer.clear();
-            var texture = context.textureManager.get("shotgun/0");
-            context.renderer.pushQuad(texture, [1024 / 2 - 320, 640 - 400], [640, 400]);
+            /* var texture = context.textureManager.get("shotgun/0"); */
+            /* context.renderer.pushQuad(texture, [1024 / 2 - 320, 640 - 400], [640, 400]); */
             /* context.renderer.pushSprite(texture, [312, 356]); */
             engine.update(1/60.0);
             context.renderer.draw(context.level);

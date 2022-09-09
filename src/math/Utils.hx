@@ -1,5 +1,11 @@
 package math;
 
+
+typedef SmoothDampResult = {
+    var value:Float;
+    var velocity:Float;
+}
+
 class Utils {
 
     public static function fixAngle(angle:Float) {
@@ -33,5 +39,24 @@ class Utils {
         t = Math.max(0, Math.min(1, t));
         var tmp:Point = [v.x + t * (w.x - v.x), v.y + t*(w.y-v.y)];
         return (p - tmp).getLength();
+    }
+
+    static public function smoothDamp(current:Float, target:Float, currentVelocity:Float, smoothTime:Float, deltaTime:Float):SmoothDampResult {
+        var omega = 2.0 / smoothTime;
+        var x = omega * deltaTime;
+        var exp = 1.0 / (1.0 + x + 0.48 * x * x + 0.235 * x * x * x);
+        var change = current - target;
+        var originalTo = target;
+        target = current - change;
+        var temp = (currentVelocity + omega * change) * deltaTime;
+        currentVelocity = (currentVelocity - omega * temp) * exp;
+        var output = target + (change + temp) * exp;
+
+        if((originalTo - current > 0.0) == (output > originalTo)) {
+            output = originalTo;
+            currentVelocity = (output - originalTo) / deltaTime;
+        }
+
+        return {value:output, velocity:currentVelocity};
     }
 }
