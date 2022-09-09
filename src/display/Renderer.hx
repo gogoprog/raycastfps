@@ -76,18 +76,6 @@ class Renderer {
         }
     }
 
-    static public function segmentToSegmentIntersection(from1:Point, to1:Point, from2:Point, to2:Point) {
-        var dX = to1.x - from1.x;
-        var dY = to1.y - from1.y;
-        var determinant = dX * (to2.y - from2.y) - (to2.x - from2.x) * dY;
-        /* if(determinant == 0) { return null; } */
-        var lambda = ((to2.y - from2.y) * (to2.x - from1.x) + (from2.x - to2.x) * (to2.y - from1.y)) / determinant;
-        var gamma = ((from1.y - to1.y) * (to2.x - from1.x) + dX * (to2.y - from1.y)) / determinant;
-
-        if(lambda<0 || !(0 <= gamma && gamma <= 1)) { return null; }
-
-        return [lambda, gamma];
-    }
 
     function drawSkyColumn(texture:Framebuffer, tx, x) {
         for(y in 0...halfScreenHeight) {
@@ -179,7 +167,7 @@ class Renderer {
             var bestGamma:Float = 0;
 
             for(w in walls) {
-                var r = segmentToSegmentIntersection(camPos, camTarget, w.a, w.b);
+                var r = math.Utils.segmentToSegmentIntersection(camPos, camTarget, w.a, w.b);
 
                 if(r != null) {
                     var f = Math.cos(a2) * r[0];

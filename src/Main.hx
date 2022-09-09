@@ -41,9 +41,11 @@ class Main {
                 var e = new ecs.Entity();
                 e.add(new math.Transform());
                 e.add(new core.Player());
+                e.add(new core.Object());
                 e.add(new core.Control());
                 e.add(new core.Camera());
                 e.get(math.Transform).position = [1024, 1024];
+                e.get(core.Object).radius = 32;
                 engine.addEntity(e);
             }
         }

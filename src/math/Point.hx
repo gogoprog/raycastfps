@@ -33,6 +33,16 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         return new Point(a.x - b.x, a.y - b.y);
     }
 
+    static public function dot(a:Point, b:Point):Float {
+        return a.x * b.x + a.y * b.y;
+    }
+
+    public function normalize() {
+        var len = getLength();
+        this[0] /= len;
+        this[1] /= len;
+    }
+
     public function getAngle() : Float{
         return Math.atan2(this[1], this[0]);
     }
