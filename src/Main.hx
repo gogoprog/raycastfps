@@ -24,13 +24,15 @@ class Main {
             engine.addSystem(new core.MoveSystem(), 2);
             engine.addSystem(new core.CameraSystem(), 3);
             engine.addSystem(new core.SpriteAnimationSystem(), 9);
-            engine.addSystem(new core.SpriteSystem(), 10);
+            engine.addSystem(new core.ObjectSystem(), 10);
             engine.addSystem(new core.HudSystem(), 11);
+            engine.addSystem(new core.QuadSystem(), 12);
             {
                 for(i in 0...128) {
                     var e = new ecs.Entity();
                     e.add(new core.Sprite());
-                    e.get(core.Sprite).heightOffset = 10;
+                    e.add(new core.Object());
+                    e.get(core.Object).heightOffset = 10;
                     e.add(new math.Transform());
                     e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
@@ -39,15 +41,29 @@ class Main {
                     engine.addEntity(e);
                 }
 
-                var e = new ecs.Entity();
-                e.add(new math.Transform());
-                e.add(new core.Player());
-                e.add(new core.Object());
-                e.add(new core.Control());
-                e.add(new core.Camera());
-                e.get(math.Transform).position = [1024, 1024];
-                e.get(core.Object).radius = 32;
-                engine.addEntity(e);
+                {
+                    var e = new ecs.Entity();
+                    e.add(new math.Transform());
+                    e.add(new core.Player());
+                    e.add(new core.Object());
+                    e.add(new core.Control());
+                    e.add(new core.Camera());
+                    e.get(math.Transform).position = [1024, 1024];
+                    e.get(core.Object).radius = 32;
+                    engine.addEntity(e);
+                }
+
+                {
+                    var e = new ecs.Entity();
+                    e.add(new math.Transform());
+                    e.add(new core.Quad());
+                    e.add(new core.Sprite());
+                    e.add(new core.SpriteAnimation());
+                    e.get(math.Transform).position = [10, 10];
+                    e.get(core.Quad).extent = [320, 320];
+                    e.get(core.SpriteAnimation).name = "grell-idle";
+                    engine.addEntity(e);
+                }
             }
         }
         function setupControls() {

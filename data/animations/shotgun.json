@@ -1,137 +1,61 @@
 {
     "frames": [
         [{
-                "name": "grell-10",
-                "flip": false
-            },
-            {
-                "name": "grell-11",
-                "flip": false
-            },
-            {
-                "name": "grell-12",
-                "flip": false
-            },
-            {
-                "name": "grell-14",
-                "flip": false
-            },
-            {
-                "name": "grell-13",
-                "flip": false
-            },
-            {
-                "name": "grell-14",
-                "flip": true
-            },
-            {
-                "name": "grell-12",
-                "flip": true
-            },
-            {
-                "name": "grell-11",
-                "flip": true
-            }
-        ],
+            "name": "shotgun0",
+            "flip": false
+        }],
         [{
-                "name": "grell-1",
-                "flip": false
-            },
-            {
-                "name": "grell-0",
-                "flip": false
-            },
-            {
-                "name": "grell-2",
-                "flip": false
-            },
-            {
-                "name": "grell-3",
-                "flip": false
-            },
-            {
-                "name": "grell-4",
-                "flip": false
-            },
-            {
-                "name": "grell-3",
-                "flip": true
-            },
-            {
-                "name": "grell-2",
-                "flip": true
-            },
-            {
-                "name": "grell-0",
-                "flip": true
-            }
-        ],
+            "name": "shotgun1",
+            "flip": false
+        }],
         [{
-                "name": "grell-5",
-                "flip": false
-            },
-            {
-                "name": "grell-6",
-                "flip": false
-            },
-            {
-                "name": "grell-7",
-                "flip": false
-            },
-            {
-                "name": "grell-8",
-                "flip": false
-            },
-            {
-                "name": "grell-9",
-                "flip": false
-            },
-            {
-                "name": "grell-8",
-                "flip": true
-            },
-            {
-                "name": "grell-7",
-                "flip": true
-            },
-            {
-                "name": "grell-6",
-                "flip": true
-            }
-        ],
+            "name": "shotgun2",
+            "flip": false
+        }],
         [{
-                "name": "grell-1",
-                "flip": false
-            },
-            {
-                "name": "grell-0",
-                "flip": false
-            },
-            {
-                "name": "grell-2",
-                "flip": false
-            },
-            {
-                "name": "grell-3",
-                "flip": false
-            },
-            {
-                "name": "grell-4",
-                "flip": false
-            },
-            {
-                "name": "grell-3",
-                "flip": true
-            },
-            {
-                "name": "grell-2",
-                "flip": true
-            },
-            {
-                "name": "grell-0",
-                "flip": true
-            }
-        ]
+            "name": "shotgun3",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun4",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun5",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun6",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun7",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun8",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun9",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun10",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun11",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun12",
+            "flip": false
+        }],
+        [{
+            "name": "shotgun13",
+            "flip": false
+        }]
     ],
     "rate": 16
 }

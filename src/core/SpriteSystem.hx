@@ -3,33 +3,14 @@ package core;
 import math.Point;
 import math.Transform;
 
-class SpriteSystem  extends ecs.System {
-    var renderer:display.Renderer;
-    var textureManager:display.TextureManager;
-    var cameraTransform:Transform;
+class SpriteSystem extends ecs.System {
 
     public function new() {
         super();
         addComponentClass(Sprite);
         addComponentClass(Transform);
-        renderer = Main.context.renderer;
-        textureManager = Main.context.textureManager;
-        cameraTransform = Main.context.cameraTransform;
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
-        var sprite = e.get(core.Sprite);
-        var transform = e.get(math.Transform);
-        var position = transform.position;
-
-        if(sprite.textures != null) {
-            var cam_ang = cameraTransform.angle;
-            var angle = transform.angle;
-            var delta_angle = math.Utils.fixAngle(angle - cam_ang + renderer.halfHorizontalFov);
-            delta_angle += Math.PI;
-            var frameIndex = Std.int((delta_angle / (Math.PI * 2)) * sprite.textures.length);
-            var texture = sprite.textures[frameIndex];
-            renderer.pushSprite(textureManager.get(texture.name), transform.position, sprite.heightOffset, texture.flip);
-        }
     }
 }
