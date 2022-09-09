@@ -47,7 +47,18 @@ class MoveSystem extends ecs.System {
             }
 
             if(!collides) {
-                transform.position.copyFrom(test_position);
+                for(w in Main.context.level.walls) {
+                    var r = math.Utils.segmentToSegmentIntersection(transform.position, test_position, w.a, w.b);
+
+                    if(r!= null && r[0] < 1)  {
+                        collides = true;
+                        break;
+                    }
+                }
+
+                if(!collides) {
+                    transform.position.copyFrom(test_position);
+                }
             }
         }
     }
