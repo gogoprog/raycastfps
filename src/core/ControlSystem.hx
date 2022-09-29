@@ -48,7 +48,11 @@ class ControlSystem extends ecs.System {
             requested_direction.x = -1;
         }
 
-        var s = 4;
+        if(requested_direction.getSquareLength() > 0) {
+            requested_direction.normalize();
+        }
+
+        var s = 400 * dt;
         translation.x += forward.x * requested_direction.y * s;
         translation.y += forward.y * requested_direction.y * s;
         translation.x += lateral.x * requested_direction.x * s;
