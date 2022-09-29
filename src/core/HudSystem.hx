@@ -4,29 +4,26 @@ import math.Point;
 
 class HudSystem extends ecs.System {
 
-    var textureManager:display.TextureManager;
-    var renderer:display.Renderer;
     var weaponPosition:Point;
     var weaponOffset:Point;
     var weaponExtent:Point;
-    var weaponTexture:display.Framebuffer;
     var time:Float = 0;
 
     var velocity = new Point();
+
+    var weaponEntity:ecs.Entity;
+    var playerEntity:ecs.Entity;
 
     public function new() {
         super();
         addComponentClass(Player);
         addComponentClass(Object);
-        textureManager = Main.context.textureManager;
-        renderer = Main.context.renderer;
         weaponPosition = [1024 / 2 - 320, 640 - 375];
         weaponExtent = [640, 400];
         weaponOffset = [0, 0];
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
-        weaponTexture = textureManager.get("shotgun/0");
         var object = e.get(core.Object);
         var factor:Float = 0;
         var translation = object.lastTranslation;
@@ -47,6 +44,14 @@ class HudSystem extends ecs.System {
             time = 0;
         }
 
-        renderer.pushQuad(weaponTexture, weaponPosition + weaponOffset, weaponExtent);
+        weaponEntity.get(math.Transform).position.copyFrom(weaponPosition+weaponOffset);
+    }
+
+    public function setWeaponEntity(e:ecs.Entity) {
+        weaponEntity = e;
+    }
+
+    public function setPlayerEntity(e:ecs.Entity) {
+        playerEntity = e;
     }
 }

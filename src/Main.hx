@@ -25,7 +25,7 @@ class Main {
             engine.addSystem(new core.CameraSystem(), 3);
             engine.addSystem(new core.SpriteAnimationSystem(), 9);
             engine.addSystem(new core.ObjectSystem(), 10);
-            engine.addSystem(new core.HudSystem(), 11);
+            var hudSystem = engine.addSystem(new core.HudSystem(), 11);
             engine.addSystem(new core.QuadSystem(), 12);
             {
                 for(i in 0...128) {
@@ -36,8 +36,8 @@ class Main {
                     e.add(new math.Transform());
                     e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
-                    e.add(new core.SpriteAnimation());
-                    e.get(core.SpriteAnimation).name = "grell-idle";
+                    e.add(new core.SpriteAnimator());
+                    e.get(core.SpriteAnimator).name = "grell-idle";
                     engine.addEntity(e);
                 }
 
@@ -51,6 +51,7 @@ class Main {
                     e.get(math.Transform).position = [1024, 1024];
                     e.get(core.Object).radius = 32;
                     engine.addEntity(e);
+                    hudSystem.setPlayerEntity(e);
                 }
 
                 {
@@ -58,11 +59,12 @@ class Main {
                     e.add(new math.Transform());
                     e.add(new core.Quad());
                     e.add(new core.Sprite());
-                    e.add(new core.SpriteAnimation());
+                    e.add(new core.SpriteAnimator());
                     e.get(math.Transform).position = [10, 10];
-                    e.get(core.Quad).extent = [320, 320];
-                    e.get(core.SpriteAnimation).name = "grell-idle";
+                    e.get(core.Quad).extent = [640, 400];
+                    e.get(core.SpriteAnimator).name = "shotgun-idle";
                     engine.addEntity(e);
+                    hudSystem.setWeaponEntity(e);
                 }
             }
         }
@@ -77,15 +79,15 @@ class Main {
             canvas.oncontextmenu = e->false;
         }
         setupControls();
+        var lastTime = 0.0;
         function loop(t:Float) {
+            var deltaTime = (t - lastTime) / 1000;
             context.level.update();
             context.renderer.clear();
-            /* var texture = context.textureManager.get("shotgun/0"); */
-            /* context.renderer.pushQuad(texture, [1024 / 2 - 320, 640 - 400], [640, 400]); */
-            /* context.renderer.pushSprite(texture, [312, 356]); */
-            engine.update(1/60.0);
+            engine.update(deltaTime);
             context.renderer.draw(context.level);
             context.renderer.flush();
+            lastTime = t;
             js.Browser.window.requestAnimationFrame(loop);
         }
         loop(0);

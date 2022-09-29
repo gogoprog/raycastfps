@@ -7,9 +7,10 @@ class Engine {
     public function new() {
     }
 
-    public function addSystem(system:System, priority:Int) {
+    public function addSystem<T:System>(system:T, priority:Int, klass:Class<T> = null):T {
         systems.push(system);
         system.engine = this;
+        return system;
     }
 
     public function update(dt:Float) {

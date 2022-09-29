@@ -1,59 +1,59 @@
 {
     "frames": [
         [{
-            "name": "shotgun0",
+            "name": "shotgun/0",
             "flip": false
         }],
         [{
-            "name": "shotgun1",
+            "name": "shotgun/1",
             "flip": false
         }],
         [{
-            "name": "shotgun2",
+            "name": "shotgun/2",
             "flip": false
         }],
         [{
-            "name": "shotgun3",
+            "name": "shotgun/3",
             "flip": false
         }],
         [{
-            "name": "shotgun4",
+            "name": "shotgun/4",
             "flip": false
         }],
         [{
-            "name": "shotgun5",
+            "name": "shotgun/5",
             "flip": false
         }],
         [{
-            "name": "shotgun6",
+            "name": "shotgun/6",
             "flip": false
         }],
         [{
-            "name": "shotgun7",
+            "name": "shotgun/7",
             "flip": false
         }],
         [{
-            "name": "shotgun8",
+            "name": "shotgun/8",
             "flip": false
         }],
         [{
-            "name": "shotgun9",
+            "name": "shotgun/9",
             "flip": false
         }],
         [{
-            "name": "shotgun10",
+            "name": "shotgun/10",
             "flip": false
         }],
         [{
-            "name": "shotgun11",
+            "name": "shotgun/11",
             "flip": false
         }],
         [{
-            "name": "shotgun12",
+            "name": "shotgun/12",
             "flip": false
         }],
         [{
-            "name": "shotgun13",
+            "name": "shotgun/13",
             "flip": false
         }]
     ],

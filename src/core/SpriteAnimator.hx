@@ -1,7 +1,7 @@
 package core;
 
 @:allow(core.SpriteAnimationSystem)
-class SpriteAnimation {
+class SpriteAnimator {
     public function new() {}
 
     public var name:String;

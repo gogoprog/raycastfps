@@ -10,12 +10,14 @@ class SpriteAnimationSystem extends ecs.System {
     public function new() {
         super();
         addComponentClass(Sprite);
-        addComponentClass(SpriteAnimation);
+        addComponentClass(SpriteAnimator);
         load("grell-idle");
+        load("shotgun-idle");
+        load("shotgun-fire");
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity):Void {
-        var animation = e.get(core.SpriteAnimation);
+        var animation = e.get(core.SpriteAnimator);
         var sprite = e.get(core.Sprite);
 
         if(animation.name != animation.currentName) {
@@ -31,7 +33,7 @@ class SpriteAnimationSystem extends ecs.System {
 
         if(animation.def != null) {
             var len = animation.def.frames.length;
-            var frameIndex = Std.int(animation.time / animation.duration) % len;
+            var frameIndex = Std.int((animation.time / animation.duration) * len) % len;
             sprite.textures = animation.def.frames[frameIndex];
         }
     }
@@ -39,6 +41,7 @@ class SpriteAnimationSystem extends ecs.System {
     private function load(name) {
         loader.load(name, function(data) {
             animations[name] = data;
+            trace('Loaded animation ${name}');
         });
     }
 }
