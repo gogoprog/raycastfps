@@ -6,6 +6,7 @@ class Main {
     static public var context = new Context();
     static public var keys:Dynamic = {};
     static public var mx:Int = 0;
+    static public var mouseButtons:Int = 0;
 
     static function main() {
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
@@ -21,6 +22,7 @@ class Main {
         }
         {
             engine.addSystem(new core.ControlSystem(), 1);
+            engine.addSystem(new core.PlayerControlSystem(), 1);
             engine.addSystem(new core.MoveSystem(), 2);
             engine.addSystem(new core.CameraSystem(), 3);
             engine.addSystem(new core.SpriteAnimationSystem(), 9);
@@ -37,7 +39,7 @@ class Main {
                     e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
                     e.add(new core.SpriteAnimator());
-                    e.get(core.SpriteAnimator).name = "grell-idle";
+                    e.get(core.SpriteAnimator).push("grell-idle");
                     engine.addEntity(e);
                 }
 
@@ -62,7 +64,7 @@ class Main {
                     e.add(new core.SpriteAnimator());
                     e.get(math.Transform).position = [10, 10];
                     e.get(core.Quad).extent = [640, 400];
-                    e.get(core.SpriteAnimator).name = "shotgun-idle";
+                    e.get(core.SpriteAnimator).push("shotgun-idle");
                     engine.addEntity(e);
                     hudSystem.setWeaponEntity(e);
                 }
@@ -70,6 +72,9 @@ class Main {
         }
         function setupControls() {
             canvas.onclick = e->canvas.requestPointerLock();
+            canvas.onmousedown = function(e) {
+                mouseButtons = 1;
+            }
             canvas.onmousemove = function(e) {
                 mx += e.movementX;
             }

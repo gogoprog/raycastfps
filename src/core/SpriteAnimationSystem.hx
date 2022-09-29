@@ -20,11 +20,13 @@ class SpriteAnimationSystem extends ecs.System {
         var animation = e.get(core.SpriteAnimator);
         var sprite = e.get(core.Sprite);
 
-        if(animation.name != animation.currentName) {
-            if(animations[animation.name] != null) {
-                animation.currentName = animation.name;
+        var name = animation.getName();
+
+        if(name != animation.currentName) {
+            if(animations[name] != null) {
+                animation.currentName = name;
                 animation.time = 0;
-                animation.def = animations[animation.name];
+                animation.def = animations[name];
                 animation.duration = animation.def.frames.length / animation.def.rate;
             }
         }
@@ -35,6 +37,12 @@ class SpriteAnimationSystem extends ecs.System {
             var len = animation.def.frames.length;
             var frameIndex = Std.int((animation.time / animation.duration) * len) % len;
             sprite.textures = animation.def.frames[frameIndex];
+
+            if(animation.time > animation.duration) {
+                if(animation.names.length > 1) {
+                    animation.names.pop();
+                }
+            }
         }
     }
 
