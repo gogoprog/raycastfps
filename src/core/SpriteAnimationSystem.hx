@@ -36,13 +36,15 @@ class SpriteAnimationSystem extends ecs.System {
         if(animation.def != null) {
             var len = animation.def.frames.length;
             var frameIndex = Std.int((animation.time / animation.duration) * len) % len;
-            sprite.textures = animation.def.frames[frameIndex];
 
-            if(animation.time > animation.duration) {
+            if(animation.time >= animation.duration) {
                 if(animation.names.length > 1) {
                     animation.names.pop();
+                    frameIndex = len - 1;
                 }
             }
+
+            sprite.textures = animation.def.frames[frameIndex];
         }
     }
 
