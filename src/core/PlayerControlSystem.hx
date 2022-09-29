@@ -12,11 +12,10 @@ class PlayerControlSystem extends ecs.System {
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
+        var control = e.get(core.Control);
         var player = e.get(Player);
-        var mouseButtons = Main.mouseButtons;
-        Main.mouseButtons = 0;
 
-        if(mouseButtons != 0) {
+        if(control.mouseButtons[0]) {
             player.requestFire = true;
         }
     }

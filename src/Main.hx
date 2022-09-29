@@ -6,7 +6,7 @@ class Main {
     static public var context = new Context();
     static public var keys:Dynamic = {};
     static public var mx:Int = 0;
-    static public var mouseButtons:Int = 0;
+    static public var mouseButtons:Array<Bool> = [];
 
     static function main() {
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
@@ -22,6 +22,7 @@ class Main {
         }
         {
             engine.addSystem(new core.ControlSystem(), 1);
+            engine.addSystem(new core.TransformControlSystem(), 1);
             engine.addSystem(new core.PlayerControlSystem(), 1);
             engine.addSystem(new core.MoveSystem(), 2);
             engine.addSystem(new core.CameraSystem(), 3);
@@ -73,7 +74,10 @@ class Main {
         function setupControls() {
             canvas.onclick = e->canvas.requestPointerLock();
             canvas.onmousedown = function(e) {
-                mouseButtons = 1;
+                mouseButtons[e.button] = true;
+            }
+            canvas.onmouseup = function(e) {
+                mouseButtons[e.button] = false;
             }
             canvas.onmousemove = function(e) {
                 mx += e.movementX;
