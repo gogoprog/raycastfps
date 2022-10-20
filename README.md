@@ -75,7 +75,7 @@ I introduced ECS to have a Sprite system which will take care of animations and 
   * SpriteAnimationSystem : updates the Sprite component to display the correct animation frame.
   * Sky rendering
 
-The code is getting cleaner and is ready to be completely data-drive. I also updated the textures to make it look better.
+The code is getting cleaner and is ready to be completely data-driven. I also updated the textures to make it look better.
 
 ![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-life.gif)
 
