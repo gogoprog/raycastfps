@@ -41,6 +41,7 @@ class SpriteAnimationSystem extends ecs.System {
                 if(animation.names.length > 1) {
                     animation.names.pop();
                     frameIndex = len - 1;
+                    animation.currentName = "";
                 }
             }
 

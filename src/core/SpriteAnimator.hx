@@ -12,6 +12,10 @@ class SpriteAnimator {
         names.push(name);
     }
 
+    public function getAnimationsCount() {
+        return names.length;
+    }
+
     private var names:Array<String> = [];
     private var time:Float = 0;
     private var currentName:String;

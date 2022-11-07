@@ -11,7 +11,12 @@ class ControlSystem extends ecs.System {
         var control = e.get(Control);
         control.keys = Main.keys;
         control.mouseMovement = Main.mx;
-        control.mouseButtons = Main.mouseButtons;
+
+        for(i in 0...6) {
+            control.previousMouseButtons[i] = control.mouseButtons[i];
+            control.mouseButtons[i] = Main.mouseButtons[i];
+        }
+
         Main.mx = 0;
     }
 }

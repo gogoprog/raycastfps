@@ -17,6 +17,8 @@ class PlayerControlSystem extends ecs.System {
 
         if(control.mouseButtons[0]) {
             player.requestFire = true;
+        } else {
+            player.requestFire = false;
         }
     }
 }

@@ -26,9 +26,9 @@ class Main {
             engine.addSystem(new core.PlayerControlSystem(), 1);
             engine.addSystem(new core.MoveSystem(), 2);
             engine.addSystem(new core.CameraSystem(), 3);
+            var hudSystem = engine.addSystem(new core.HudSystem(), 4);
             engine.addSystem(new core.SpriteAnimationSystem(), 9);
             engine.addSystem(new core.ObjectSystem(), 10);
-            var hudSystem = engine.addSystem(new core.HudSystem(), 11);
             engine.addSystem(new core.QuadSystem(), 12);
             {
                 for(i in 0...128) {

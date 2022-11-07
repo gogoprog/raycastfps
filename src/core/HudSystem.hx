@@ -48,9 +48,10 @@ class HudSystem extends ecs.System {
 
         {
             var player = playerEntity.get(Player);
+            var animator = weaponEntity.get(SpriteAnimator);
 
-            if(player.requestFire) {
-                weaponEntity.get(SpriteAnimator).push("shotgun-fire");
+            if(player.requestFire && animator.getAnimationsCount() == 1) {
+                animator.push("shotgun-fire");
                 player.requestFire = false;
             }
         }
