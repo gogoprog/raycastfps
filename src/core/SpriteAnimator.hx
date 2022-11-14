@@ -8,6 +8,10 @@ class SpriteAnimator {
         return names[names.length - 1];
     }
 
+    public function clear() {
+        names = [];
+    }
+
     public function push(name:String) {
         names.push(name);
     }

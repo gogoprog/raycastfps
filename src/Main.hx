@@ -28,10 +28,11 @@ class Main {
             engine.addSystem(new core.CameraSystem(), 3);
             engine.addSystem(new core.CharacterSystem(), 6);
             engine.addSystem(new core.BulletSystem(), 7);
-            var hudSystem = engine.addSystem(new core.HudSystem(), 8);
-            engine.addSystem(new core.SpriteAnimationSystem(), 9);
-            engine.addSystem(new core.ObjectSystem(), 10);
-            engine.addSystem(new core.QuadSystem(), 12);
+            engine.addSystem(new core.DeathSystem(), 8);
+            var hudSystem = engine.addSystem(new core.HudSystem(), 9);
+            engine.addSystem(new core.SpriteAnimationSystem(), 97);
+            engine.addSystem(new core.ObjectSystem(), 98);
+            engine.addSystem(new core.QuadSystem(), 99);
             {
                 for(i in 0...128) {
                     var e = new ecs.Entity();
@@ -39,6 +40,7 @@ class Main {
                     e.add(new core.Object());
                     e.get(core.Object).heightOffset = 10;
                     e.add(new core.Hittable());
+                    e.add(new core.Character());
                     e.add(new math.Transform());
                     e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;

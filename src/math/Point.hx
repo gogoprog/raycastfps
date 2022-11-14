@@ -64,4 +64,9 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         this[0] = x;
         this[1] = y;
     }
+
+    public function setFromAngle(angle:Float) {
+        this[0] = Math.cos(angle);
+        this[1] = Math.sin(angle);
+    }
 }

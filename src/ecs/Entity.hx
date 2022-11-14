@@ -14,4 +14,8 @@ class Entity {
     public function get<T>(componentClass:Class<T>):T {
         return components.get(Type.getClassName(componentClass));
     }
+
+    public function remove<T>(componentClass:Class<T>) {
+        components.remove(Type.getClassName(componentClass));
+    }
 }

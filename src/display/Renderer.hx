@@ -101,7 +101,8 @@ class Renderer {
     function drawFloor(texture:Framebuffer) {
         var camPos = cameraTransform.position;
         var a = cameraTransform.angle;
-        var dir:Point = [Math.cos(a), Math.sin(a)];
+        var dir:Point = [0, 0];
+        dir.setFromAngle(a);
         var oldPlaneX = 0;
         var o = 0.66;
         var plane:Point = [ - o * Math.sin(a), o * Math.cos(a)];
