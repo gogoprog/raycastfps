@@ -12,6 +12,15 @@ class SpriteAnimator {
         names.push(name);
     }
 
+    public function replace1(name:String) {
+        while(names.length > 1) {
+            names.pop();
+        }
+
+        currentName = null;
+        names.push(name);
+    }
+
     public function getAnimationsCount() {
         return names.length;
     }

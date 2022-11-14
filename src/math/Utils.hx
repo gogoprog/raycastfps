@@ -59,4 +59,18 @@ class Utils {
 
         return {value:output, velocity:currentVelocity};
     }
+
+    static public function lineCircleIntersection(a:Point, b:Point, c:Point, radius:Float):Bool {
+
+        var ac = c - a;
+        var ab = b - a;
+        var ab2 = Point.dot(ab, ab);
+        var acab = Point.dot(ac, ab);
+        var t = acab / ab2;
+        t = (t < 0) ? 0 : t;
+        t = (t > 1) ? 1 : t;
+        var h:Point = [(ab[0] * t + a.x) - c.x, (ab[1] * t + a.y) - c.y];
+        var h2 = Point.dot(h, h);
+        return h2 <= radius * radius;
+    }
 }

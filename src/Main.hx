@@ -26,7 +26,9 @@ class Main {
             engine.addSystem(new core.PlayerControlSystem(), 1);
             engine.addSystem(new core.MoveSystem(), 2);
             engine.addSystem(new core.CameraSystem(), 3);
-            var hudSystem = engine.addSystem(new core.HudSystem(), 4);
+            engine.addSystem(new core.CharacterSystem(), 6);
+            engine.addSystem(new core.BulletSystem(), 7);
+            var hudSystem = engine.addSystem(new core.HudSystem(), 8);
             engine.addSystem(new core.SpriteAnimationSystem(), 9);
             engine.addSystem(new core.ObjectSystem(), 10);
             engine.addSystem(new core.QuadSystem(), 12);
@@ -36,6 +38,7 @@ class Main {
                     e.add(new core.Sprite());
                     e.add(new core.Object());
                     e.get(core.Object).heightOffset = 10;
+                    e.add(new core.Hittable());
                     e.add(new math.Transform());
                     e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
@@ -48,6 +51,7 @@ class Main {
                     var e = new ecs.Entity();
                     e.add(new math.Transform());
                     e.add(new core.Player());
+                    e.add(new core.Character());
                     e.add(new core.Object());
                     e.add(new core.Control());
                     e.add(new core.Camera());

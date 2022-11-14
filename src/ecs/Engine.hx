@@ -39,6 +39,20 @@ class Engine {
         }
     }
 
+    public function getMatchingEntities(klass:Class<Dynamic>):Array<Entity> {
+        var name = Type.getClassName(klass);
+        var result = [];
+
+        for(entity in entities) {
+            if(entity.components.get(name) != null) {
+                result.push(entity);
+            }
+        }
+
+        return result;
+
+    }
+
     public function addEntity(entity:Entity) {
         entities.push(entity);
     }

@@ -1,7 +1,8 @@
 package core;
 
-class Player {
+class Hittable {
+    public var life:Int = 100;
+
     public function new() {
     }
-
 }

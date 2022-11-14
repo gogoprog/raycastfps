@@ -1,7 +1,6 @@
 package core;
 
-class Player {
+class Bullet {
     public function new() {
     }
-
 }
