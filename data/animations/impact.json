@@ -1,0 +1,15 @@
+{
+    "frames": [
+        [{
+                "name": "impact-0",
+                "flip": false
+            }
+        ],
+        [{
+                "name": "impact-0",
+                "flip": true
+            }
+        ]
+    ],
+    "rate": 2
+}

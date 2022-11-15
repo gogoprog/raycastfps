@@ -11,10 +11,12 @@ class SpriteAnimationSystem extends ecs.System {
         super();
         addComponentClass(Sprite);
         addComponentClass(SpriteAnimator);
+        load("grell-static");
         load("grell-idle");
         load("grell-death");
         load("shotgun-idle");
         load("shotgun-fire");
+        load("impact");
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity):Void {

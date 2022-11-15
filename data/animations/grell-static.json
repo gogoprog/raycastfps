@@ -35,5 +35,6 @@
             }
         ]
     ],
-    "rate": 1
+    "rate": 1,
+    "loop": true
 }

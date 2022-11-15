@@ -42,6 +42,7 @@ class TextureManager {
         load("wall");
         load("sky");
         loadSheet("grell");
+        loadSheet("impact");
 
         for(i in 0...14) {
             load('shotgun/${i}');
