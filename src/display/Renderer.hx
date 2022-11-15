@@ -228,7 +228,7 @@ class Renderer {
             var distance = delta.getLength();
             var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
             distance = Math.cos(delta_angle) * distance;
-            var hh = (screenHeight / distance) * 55;
+            var hh = (buffer.height / distance) * 600;
             var ratio = hh/buffer.height;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);

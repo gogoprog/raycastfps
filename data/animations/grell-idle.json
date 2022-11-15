@@ -133,5 +133,6 @@
             }
         ]
     ],
-    "rate": 6
+    "rate": 6,
+    "loop": true
 }

@@ -12,6 +12,7 @@ class SpriteAnimationSystem extends ecs.System {
         addComponentClass(Sprite);
         addComponentClass(SpriteAnimator);
         load("grell-idle");
+        load("grell-death");
         load("shotgun-idle");
         load("shotgun-fire");
     }
@@ -38,10 +39,14 @@ class SpriteAnimationSystem extends ecs.System {
             var frameIndex = Std.int((animation.time / animation.duration) * len) % len;
 
             if(animation.time >= animation.duration) {
-                if(animation.names.length > 1) {
-                    animation.names.pop();
+                if(animation.def.loop) {
+                    if(animation.names.length > 1) {
+                        animation.names.pop();
+                        frameIndex = len - 1;
+                        animation.currentName = "";
+                    }
+                } else {
                     frameIndex = len - 1;
-                    animation.currentName = "";
                 }
             }
 

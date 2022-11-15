@@ -1,0 +1,35 @@
+{
+    "frames": [
+        [{
+                "name": "grell-34",
+                "flip": false
+            }
+        ],
+        [{
+                "name": "grell-38",
+                "flip": false,
+                "offset": -7
+            }
+        ],
+        [{
+                "name": "grell-39",
+                "flip": false,
+                "offset": -7
+            }
+        ],
+        [{
+                "name": "grell-40",
+                "flip": false,
+                "offset": -16
+            }
+        ],
+        [{
+                "name": "grell-41",
+                "flip": false,
+                "offset": -32
+            }
+        ]
+    ],
+    "rate": 6,
+    "loop": false
+}

@@ -57,5 +57,6 @@
             "flip": false
         }]
     ],
-    "rate": 16
+    "rate": 16,
+    "loop": false
 }
