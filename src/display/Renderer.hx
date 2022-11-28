@@ -8,6 +8,7 @@ private class Sprite {
     public var texture:Framebuffer;
     public var heightOffset = 0;
     public var flip:Bool;
+    public var scale:Float;
     private var distance:Float;
 
     public function new() {
@@ -217,7 +218,7 @@ class Renderer {
         }
     }
 
-    function drawSprite(buffer:Framebuffer, position:Point, heightOffset:Int, flip:Bool) {
+    function drawSprite(buffer:Framebuffer, position:Point, heightOffset:Int, flip:Bool, scale:Float) {
         var cam_pos = cameraTransform.position;
         var cam_ang = cameraTransform.angle;
         var delta = position - cam_pos;
@@ -228,7 +229,7 @@ class Renderer {
             var distance = delta.getLength();
             var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
             distance = Math.cos(delta_angle) * distance;
-            var hh = (buffer.height / distance) * 600;
+            var hh = (buffer.height / distance) * 600 * scale;
             var ratio = hh/buffer.height;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);
@@ -283,7 +284,7 @@ class Renderer {
         sprites.sort(sort);
 
         for(sprite in sprites) {
-            drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip);
+            drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip, sprite.scale);
         }
     }
 
@@ -317,13 +318,14 @@ class Renderer {
         quads = [];
     }
 
-    public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int, flip:Bool) {
+    public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int, flip:Bool, scale:Float) {
         if(texture != null) {
             var sprite = new Sprite();
             sprite.texture = texture;
             sprite.position = position;
             sprite.heightOffset = heightOffset;
             sprite.flip = flip;
+            sprite.scale = scale;
             sprites.push(sprite);
         }
     }
