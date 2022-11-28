@@ -204,10 +204,12 @@ class Renderer {
         var fromi = 0;
         var toi = h+1;
 
-        if(h > screenHeight) {
+        if(h - offsetH > screenHeight) {
             fromi = Std.int((h-screenHeight) /2);
             toi = h - fromi;
         }
+
+        toi = Std.int(Math.min(screenHeight, toi));
 
         for(i in fromi...toi) {
             var y:Int = halfScreenHeight - h + i + offsetH;
