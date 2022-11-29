@@ -1,0 +1,69 @@
+{
+    "frames": [
+        [{
+            "name": "explosion-0",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-1",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-2",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-3",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-4",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-5",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-6",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-7",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-8",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-9",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-10",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-11",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-12",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-13",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-14",
+            "flip": false
+        }],
+        [{
+            "name": "explosion-15",
+            "flip": false
+        }]
+    ],
+    "rate": 32
+}

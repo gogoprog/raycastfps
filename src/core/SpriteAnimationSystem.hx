@@ -17,6 +17,8 @@ class SpriteAnimationSystem extends ecs.System {
         load("shotgun-idle");
         load("shotgun-fire");
         load("impact");
+        load("mariah-idle");
+        load("explosion");
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity):Void {

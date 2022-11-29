@@ -37,12 +37,14 @@ class TextureManager {
                 add("floor", textureBuffer);
                 */
         }
+        load("mariah");
         load("doomguy");
         load("floor");
         load("wall");
         load("sky");
         loadSheet("grell");
         loadSheet("impact");
+        loadSheet("explosion");
 
         for(i in 0...14) {
             load('shotgun/${i}');

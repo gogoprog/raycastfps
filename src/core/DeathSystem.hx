@@ -18,7 +18,7 @@ class DeathSystem extends ecs.System {
         if(hittable.life <= 0) {
             var animator = e.get(core.SpriteAnimator);
             animator.clear();
-            animator.push("grell-death");
+            animator.push("explosion");
             e.remove(Hittable);
         }
     }

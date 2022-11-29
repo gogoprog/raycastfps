@@ -33,15 +33,15 @@ class BulletSystem extends ecs.System {
             if(collides) {
                 var hittable = h.get(Hittable);
                 hittable.life -= 100;
-                var e = new ecs.Entity();
-                e.add(new core.Sprite());
-                e.add(new core.Object());
-                e.get(core.Object).heightOffset = 10;
-                e.add(new math.Transform());
-                e.get(math.Transform).copyFrom(htransform);
-                e.add(new core.SpriteAnimator());
-                e.get(core.SpriteAnimator).push("impact");
-                engine.addEntity(e);
+                /* var e = new ecs.Entity(); */
+                /* e.add(new core.Sprite()); */
+                /* e.add(new core.Object()); */
+                /* e.get(core.Object).heightOffset = 10; */
+                /* e.add(new math.Transform()); */
+                /* e.get(math.Transform).copyFrom(htransform); */
+                /* e.add(new core.SpriteAnimator()); */
+                /* e.get(core.SpriteAnimator).push("impact"); */
+                /* engine.addEntity(e); */
             }
         }
 

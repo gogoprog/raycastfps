@@ -38,14 +38,15 @@ class Main {
                     var e = new ecs.Entity();
                     e.add(new core.Sprite());
                     e.add(new core.Object());
-                    e.get(core.Object).heightOffset = 10;
+                    e.get(core.Object).heightOffset = -50;
                     e.add(new core.Hittable());
                     e.add(new core.Character());
                     e.add(new math.Transform());
                     e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
+                    e.get(math.Transform).scale = 0.15;
                     e.add(new core.SpriteAnimator());
-                    e.get(core.SpriteAnimator).push("grell-idle");
+                    e.get(core.SpriteAnimator).push("mariah-idle");
                     engine.addEntity(e);
                 }
 
