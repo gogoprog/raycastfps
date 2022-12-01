@@ -135,22 +135,20 @@ class Renderer {
         }
     }
 
-    function drawWallColumn(texture:Framebuffer, tx, x, h) {
+    function drawWallColumn(texture:Framebuffer, tx, x, h, offset:Int, texScale:Float) {
         var h2 = Std.int(h/2);
         var fromi = 0;
         var toi = h+1;
 
-        if(h > screenHeight) {
-            fromi = Std.int((h-screenHeight) /2);
-            toi = h - fromi;
-        }
-
         for(i in fromi...toi) {
-            var y:Int = halfScreenHeight - h2 + i;
-            var index:Int = (y * screenWidth + x);
-            var texY = Std.int((i/h) * texture.height);
-            var texIndex = (texY * texture.width + tx);
-            copyPixel32(texture, backbuffer, texIndex, index);
+            var y:Int = halfScreenHeight - h2 + i - offset;
+
+            if(y>0 && y<screenHeight) {
+                var index:Int = (y * screenWidth + x);
+                var texY = Std.int((i/h) * texture.height * texScale) % texture.height;
+                var texIndex = (texY * texture.width + tx);
+                copyPixel32(texture, backbuffer, texIndex, index);
+            }
         }
     }
 
@@ -187,9 +185,12 @@ class Renderer {
 
                 if(texture != null) {
                     depth[x] = bestDistance * 1024;
-                    var h = (screenHeight/ wallH) / bestDistance;
+                    var h = (screenHeight / wallH) / bestDistance;
+                    var d = h;
+                    h *= best.height;
+                    var offset = Std.int(h * 0.5 - d * 0.5);
                     var tx = Std.int(bestGamma * best.length * 4) % texture.width;
-                    drawWallColumn(texture, tx, x, Std.int(h));
+                    drawWallColumn(texture, tx, x, Std.int(h), offset, best.height);
                 }
             } else {
                 depth[x] = 1000000;
