@@ -22,15 +22,15 @@ class Level {
         addWall(-12, 3, 0, 3);
         addWall(0, 0, 0, 3);
         /* // Pillar */
-        addWall(1, 1, 8, 1);
-        addWall(8, 2, 8, 1);
-        addWall(8, 2, 1, 2);
-        addWall(1, 1, 1, 2);
+        /* addWall(1, 1, 8, 1); */
+        /* addWall(8, 2, 8, 1); */
+        /* addWall(8, 2, 1, 2); */
+        /* addWall(1, 1, 1, 2); */
         floorTextureName = "floor";
         skyTextureName = "sky";
     }
 
-    function addWall(a:Float, b:Float, c:Float, d:Float, texName:String = "wall") {
+    function addWall(a:Float, b:Float, c:Float, d:Float, texName:String = "building") {
         var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], texName);
         walls.push(wall);
     }

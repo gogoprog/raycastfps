@@ -41,6 +41,7 @@ class TextureManager {
         load("doomguy");
         load("floor");
         load("wall");
+        load("building");
         load("sky");
         loadSheet("grell");
         loadSheet("impact");
