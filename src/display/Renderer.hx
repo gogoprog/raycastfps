@@ -189,8 +189,8 @@ class Renderer {
                     var d = h;
                     h *= best.height;
                     var offset = Std.int(h * 0.5 - d * 0.5);
-                    var tx = Std.int(bestGamma * best.length * 4) % texture.width;
-                    drawWallColumn(texture, tx, x, Std.int(h), offset, best.height);
+                    var tx = Std.int(bestGamma * best.length * 4 * best.textureScale.x) % texture.width;
+                    drawWallColumn(texture, tx, x, Std.int(h), offset, best.textureScale.y);
                 }
             } else {
                 depth[x] = 1000000;
