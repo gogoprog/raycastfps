@@ -19,6 +19,7 @@ class Main {
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
             context.level.load();
+            context.audioManager.initialize();
         }
         {
             engine.addSystem(new core.ControlSystem(), 1);

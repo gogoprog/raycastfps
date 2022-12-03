@@ -6,6 +6,7 @@ class Context {
     public var cameraTransform = new math.Transform();
     public var textureManager = new display.TextureManager();
     public var level = new world.Level();
+    public var audioManager = new audio.Manager();
 
     public function new() {
     }

@@ -15,7 +15,7 @@ class Level {
         addWall(0, 0, 9, 4);
         addWall(9, 4, 6, 4);
         addWall(6, 9, 6, 4);
-        addWall(6, 9, 4, 9, "floor");
+        addWall(6, 9, 4, 9);
         addWall(4, 4, 4, 9);
         addWall(4, 4, -12, 4);
         addWall(-12, 3, -12, 4);

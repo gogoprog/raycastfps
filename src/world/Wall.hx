@@ -9,7 +9,7 @@ class Wall {
     public var texture:display.Framebuffer;
     public var length:Float;
     public var height:Float;
-    public var textureScale:Point = [1, 4];
+    public var textureScale:Point = [0.8, 4];
 
     public function new(a, b, textureName) {
         this.a = a;

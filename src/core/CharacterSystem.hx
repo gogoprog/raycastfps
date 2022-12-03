@@ -29,6 +29,7 @@ class CharacterSystem extends ecs.System {
                     b.get(Transform).copyFrom(transform);
                     engine.addEntity(b);
                 }
+                Main.context.audioManager.play("shotgun-fire");
             }
         }
 
