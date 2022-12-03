@@ -94,7 +94,7 @@ class Renderer {
 
         for(x in 0...screenWidth) {
             var h = halfScreenHeight;
-            var tx = Std.int(x / atx + (a / (Math.PI * 2)) * texture.width) % texture.width;
+            var tx = Std.int((x / atx + (a / (Math.PI * 2)) * texture.width) * 2) % texture.width;
             drawSkyColumn(texture, tx, x);
         }
     }
