@@ -31,7 +31,7 @@ class ObjectSystem extends ecs.System {
             delta_angle += Math.PI;
             var frameIndex = Std.int((delta_angle / (Math.PI * 2)) * sprite.textures.length);
             var texture = sprite.textures[frameIndex];
-            renderer.pushSprite(textureManager.get(texture.name), transform.position, object.heightOffset + (texture.offset != null ? texture.offset : 0), texture.flip, transform.scale);
+            renderer.pushSprite(textureManager.get(texture.name), transform.position, Std.int(object.heightOffset) + (texture.offset != null ? texture.offset : 0), texture.flip, transform.scale);
         }
     }
 }

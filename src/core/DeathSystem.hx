@@ -20,6 +20,8 @@ class DeathSystem extends ecs.System {
             animator.clear();
             animator.push("grell-death");
             e.remove(Hittable);
+
+            Factory.createGibs(engine, e.get(Transform).position);
         }
     }
 }
