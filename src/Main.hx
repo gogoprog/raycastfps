@@ -32,6 +32,7 @@ class Main {
             engine.addSystem(new core.DeathSystem(), 8);
             var hudSystem = engine.addSystem(new core.HudSystem(), 9);
             engine.addSystem(new core.SpriteAnimationSystem(), 97);
+            engine.addSystem(new core.PhysicSystem(), 97);
             engine.addSystem(new core.ObjectSystem(), 98);
             engine.addSystem(new core.QuadSystem(), 99);
             {
