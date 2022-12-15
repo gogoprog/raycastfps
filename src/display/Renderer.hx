@@ -228,16 +228,21 @@ class Renderer {
         var delta = position - cam_pos;
         var angle = delta.getAngle();
         var delta_angle = math.Utils.fixAngle(angle - cam_ang);
+        var bh = buffer.height;
+
+        if(heightOffset < - bh * scale) {
+            return;
+        }
 
         if(Math.abs(delta_angle) < halfHorizontalFov + 0.1) {
             var distance = delta.getLength();
             var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
             distance = Math.cos(delta_angle) * distance;
-            var hh = (buffer.height / distance) * 600 * scale;
             var ratio = scale * 600 / distance;
+            var hh = bh * ratio;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);
-            var floorHeight = Std.int(halfScreenHeight + 25000 / distance - (buffer.height + heightOffset) * ratio);
+            var floorHeight = Std.int(halfScreenHeight + 25000 / distance - (bh + heightOffset) * ratio);
 
             for(xx in 0...w) {
                 var dest_x = Std.int(x + xx - w/ 2);

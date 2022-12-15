@@ -40,15 +40,21 @@ class Main {
                     var e = new ecs.Entity();
                     e.add(new core.Sprite());
                     e.add(new core.Object());
-                    e.get(core.Object).heightOffset = -50;
+                    e.get(core.Object).heightOffset = 0;
                     e.add(new core.Hittable());
                     e.add(new core.Character());
                     e.add(new math.Transform());
                     e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
                     e.get(math.Transform).angle = Math.random() * Math.PI * 2;
-                    e.get(math.Transform).scale = 0.15;
+                    e.get(math.Transform).scale = 0.1 + 0.2 * Math.random();
                     e.add(new core.SpriteAnimator());
-                    e.get(core.SpriteAnimator).push("mariah-idle");
+
+                    if(Std.random(2) == 1) {
+                        e.get(core.SpriteAnimator).push("mariah-idle2");
+                    } else {
+                        e.get(core.SpriteAnimator).push("mariah-idle");
+                    }
+
                     engine.addEntity(e);
                 }
 

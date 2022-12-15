@@ -38,6 +38,7 @@ class TextureManager {
                 */
         }
         load("mariah");
+        load("mariah2");
         load("doomguy");
         load("floor");
         load("wall");

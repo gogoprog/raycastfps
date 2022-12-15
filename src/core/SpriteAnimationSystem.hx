@@ -18,6 +18,7 @@ class SpriteAnimationSystem extends ecs.System {
         load("shotgun-fire");
         load("impact");
         load("mariah-idle");
+        load("mariah-idle2");
         load("explosion");
     }
 
