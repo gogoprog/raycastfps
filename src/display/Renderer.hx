@@ -201,19 +201,20 @@ class Renderer {
     function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH) {
         if(x < 0 || x >= screenWidth) { return; }
 
-        var h2 = Std.int(h/2);
         var fromi = 0;
         var toi = h+1;
 
-        if(h - offsetH > screenHeight) {
-            fromi = Std.int((h-screenHeight) /2);
-            toi = h - fromi;
+        if(offsetH < 0) {
+            fromi -= offsetH;
         }
 
-        toi = Std.int(Math.min(screenHeight, toi));
-
         for(i in fromi...toi) {
-            var y:Int = halfScreenHeight - h + i + offsetH;
+            var y:Int = offsetH + i;
+
+            if(y>=screenHeight) {
+                break;
+            }
+
             var index:Int = (y * screenWidth + x);
             var texY = Std.int((i/h) * texture.height);
             var texIndex = (texY * texture.width + tx);
@@ -233,10 +234,10 @@ class Renderer {
             var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
             distance = Math.cos(delta_angle) * distance;
             var hh = (buffer.height / distance) * 600 * scale;
-            var ratio = hh/buffer.height;
+            var ratio = scale * 600 / distance;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);
-            var floorHeight = buffer.height * 0.75 - heightOffset;
+            var floorHeight = Std.int(halfScreenHeight + 25000 / distance - (buffer.height + heightOffset) * ratio);
 
             for(xx in 0...w) {
                 var dest_x = Std.int(x + xx - w/ 2);
@@ -248,7 +249,7 @@ class Renderer {
                         tx = buffer.width - tx;
                     }
 
-                    drawSpriteColumn(buffer, tx, dest_x, h, Std.int(floorHeight * ratio));
+                    drawSpriteColumn(buffer, tx, dest_x, h, floorHeight);
                 }
             }
         }
