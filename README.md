@@ -55,7 +55,7 @@ Continuing on sprite rendering :
 
 For the depth I just keep the wall distance from camera for every column, assuming the sprites will always be smaller than the walls. Then I do a simple comparison when rendering the sprite columns.
 
-![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-sprite2.gif)
+![sprite2](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-sprite2.gif)
 
 
 ### Sprite rotations and ECS
@@ -67,7 +67,7 @@ Adding useful stuff for the future:
 
 I introduced ECS to have a Sprite system which will take care of animations and rotations. This system is feeding the renderer with sprites, and now the renderer sorts the sprites.
 
-![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-rotations.gif)
+![rotations](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-rotations.gif)
 
 ### It is getting alive!
 
@@ -77,7 +77,18 @@ I introduced ECS to have a Sprite system which will take care of animations and 
 
 The code is getting cleaner and is ready to be completely data-driven. I also updated the textures to make it look better.
 
-![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-life.gif)
+![life](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-life.gif)
+
+### First interaction : Killing of course
+
+  * Display quads in screenspace for Hud.
+  * HudSystem displaying and animating the weapon depending on the speed.
+  * Bullet and collision detection.
+  * Life components and death animation.
+
+Finally we can shoot these ugly monsters!
+
+![kill](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-kill.gif)
 
 ## Credits
 
