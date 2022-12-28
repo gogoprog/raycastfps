@@ -39,7 +39,7 @@ class Main {
                     var e = new ecs.Entity();
                     e.add(new core.Sprite());
                     e.add(new core.Object());
-                    e.get(core.Object).heightOffset = 10;
+                    e.get(core.Object).heightOffset = 0;
                     e.add(new core.Hittable());
                     e.add(new core.Character());
                     e.add(new math.Transform());

@@ -41,7 +41,7 @@ class BulletSystem extends ecs.System {
                 e.get(math.Transform).copyFrom(htransform);
                 e.add(new core.SpriteAnimator());
                 e.get(core.SpriteAnimator).push("impact");
-                engine.addEntity(e);
+                /* engine.addEntity(e); */
             }
         }
 

@@ -9,13 +9,13 @@ class Wall {
     public var texture:display.Framebuffer;
     public var length:Float;
     public var height:Float;
-    public var textureScale:Point = [1, 4];
+    public var textureScale:Point = [1, 1];
 
     public function new(a, b, textureName) {
         this.a = a;
         this.b = b;
         this.textureName = textureName;
         length = (a - b).getLength();
-        height = 3;
+        height = 1;
     }
 }
