@@ -24,6 +24,8 @@ class BulletSystem extends ecs.System {
         var direction:Point = [];
         direction.setFromAngle(transform.angle);
         var end = transform.position + direction * 1000;
+        var best_distance = 10000000.0;
+        var best_entity:ecs.Entity = null;
 
         for(h in hittables) {
             var htransform = h.get(Transform);
@@ -31,20 +33,34 @@ class BulletSystem extends ecs.System {
             var collides = math.Utils.lineCircleIntersection(transform.position, end, htransform.position, hobject.radius);
 
             if(collides) {
-                var hittable = h.get(Hittable);
-                hittable.life -= 100;
-                var e = new ecs.Entity();
-                e.add(new core.Sprite());
-                e.add(new core.Object());
-                e.get(core.Object).heightOffset = 10;
-                e.add(new math.Transform());
-                e.get(math.Transform).copyFrom(htransform);
-                e.add(new core.SpriteAnimator());
-                e.get(core.SpriteAnimator).push("impact");
-                /* engine.addEntity(e); */
+                var distance = Point.getSquareDistance(htransform.position, transform.position);
+
+                if(distance < best_distance) {
+                    best_distance =distance;
+                    best_entity = h;
+                }
             }
+
+            engine.removeEntity(e);
         }
 
-        engine.removeEntity(e);
+        if(best_entity != null) {
+            hit(best_entity);
+        }
+    }
+
+
+    private function hit(target:ecs.Entity) {
+        var hittable = target.get(Hittable);
+        hittable.life -= 100;
+        var e = new ecs.Entity();
+        e.add(new core.Sprite());
+        e.add(new core.Object());
+        e.get(core.Object).heightOffset = 10;
+        e.add(new math.Transform());
+        e.get(math.Transform).copyFrom(target.get(math.Transform));
+        e.add(new core.SpriteAnimator());
+        e.get(core.SpriteAnimator).push("impact");
+        engine.addEntity(e);
     }
 }

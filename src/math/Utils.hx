@@ -60,8 +60,7 @@ class Utils {
         return {value:output, velocity:currentVelocity};
     }
 
-    static public function lineCircleIntersection(a:Point, b:Point, c:Point, radius:Float):Bool {
-
+    static public function lineCircleIntersection(a:Point, b:Point, c:Point, radius:Float):Bool{
         var ac = c - a;
         var ab = b - a;
         var ab2 = Point.dot(ab, ab);

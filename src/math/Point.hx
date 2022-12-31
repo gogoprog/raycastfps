@@ -37,6 +37,13 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         return a.x * b.x + a.y * b.y;
     }
 
+    static public inline function getSquareDistance(a:Point, b:Point):Float {
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+
+        return dx * dx + dy *dy;
+    }
+
     public function normalize() {
         var len = getLength();
         this[0] /= len;
