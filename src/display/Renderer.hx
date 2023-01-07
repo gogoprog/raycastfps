@@ -230,8 +230,8 @@ class Renderer {
         var delta_angle = math.Utils.fixAngle(angle - cam_ang);
 
         if(Math.abs(delta_angle) < halfHorizontalFov + 0.1) {
+            var x = Math.tan(delta_angle) * halfScreenHeightByTanFov + halfScreenWidth;
             var distance = delta.getLength();
-            var x = (delta_angle / halfHorizontalFov) * halfScreenWidth + halfScreenWidth;
             distance = Math.cos(delta_angle) * distance;
             var hh = (buffer.height / distance) * 600 * scale;
             var ratio = scale * 600 / distance;
