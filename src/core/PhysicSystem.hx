@@ -18,7 +18,7 @@ class PhysicSystem extends ecs.System {
         var physic = e.get(Physic);
         var object = e.get(Object);
         transform.position = transform.position + physic.velocity * dt;
-        object.heightOffset += physic.yVelocity * dt;
+        transform.y += physic.yVelocity * dt;
         physic.yVelocity -= 5000 * dt;
     }
 }
