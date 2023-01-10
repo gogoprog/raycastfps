@@ -46,6 +46,7 @@ class Factory {
         e.get(math.Transform).angle = Math.random() * Math.PI * 2;
         e.add(new core.SpriteAnimator());
         e.get(core.SpriteAnimator).push("grell-idle");
+        e.add(new core.Monster());
         return e;
     }
 

@@ -34,6 +34,7 @@ class Main {
             engine.addSystem(new core.PhysicSystem(), 97);
             engine.addSystem(new core.ObjectSystem(), 98);
             engine.addSystem(new core.QuadSystem(), 99);
+            engine.addSystem(new core.MonsterSystem(), 101);
             {
                 for(i in 0...128) {
                     var e = Factory.createMonster([Math.random() * 2000, Math.random() * 2000]);
