@@ -36,42 +36,18 @@ class Main {
             engine.addSystem(new core.QuadSystem(), 99);
             {
                 for(i in 0...128) {
-                    var e = new ecs.Entity();
-                    e.add(new core.Sprite());
-                    e.add(new core.Object());
-                    e.add(new core.Hittable());
-                    e.add(new core.Character());
-                    e.add(new math.Transform());
-                    e.get(math.Transform).position = [Math.random() * 2000, Math.random() * 2000];
-                    e.get(math.Transform).angle = Math.random() * Math.PI * 2;
-                    e.add(new core.SpriteAnimator());
-                    e.get(core.SpriteAnimator).push("grell-idle");
+                    var e = Factory.createMonster([Math.random() * 2000, Math.random() * 2000]);
                     engine.addEntity(e);
                 }
 
                 {
-                    var e = new ecs.Entity();
-                    e.add(new math.Transform());
-                    e.add(new core.Player());
-                    e.add(new core.Character());
-                    e.add(new core.Object());
-                    e.add(new core.Control());
-                    e.add(new core.Camera());
-                    e.get(math.Transform).position = [1024, 1024];
-                    e.get(core.Object).radius = 32;
+                    var e = Factory.createPlayer();
                     engine.addEntity(e);
                     hudSystem.setPlayerEntity(e);
                 }
 
                 {
-                    var e = new ecs.Entity();
-                    e.add(new math.Transform());
-                    e.add(new core.Quad());
-                    e.add(new core.Sprite());
-                    e.add(new core.SpriteAnimator());
-                    e.get(math.Transform).position = [10, 10];
-                    e.get(core.Quad).extent = [640, 400];
-                    e.get(core.SpriteAnimator).push("shotgun-idle");
+                    var e = Factory.createHudWeapon();
                     engine.addEntity(e);
                     hudSystem.setWeaponEntity(e);
                 }
