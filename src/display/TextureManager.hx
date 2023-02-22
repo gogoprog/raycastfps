@@ -41,6 +41,7 @@ class TextureManager {
         load("floor");
         load("wall");
         load("sky");
+        load("font");
         loadSheet("grell");
         loadSheet("impact");
 

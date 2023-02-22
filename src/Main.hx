@@ -81,6 +81,13 @@ class Main {
             context.renderer.flush();
             lastTime = t;
             js.Browser.window.requestAnimationFrame(loop);
+            {
+                var font = Main.context.textureManager.get("font");
+
+                if(font != null) {
+                    context.renderer.drawText(font, [10, 10], "Hello");
+                }
+            }
         }
         loop(0);
     }
