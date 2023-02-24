@@ -96,7 +96,7 @@ class Renderer {
         canvasContext = canvas.getContext("2d");
         canvas.width = screenWidth;
         canvas.height = screenHeight;
-        depth = new js.lib.Float32Array(screenWidth);
+        depth = new js.lib.Float32Array(screenWidth * screenHeight);
         backbuffer = Framebuffer.createEmpty(canvasContext, screenWidth, screenHeight);
         halfVerticalFov = Math.PI * 0.125;
         halfScreenHeightByTanFov = halfScreenHeight / Math.tan(halfVerticalFov);
@@ -123,6 +123,19 @@ class Renderer {
         }
     }
 
+    inline function getDepth(x, y):Float {
+        return depth[screenWidth * y + x];
+    }
+
+    inline function setDepth(x, y, value) {
+        depth[screenWidth * y + x] = value;
+    }
+
+    inline function setDepthColumn(x, value) {
+        for(y in 0...screenHeight) {
+            depth[screenWidth * y + x] = value;
+        }
+    }
 
     function drawSkyColumn(texture:Framebuffer, tx, x) {
         for(y in 0...halfScreenHeight) {
@@ -181,7 +194,7 @@ class Renderer {
         }
     }
 
-    function drawWallColumn(texture:Framebuffer, tx, x, h, offset:Int, texScale:Float) {
+    function drawWallColumn(texture:Framebuffer, tx, x, h, offset:Int, texScale:Float, depth:Float) {
         var h2 = Std.int(h/2);
         var fromi = 0;
         var toi = h+1;
@@ -194,6 +207,7 @@ class Renderer {
                 var texY = Std.int((i/h) * texture.height * texScale) % texture.height;
                 var texIndex = (texY * texture.width + tx);
                 copyPixel32(texture, backbuffer, texIndex, index);
+                setDepth(x, y, depth);
             }
         }
     }
@@ -219,6 +233,8 @@ class Renderer {
                 }
             }
 
+            setDepthColumn(x, 1000000);
+
             if(results.results.length > 0) {
                 var i = results.results.length - 1;
 
@@ -227,24 +243,22 @@ class Renderer {
                     var texture = wr.wall.texture;
 
                     if(texture != null) {
-                        depth[x] = wr.distance * 1024;
+                        var depth = wr.distance * 1024;
                         var h = (screenHeight / wallH) / wr.distance;
                         var d = h;
                         h *= wr.wall.height;
                         var offset = Std.int(h * 0.5 - d * 0.5);
                         var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
-                        drawWallColumn(texture, tx, x, Std.int(h), offset, wr.wall.textureScale.y);
+                        drawWallColumn(texture, tx, x, Std.int(h), offset, wr.wall.textureScale.y, depth);
                     }
 
                     --i;
                 }
-            } else {
-                depth[x] = 1000000;
             }
         }
     }
 
-    function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH) {
+    function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH, depth) {
         if(x < 0 || x >= screenWidth) { return; }
 
         var fromi = 0;
@@ -261,10 +275,12 @@ class Renderer {
                 break;
             }
 
-            var index:Int = (y * screenWidth + x);
-            var texY = Std.int((i/h) * texture.height);
-            var texIndex = (texY * texture.width + tx);
-            blitPixel32(texture, backbuffer, texIndex, index);
+            if(depth < getDepth(x, y)) {
+                var index:Int = (y * screenWidth + x);
+                var texY = Std.int((i/h) * texture.height);
+                var texIndex = (texY * texture.width + tx);
+                blitPixel32(texture, backbuffer, texIndex, index);
+            }
         }
     }
 
@@ -287,16 +303,13 @@ class Renderer {
 
             for(xx in 0...w) {
                 var dest_x = Std.int(x + xx - w/ 2);
+                var tx = Std.int((xx / w) * buffer.width);
 
-                if(depth[dest_x] > distance) {
-                    var tx = Std.int((xx / w) * buffer.width);
-
-                    if(flip) {
-                        tx = buffer.width - tx;
-                    }
-
-                    drawSpriteColumn(buffer, tx, dest_x, h, floorHeight);
+                if(flip) {
+                    tx = buffer.width - tx;
                 }
+
+                drawSpriteColumn(buffer, tx, dest_x, h, floorHeight, distance);
             }
         }
     }
