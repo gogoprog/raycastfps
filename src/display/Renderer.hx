@@ -20,14 +20,23 @@ private class WallResults {
     public function add(dist:Float, gamma:Float, wall:world.Wall) {
         if(results.length == 0) {
             results.push({distance:dist, gamma:gamma, wall:wall});
+            return;
         }
+
+        var added = false;
 
         for(i in 0 ... results.length) {
             var r = results[i];
 
             if(dist < r.distance) {
                 results.insert(i, {distance:dist, gamma:gamma, wall:wall});
+                added = true;
+                break;
             }
+        }
+
+        if(!added) {
+            results.push({distance:dist, gamma:gamma, wall:wall});
         }
 
         if(results.length > size) {
