@@ -2,6 +2,41 @@ package display;
 
 import math.Point;
 
+typedef WallResult = {
+    var distance:Float;
+    var gamma:Float;
+    var wall:world.Wall;
+}
+
+private class WallResults {
+    private var size:Int;
+    public var results:Array<WallResult>;
+
+    public function new(size) {
+        this.size = size;
+        results = [];
+    }
+
+    public function add(dist:Float, gamma:Float, wall:world.Wall) {
+        if(results.length == 0) {
+            results.push({distance:dist, gamma:gamma, wall:wall});
+        }
+
+        for(i in 0 ... results.length) {
+            var r = results[i];
+
+            if(dist < r.distance) {
+                results.insert(i, {distance:dist, gamma:gamma, wall:wall});
+            }
+        }
+
+        if(results.length > size) {
+            results.resize(size);
+        }
+    }
+
+}
+
 @:allow(display.Renderer)
 private class Sprite {
     public var position:Point;
@@ -164,35 +199,35 @@ class Renderer {
             var dx = Math.cos(a) * 1024;
             var dy = Math.sin(a) * 1024;
             var camTarget = [camPos[0]+dx, camPos[1]+dy];
-            var best = null;
-            var bestDistance = 1000000.0;
-            var bestGamma:Float = 0;
+            var results = new WallResults(3);
 
             for(w in walls) {
                 var r = math.Utils.segmentToSegmentIntersection(camPos, camTarget, w.a, w.b);
 
                 if(r != null) {
                     var f = Math.cos(a2) * r[0];
-
-                    if(f<bestDistance) {
-                        bestDistance = f;
-                        best = w;
-                        bestGamma = r[1];
-                    }
+                    results.add(f, r[1], w);
                 }
             }
 
-            if(best != null) {
-                var texture = best.texture;
+            if(results.results.length > 0) {
+                var i = results.results.length - 1;
 
-                if(texture != null) {
-                    depth[x] = bestDistance * 1024;
-                    var h = (screenHeight / wallH) / bestDistance;
-                    var d = h;
-                    h *= best.height;
-                    var offset = Std.int(h * 0.5 - d * 0.5);
-                    var tx = Std.int(bestGamma * best.length * 4 * best.textureScale.x) % texture.width;
-                    drawWallColumn(texture, tx, x, Std.int(h), offset, best.textureScale.y);
+                while(i>=0) {
+                    var wr = results.results[i];
+                    var texture = wr.wall.texture;
+
+                    if(texture != null) {
+                        depth[x] = wr.distance * 1024;
+                        var h = (screenHeight / wallH) / wr.distance;
+                        var d = h;
+                        h *= wr.wall.height;
+                        var offset = Std.int(h * 0.5 - d * 0.5);
+                        var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
+                        drawWallColumn(texture, tx, x, Std.int(h), offset, wr.wall.textureScale.y);
+                    }
+
+                    --i;
                 }
             } else {
                 depth[x] = 1000000;
