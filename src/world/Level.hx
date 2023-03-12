@@ -18,6 +18,11 @@ class Level {
         addWall(6, 9, 4, 9, "floor");
         var w = addWall(5.5, 6, 5.5, 6.5, "door");
         w.height = 0.5;
+        createDoor(w);
+        var w = addWall(5.5, 6.5, 5.5, 7.0, "door");
+        w.height = 0.5;
+        w.offset = 10;
+        createDoor(w);
         addWall(4, 4, 4, 9);
         addWall(4, 4, -12, 4);
         addWall(-12, 3, -12, 4);
@@ -36,7 +41,6 @@ class Level {
         var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], texName);
         wall.height = 1 + Std.random(3);
         walls.push(wall);
-
         return wall;
     }
 
@@ -54,5 +58,14 @@ class Level {
                 wall.texture = Main.context.textureManager.get(wall.textureName);
             }
         }
+    }
+
+    function createDoor(wall:Wall) {
+        var e = new ecs.Entity();
+        e.add(new math.Transform());
+        e.add(new core.Door());
+        e.get(math.Transform).position = wall.center;
+        e.get(core.Door).wall = wall;
+        Main.context.engine.addEntity(e);
     }
 }

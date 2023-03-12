@@ -1,6 +1,7 @@
 package core;
 
 import math.Transform;
+import math.Point;
 
 class CharacterSystem extends ecs.System {
 
@@ -26,6 +27,21 @@ class CharacterSystem extends ecs.System {
                     spawnBullet(transform, 0);
                     spawnBullet(transform, 0.01);
                     spawnBullet(transform, -0.01);
+                }
+            }
+        }
+
+        if(character.requestOpen) {
+            var doors =  engine.getMatchingEntities(core.Door);
+
+            for(e in doors) {
+                var door_pos = e.get(math.Transform).position;
+                var distance = math.Point.getSquareDistance(door_pos, transform.position);
+
+                if(distance < 60 * 60) {
+                    if(e.get(core.DoorChange) == null) {
+                        e.add(new core.DoorChange());
+                    }
                 }
             }
         }

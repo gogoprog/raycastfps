@@ -9,7 +9,9 @@ class Wall {
     public var texture:display.Framebuffer;
     public var length:Float;
     public var height:Float;
+    public var offset:Float = 0;
     public var textureScale:Point = [1, 1];
+    public var center:Point;
 
     public function new(a, b, textureName) {
         this.a = a;
@@ -17,5 +19,6 @@ class Wall {
         this.textureName = textureName;
         length = (a - b).getLength();
         height = 1;
+        center = (a + b) * 0.5;
     }
 }

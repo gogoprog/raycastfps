@@ -3,6 +3,7 @@ package core;
 @:allow(core.CharacterSystem)
 class Character {
     public var requestFire = false;
+    public var requestOpen = false;
     public var fireRate = 1.4;
     public var didFire = false;
 

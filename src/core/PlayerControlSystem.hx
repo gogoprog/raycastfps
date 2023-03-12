@@ -21,5 +21,11 @@ class PlayerControlSystem extends ecs.System {
         } else {
             character.requestFire = false;
         }
+
+        if(untyped control.keys[' ']) {
+            character.requestOpen = true;
+        } else {
+            character.requestOpen = false;
+        }
     }
 }

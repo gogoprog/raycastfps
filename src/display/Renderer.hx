@@ -240,6 +240,7 @@ class Renderer {
 
                 while(i>=0) {
                     var wr = results.results[i];
+                    var wall = wr.wall;
                     var texture = wr.wall.texture;
 
                     if(texture != null) {
@@ -247,7 +248,7 @@ class Renderer {
                         var h = (screenHeight / wallH) / wr.distance;
                         var d = h;
                         h *= wr.wall.height;
-                        var offset = Std.int(h * 0.5 - d * 0.5);
+                        var offset = Std.int(h * 0.5 - d * 0.5 + wall.offset / wr.distance);
                         var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
                         drawWallColumn(texture, tx, x, Std.int(h), offset, wr.wall.textureScale.y, depth);
                     }

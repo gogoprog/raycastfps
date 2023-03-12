@@ -10,7 +10,7 @@ class Main {
 
     static function main() {
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
-        var engine = new ecs.Engine();
+        var engine = context.engine;
         var cameraTransform = context.cameraTransform;
         {
             cameraTransform.position = [1024, 1024];
@@ -29,6 +29,8 @@ class Main {
             engine.addSystem(new core.CharacterSystem(), 6);
             engine.addSystem(new core.BulletSystem(), 7);
             engine.addSystem(new core.DeathSystem(), 8);
+            engine.addSystem(new core.DoorSystem(), 9);
+            engine.addSystem(new core.DoorChangeSystem(), 10);
             var hudSystem = engine.addSystem(new core.HudSystem(), 9);
             engine.addSystem(new core.SpriteAnimationSystem(), 97);
             engine.addSystem(new core.PhysicSystem(), 97);

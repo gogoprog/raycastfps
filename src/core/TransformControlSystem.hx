@@ -56,6 +56,6 @@ class TransformControlSystem extends ecs.System {
         translation.y += forward.y * requested_direction.y * s;
         translation.x += lateral.x * requested_direction.x * s;
         translation.y += lateral.y * requested_direction.x * s;
-        transform.angle += control.mouseMovement * 0.01;
+        transform.angle += control.mouseMovement * 0.005;
     }
 }
