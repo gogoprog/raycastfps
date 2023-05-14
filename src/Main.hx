@@ -87,7 +87,7 @@ class Main {
                 var font = Main.context.textureManager.get("font");
 
                 if(font != null) {
-                    context.renderer.drawText(font, [10, 10], "Hello");
+                    context.renderer.drawText(font, [10, 10], "Hello World!");
                 }
             }
         }

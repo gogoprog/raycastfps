@@ -90,6 +90,18 @@ Finally we can shoot these ugly monsters!
 
 ![kill](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-kill.gif)
 
+### Text rendering and ugly flat doors
+
+  * Display text in screenspace.
+  * Started working on doors.
+
+ An issue appeared : The renderer should be able to draw partial floors/ceilings to avoid flat doors.
+ This was not planned so I need to investigate.
+
+
+![doors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-doors.gif)
+
+
 ## Credits
 
   * Monster: https://opengameart.org/content/monster-for-3d-shooter-sprite (Pawel "Nmn" Zarczynski)
