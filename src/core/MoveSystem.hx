@@ -25,34 +25,50 @@ class MoveSystem extends ecs.System {
             while(collides) {
                 collides = false;
 
-                for(w in Main.context.level.walls) {
-                    var r = math.Utils.getSegmentPointDistance(w.a, w.b, test_position);
+                for(s in Main.context.level.sectors) {
+                    for(w in s.walls) {
+                        if(w.texture == null) { continue; }
 
-                    if(r < object.radius) {
-                        var delta = (w.b - w.a);
-                        var normal:Point = [-delta.y, delta.x];
-                        normal.normalize();
+                        var r = math.Utils.getSegmentPointDistance(w.a, w.b, test_position);
 
-                        if(Point.dot(move.translation, normal) > 0) {
-                            normal *= -1;
+                        if(r < object.radius) {
+                            var delta = (w.b - w.a);
+                            var normal:Point = [-delta.y, delta.x];
+                            normal.normalize();
+
+                            if(Point.dot(move.translation, normal) > 0) {
+                                normal *= -1;
+                            }
+
+                            while(math.Utils.getSegmentPointDistance(w.a, w.b, test_position) < object.radius) {
+                                test_position += normal;
+                            }
+
+                            collides = true;
+                            break;
                         }
+                    }
 
-                        while(math.Utils.getSegmentPointDistance(w.a, w.b, test_position) < object.radius) {
-                            test_position += normal;
-                        }
-
-                        collides = true;
+                    if(collides) {
                         break;
                     }
                 }
             }
 
             if(!collides) {
-                for(w in Main.context.level.walls) {
-                    var r = math.Utils.segmentToSegmentIntersection(transform.position, test_position, w.a, w.b);
+                for(s in Main.context.level.sectors) {
+                    for(w in s.walls) {
+                        if(w.texture == null) { continue; }
 
-                    if(r!= null && r[0] < 1)  {
-                        collides = true;
+                        var r = math.Utils.segmentToSegmentIntersection(transform.position, test_position, w.a, w.b);
+
+                        if(r!= null && r[0] < 1)  {
+                            collides = true;
+                            break;
+                        }
+                    }
+
+                    if(collides) {
                         break;
                     }
                 }
