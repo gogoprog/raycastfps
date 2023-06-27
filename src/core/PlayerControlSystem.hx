@@ -27,5 +27,6 @@ class PlayerControlSystem extends ecs.System {
         } else {
             character.requestOpen = false;
         }
+
     }
 }

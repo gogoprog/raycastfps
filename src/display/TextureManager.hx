@@ -39,6 +39,7 @@ class TextureManager {
         }
         load("doomguy");
         load("floor");
+        load("floor2");
         load("wall");
         load("sky");
         load("font");

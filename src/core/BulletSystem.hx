@@ -45,16 +45,20 @@ class BulletSystem extends ecs.System {
             }
         }
 
-        for(w in Main.context.level.walls) {
-            var r = math.Utils.segmentToSegmentIntersection(start, end, w.a, w.b);
+        for(s in Main.context.level.sectors) {
+            for(w in s.walls) {
+                if(w.texture != null) {
+                    var r = math.Utils.segmentToSegmentIntersection(start, end, w.a, w.b);
 
-            if(r != null) {
-                var distance = r[0] * ray_length;
-                distance *= distance;
+                    if(r != null) {
+                        var distance = r[0] * ray_length;
+                        distance *= distance;
 
-                if(distance < best_distance) {
-                    best_distance = distance;
-                    best_entity = null;
+                        if(distance < best_distance) {
+                            best_distance = distance;
+                            best_entity = null;
+                        }
+                    }
                 }
             }
         }

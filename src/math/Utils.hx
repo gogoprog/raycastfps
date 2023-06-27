@@ -24,7 +24,11 @@ class Utils {
         var dX = to1.x - from1.x;
         var dY = to1.y - from1.y;
         var determinant = dX * (to2.y - from2.y) - (to2.x - from2.x) * dY;
-        /* if(determinant == 0) { return null; } */
+
+        if(determinant <= 0) {
+            return null;
+        }
+
         var lambda = ((to2.y - from2.y) * (to2.x - from1.x) + (from2.x - to2.x) * (to2.y - from1.y)) / determinant;
         var gamma = ((from1.y - to1.y) * (to2.x - from1.x) + dX * (to2.y - from1.y)) / determinant;
 
@@ -60,7 +64,7 @@ class Utils {
         return {value:output, velocity:currentVelocity};
     }
 
-    static public function lineCircleIntersection(a:Point, b:Point, c:Point, radius:Float):Bool{
+    static public function lineCircleIntersection(a:Point, b:Point, c:Point, radius:Float):Bool {
         var ac = c - a;
         var ab = b - a;
         var ab2 = Point.dot(ab, ab);
