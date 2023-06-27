@@ -13,6 +13,7 @@ class CameraSystem extends ecs.System {
     override public function updateSingle(dt:Float, e:ecs.Entity) {
         var transform = e.get(math.Transform);
         cameraTransform.position.copyFrom(transform.position);
+        cameraTransform.y = transform.y;
         cameraTransform.angle = transform.angle;
     }
 }

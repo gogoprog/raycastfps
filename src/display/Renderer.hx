@@ -172,15 +172,17 @@ class Renderer {
         var rayDirY0 = dir.y - plane.y;
         var rayDirX1 = dir.x + plane.x;
         var rayDirY1 = dir.y + plane.y;
+        var scale = cameraTransform.y / 25;
 
         for(y in top...bottom) {
             var p = Std.int(y - halfScreenHeight);
             var posZ = 0.5 * screenHeight;
-            var rowDistance = posZ / p;
+            var rowDistance = scale * posZ / p ;
             var floorStepX = rowDistance * (rayDirX1 - rayDirX0) / screenWidth;
             var floorStepY = rowDistance * (rayDirY1 - rayDirY0) / screenWidth;
-            var floorX = camPos.x * 0.0125 + rowDistance * rayDirX0;
-            var floorY = camPos.y * 0.0125 + rowDistance * rayDirY0;
+            var c = 0.0125;
+            var floorX = camPos.x * c + rowDistance * rayDirX0;
+            var floorY = camPos.y * c + rowDistance * rayDirY0;
             var cellX = Std.int(floorX);
             var cellY = Std.int(floorY);
             {
@@ -195,11 +197,10 @@ class Renderer {
         }
     }
 
-    function getWallBottom(h) {
-        var h2 = Std.int(h/2);
+    function getWallBottom(h, offset) {
         var fromi = 0;
         var toi = h+1;
-        var y:Int = halfScreenHeight - h2 + toi;
+        var y:Int = halfScreenHeight - offset;
 
         if(y>0 && y<screenHeight) {
             return  y;
@@ -209,12 +210,11 @@ class Renderer {
     }
 
     function drawWallColumn(texture:Framebuffer, tx, x, h, h_factor:Float, offset:Int, texScale:Float, depth:Float) {
-        var h2 = Std.int(h/2);
         var fromi = 0;
         var toi = Std.int(h * h_factor) + 1;
 
         for(i in fromi...toi) {
-            var y:Int = halfScreenHeight + h2 - i - offset;
+            var y:Int = halfScreenHeight - i - offset;
 
             if(y>0 && y<screenHeight) {
                 var index:Int = (y * screenWidth + x);
@@ -259,14 +259,16 @@ class Renderer {
                     var wall = wr.wall;
                     var texture = wr.wall.texture;
                     var h = (screenHeight / wallH) / wr.distance;
+                    var offset = -cameraTransform.y / wr.distance * 0.66;
+                    offset = -cameraTransform.y / wr.distance;
 
                     if(texture != null) {
                         var depth = wr.distance * 1024;
                         var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
-                        drawWallColumn(texture, tx, x, Std.int(h), wall.height, 0, wall.textureScale.y, depth);
+                        drawWallColumn(texture, tx, x, Std.int(h), wall.height, Std.int(offset), wall.textureScale.y, depth);
                     }
 
-                    var bottom = getWallBottom(Std.int(h));
+                    var bottom = getWallBottom(Std.int(h), Std.int(offset));
 
                     if(bottom < screenHeight && wr.sector.floorTexture != null) {
                         drawFloorColumn(wr.sector.floorTexture, x, bottom, screenHeight);
@@ -284,12 +286,8 @@ class Renderer {
         var fromi = 0;
         var toi = h+1;
 
-        if(offsetH < 0) {
-            fromi -= offsetH;
-        }
-
         for(i in fromi...toi) {
-            var y:Int = offsetH + i;
+            var y:Int = offsetH - toi + i;
 
             if(y>=screenHeight) {
                 break;
@@ -319,7 +317,7 @@ class Renderer {
             var ratio = scale * 600 / distance;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);
-            var floorHeight = Std.int(halfScreenHeight + 25000 / distance - (buffer.height + heightOffset) * ratio);
+            var floorHeight = Std.int(halfScreenHeight + 1000 * cameraTransform.y / distance);
 
             for(xx in 0...w) {
                 var dest_x = Std.int(x + xx - w/ 2);
@@ -371,7 +369,7 @@ class Renderer {
         sprites.sort(sort);
 
         for(sprite in sprites) {
-            drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip, sprite.scale);
+            drawSprite(sprite.texture, sprite.position, sprite.heightOffset - Std.int(cameraTransform.y), sprite.flip, sprite.scale);
         }
     }
 
