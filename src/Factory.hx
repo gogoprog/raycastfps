@@ -59,6 +59,7 @@ class Factory {
         e.add(new core.Control());
         e.add(new core.Camera());
         e.get(math.Transform).position = [1024, 1024];
+        e.get(math.Transform).y = 32;
         e.get(core.Object).radius = 32;
         return e;
     }

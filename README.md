@@ -104,12 +104,21 @@ Finally we can shoot these ugly monsters!
 ### Introducing sectors
 
   * New concept : Sectors with attached walls and a floor texture.
-  * Walls can be transparent
+  * Walls can be transparent.
 
   With this 2 new features I can now render different floors properly. Next step : floor height support!
 
 
 ![floors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-floors.gif)
+
+### Camera height
+
+  * New concept : Camera height.
+
+  Now I can work on floors with different heights!
+
+
+![y](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-y.gif)
 
 
 ## Credits

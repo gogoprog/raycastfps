@@ -59,11 +59,11 @@ class TransformControlSystem extends ecs.System {
         transform.angle += control.mouseMovement * 0.005;
 
         if(untyped keys['o']) {
-            transform.y += 1 * dt;
+            transform.y += 100 * dt;
         }
 
         if(untyped keys['l']) {
-            transform.y -= 1 * dt;
+            transform.y -= 100 * dt;
         }
     }
 }
