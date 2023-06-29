@@ -98,7 +98,6 @@ Finally we can shoot these ugly monsters!
  An issue appeared : The renderer should be able to draw partial floors/ceilings to avoid flat doors.
  This was not planned so I need to investigate.
 
-
 ![doors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-doors.gif)
 
 ### Introducing sectors
@@ -108,7 +107,6 @@ Finally we can shoot these ugly monsters!
 
   With this 2 new features I can now render different floors properly. Next step : floor height support!
 
-
 ![floors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-floors.gif)
 
 ### Camera height
@@ -117,8 +115,16 @@ Finally we can shoot these ugly monsters!
 
   Now I can work on floors with different heights!
 
-
 ![y](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-y.gif)
+
+### Stairway to Hell
+
+  * Sectors now have a 'bottom' value and texture.
+
+  So now I have cool floors. But I need to work on depth masks because objects can be seen when on lower floors.
+
+
+![stairs](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-stairs.gif)
 
 
 ## Credits

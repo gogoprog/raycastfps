@@ -11,18 +11,34 @@ class Level {
     public function load() {
         var sector = new Sector();
         sector.floorTextureName = "floor";
-        addWall(sector, 0, 0, 9, 0, "wall");
-        addWall(sector, 9, 0, 9, 9, "wall");
-        addWall(sector, 9, 9, 0, 9, "wall");
-        addWall(sector, 0, 9, 0, 0, null);
+        addWall(sector, 0, 0, 6, 0, "wall");
+        addWall(sector, 6, 0, 6, 6, "wall");
+        addWall(sector, 6, 6, 0, 6, "wall");
+        addWall(sector, 0, 6, 0, 0, null, "wall");
         sectors.push(sector);
         var sector = new Sector();
-        sector.floorTextureName = "floor2";
-        addWall(sector, 0, 0, 0, 9, null);
-        addWall(sector, 0, 9, -5, 9, "wall");
-        addWall(sector, -5, 9, -5, 0, "wall");
-        addWall(sector, -5, 0, 0, 0, "wall");
-        sector.bottom = 16;
+        sector.floorTextureName = "floor";
+        addWall(sector, 0, 0, 0, 6, null, "wall");
+        addWall(sector, 0, 6, -1, 6, "wall");
+        addWall(sector, -1, 6, -1, 0, null, "wall");
+        addWall(sector, -1, 0, 0, 0, "wall");
+        sector.bottom = 10;
+        sectors.push(sector);
+        var sector = new Sector();
+        sector.floorTextureName = "floor";
+        addWall(sector, -1, 0, -1, 6, null, "wall");
+        addWall(sector, -1, 6, -2, 6, "wall");
+        addWall(sector, -2, 6, -2, 0, "null", "wall");
+        addWall(sector, -2, 0, -1, 0, "wall");
+        sector.bottom = 20;
+        sectors.push(sector);
+        var sector = new Sector();
+        sector.floorTextureName = "floor";
+        addWall(sector, -2, 0, -2, 6, null, "wall");
+        addWall(sector, -2, 6, -3, 6, "wall");
+        addWall(sector, -3, 6, -3, 0, "wall");
+        addWall(sector, -3, 0, -2, 0, "wall");
+        sector.bottom = 30;
         sectors.push(sector);
         /*
             addWall(0, 0, 9, 4);
@@ -49,8 +65,8 @@ class Level {
         skyTextureName = "sky";
     }
 
-    function addWall(sector:Sector, a:Float, b:Float, c:Float, d:Float, texName:String = null) {
-        var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], texName);
+    function addWall(sector:Sector, a:Float, b:Float, c:Float, d:Float, texName:String = null, bottomTexName:String = null) {
+        var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], texName, bottomTexName);
         wall.height = 1 + Std.random(3);
         sector.walls.push(wall);
         return wall;
@@ -69,6 +85,10 @@ class Level {
             for(wall in sector.walls) {
                 if(wall.texture == null && wall.textureName != null) {
                     wall.texture = Main.context.textureManager.get(wall.textureName);
+                }
+
+                if(wall.bottomTexture == null && wall.bottomTextureName != null) {
+                    wall.bottomTexture = Main.context.textureManager.get(wall.bottomTextureName);
                 }
             }
         }

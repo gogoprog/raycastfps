@@ -272,11 +272,14 @@ class Renderer {
                         var delta = previous_sector.bottom - wr.sector.bottom;
 
                         if(delta > 0) {
-                            var h = (screenHeight / delta) / wr.distance;
+                            var h = (screenHeight / wallH) / wr.distance;
                             var depth = wr.distance * 1024;
-                            var texture = wr.sector.floorTexture;
-                            var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
-                            drawWallColumn(texture, tx, x, Std.int(h), 0.4, Std.int(offset), wall.textureScale.y, depth);
+                            var texture = wall.bottomTexture;
+
+                            if(texture != null) {
+                                var tx = Std.int(wr.gamma * wr.wall.length * wr.wall.textureScale.x) % texture.width;
+                                drawWallColumn(texture, tx, x, Std.int(h), 0.275 * delta/wallH, Std.int(offset), wall.textureScale.y * (delta/wallH), depth);
+                            }
                         }
                     }
 
@@ -330,7 +333,7 @@ class Renderer {
             var ratio = scale * 600 / distance;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);
-            var floorHeight = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - heightOffset + buffer.height) / distance);
+            var floorHeight = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - heightOffset + 32) / distance);
 
             for(xx in 0...w) {
                 var dest_x = Std.int(x + xx - w/ 2);
