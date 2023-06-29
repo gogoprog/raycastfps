@@ -22,6 +22,7 @@ class Level {
         addWall(sector, 0, 9, -5, 9, "wall");
         addWall(sector, -5, 9, -5, 0, "wall");
         addWall(sector, -5, 0, 0, 0, "wall");
+        sector.bottom = 16;
         sectors.push(sector);
         /*
             addWall(0, 0, 9, 4);

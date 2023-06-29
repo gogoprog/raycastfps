@@ -78,5 +78,11 @@ class MoveSystem extends ecs.System {
                 }
             }
         }
+
+        for(sector in Main.context.level.sectors) {
+            if(sector.contains(transform.position)) {
+                transform.y = sector.bottom + 32;
+            }
+        }
     }
 }

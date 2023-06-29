@@ -161,7 +161,7 @@ class Renderer {
         }
     }
 
-    function drawFloorColumn(texture:Framebuffer, x:Int, top:Int, bottom:Int) {
+    function drawFloorColumn(texture:Framebuffer, x:Int, top:Int, bottom:Int, offset:Float) {
         var camPos = cameraTransform.position;
         var a = cameraTransform.angle;
         var dir:Point = [0, 0];
@@ -172,7 +172,7 @@ class Renderer {
         var rayDirY0 = dir.y - plane.y;
         var rayDirX1 = dir.x + plane.x;
         var rayDirY1 = dir.y + plane.y;
-        var scale = cameraTransform.y / 25;
+        var scale = (cameraTransform.y + offset) / 25;
 
         for(y in top...bottom) {
             var p = Std.int(y - halfScreenHeight);
@@ -236,7 +236,7 @@ class Renderer {
             var dx = Math.cos(a) * 1024;
             var dy = Math.sin(a) * 1024;
             var camTarget = [camPos[0]+dx, camPos[1]+dy];
-            var results = new WallResults(3);
+            var results = new WallResults(5);
 
             for(s in sectors) {
                 for(w in s.walls) {
@@ -253,14 +253,14 @@ class Renderer {
 
             if(results.results.length > 0) {
                 var i = results.results.length - 1;
+                var previous_sector:world.Sector = null;
 
                 while(i>=0) {
                     var wr = results.results[i];
                     var wall = wr.wall;
                     var texture = wr.wall.texture;
                     var h = (screenHeight / wallH) / wr.distance;
-                    var offset = -cameraTransform.y / wr.distance * 0.66;
-                    offset = -cameraTransform.y / wr.distance;
+                    var offset = (-cameraTransform.y + wr.sector.bottom) / wr.distance;
 
                     if(texture != null) {
                         var depth = wr.distance * 1024;
@@ -268,13 +268,26 @@ class Renderer {
                         drawWallColumn(texture, tx, x, Std.int(h), wall.height, Std.int(offset), wall.textureScale.y, depth);
                     }
 
+                    if(previous_sector != null) {
+                        var delta = previous_sector.bottom - wr.sector.bottom;
+
+                        if(delta > 0) {
+                            var h = (screenHeight / delta) / wr.distance;
+                            var depth = wr.distance * 1024;
+                            var texture = wr.sector.floorTexture;
+                            var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
+                            drawWallColumn(texture, tx, x, Std.int(h), 0.4, Std.int(offset), wall.textureScale.y, depth);
+                        }
+                    }
+
                     var bottom = getWallBottom(Std.int(h), Std.int(offset));
 
                     if(bottom < screenHeight && wr.sector.floorTexture != null) {
-                        drawFloorColumn(wr.sector.floorTexture, x, bottom, screenHeight);
+                        drawFloorColumn(wr.sector.floorTexture, x, bottom, screenHeight, -wr.sector.bottom);
                     }
 
                     --i;
+                    previous_sector = wr.sector;
                 }
             }
         }
@@ -317,7 +330,7 @@ class Renderer {
             var ratio = scale * 600 / distance;
             var w = Std.int(buffer.width * ratio);
             var h = Std.int(hh);
-            var floorHeight = Std.int(halfScreenHeight + 1000 * cameraTransform.y / distance);
+            var floorHeight = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - heightOffset + buffer.height) / distance);
 
             for(xx in 0...w) {
                 var dest_x = Std.int(x + xx - w/ 2);
@@ -369,7 +382,7 @@ class Renderer {
         sprites.sort(sort);
 
         for(sprite in sprites) {
-            drawSprite(sprite.texture, sprite.position, sprite.heightOffset - Std.int(cameraTransform.y), sprite.flip, sprite.scale);
+            drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip, sprite.scale);
         }
     }
 

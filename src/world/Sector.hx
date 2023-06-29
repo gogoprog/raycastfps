@@ -9,4 +9,15 @@ class Sector {
 
     public function new() {
     }
+
+
+    public function contains(p:math.Point) {
+        for(wall in walls) {
+            if(!math.Utils.isPointOnRight(wall.a, wall.b, p)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

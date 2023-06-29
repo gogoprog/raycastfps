@@ -20,6 +20,17 @@ class Utils {
         return angle;
     }
 
+    public static function isPointOnRight(rayStart:Point, rayEnd:Point, point: Point): Bool {
+        var dx1 = point.x - rayStart.x;
+        var dy1 = point.y - rayStart.y;
+        var dx2 = rayEnd.x - rayStart.x;
+        var dy2 = rayEnd.y - rayStart.y;
+
+        var crossProduct = dx1 * dy2 - dy1 * dx2;
+
+        return crossProduct < 0;
+    }
+
     static public function segmentToSegmentIntersection(from1:Point, to1:Point, from2:Point, to2:Point) {
         var dX = to1.x - from1.x;
         var dY = to1.y - from1.y;
