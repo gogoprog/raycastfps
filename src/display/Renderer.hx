@@ -140,6 +140,12 @@ class Renderer {
         }
     }
 
+    inline function setDepthColumn2(x, value, a, b) {
+        for(y in a...b) {
+            depth[screenWidth * y + x] = value;
+        }
+    }
+
     function drawSkyColumn(texture:Framebuffer, tx, x) {
         for(y in 0...halfScreenHeight) {
             var index:Int = (y * screenWidth + x);
@@ -198,7 +204,6 @@ class Renderer {
     }
 
     function getWallBottom(h, offset) {
-        var fromi = 0;
         var toi = h+1;
         var y:Int = halfScreenHeight - offset;
 
@@ -210,10 +215,10 @@ class Renderer {
     }
 
     function drawWallColumn(texture:Framebuffer, tx, x, h, h_factor:Float, offset:Int, texScale:Float, depth:Float) {
-        var fromi = 0;
         var toi = Std.int(h * h_factor) + 1;
+        setDepthColumn2(x, depth, halfScreenHeight - toi - offset, halfScreenHeight - offset);
 
-        for(i in fromi...toi) {
+        for(i in 0...toi) {
             var y:Int = halfScreenHeight - i - offset;
 
             if(y>0 && y<screenHeight) {
@@ -221,7 +226,6 @@ class Renderer {
                 var texY = texture.height - (Std.int((i/toi) * texture.height * texScale) % texture.height) - 1;
                 var texIndex = (texY * texture.width + tx);
                 copyPixel32(texture, backbuffer, texIndex, index);
-                setDepth(x, y, depth);
             }
         }
     }
@@ -261,11 +265,13 @@ class Renderer {
                     var texture = wr.wall.texture;
                     var h = (screenHeight / wallH) / wr.distance;
                     var offset = (-cameraTransform.y + wr.sector.bottom) / wr.distance;
+                    var bottom = getWallBottom(Std.int(h), Std.int(offset));
+                    var depth = wr.distance * 1024;
 
                     if(texture != null) {
-                        var depth = wr.distance * 1024;
                         var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
                         drawWallColumn(texture, tx, x, Std.int(h), wall.height, Std.int(offset), wall.textureScale.y, depth);
+                        setDepthColumn2(x, depth, bottom, screenHeight);
                     }
 
                     if(previous_sector != null) {
@@ -273,17 +279,16 @@ class Renderer {
 
                         if(delta > 0) {
                             var h = (screenHeight / wallH) / wr.distance;
-                            var depth = wr.distance * 1024;
                             var texture = wall.bottomTexture;
 
                             if(texture != null) {
                                 var tx = Std.int(wr.gamma * wr.wall.length * wr.wall.textureScale.x) % texture.width;
                                 drawWallColumn(texture, tx, x, Std.int(h), 0.275 * delta/wallH, Std.int(offset), wall.textureScale.y * (delta/wallH), depth);
                             }
+                        } else {
+                            setDepthColumn2(x, depth, bottom, screenHeight);
                         }
                     }
-
-                    var bottom = getWallBottom(Std.int(h), Std.int(offset));
 
                     if(bottom < screenHeight && wr.sector.floorTexture != null) {
                         drawFloorColumn(wr.sector.floorTexture, x, bottom, screenHeight, -wr.sector.bottom);
@@ -299,10 +304,9 @@ class Renderer {
     function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH, depth) {
         if(x < 0 || x >= screenWidth) { return; }
 
-        var fromi = 0;
         var toi = h+1;
 
-        for(i in fromi...toi) {
+        for(i in 0...toi) {
             var y:Int = offsetH - toi + i;
 
             if(y>=screenHeight) {
