@@ -12,5 +12,7 @@ class Transform {
     public function copyFrom(other:Transform) {
         position.copyFrom(other.position);
         angle = other.angle;
+        y = other.y;
+        scale = other.scale;
     }
 }

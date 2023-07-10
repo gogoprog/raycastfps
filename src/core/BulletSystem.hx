@@ -65,7 +65,9 @@ class BulletSystem extends ecs.System {
 
         if(best_distance != 10000000) {
             var position = start + direction * Math.sqrt(best_distance - 100);
-            Factory.createImpact(engine, position);
+            var e = Factory.createImpact(engine, position);
+            e.get(math.Transform).y = transform.y + 32;
+            engine.addEntity(e);
 
             if(best_entity != null) {
                 hit(best_entity);

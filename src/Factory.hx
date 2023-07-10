@@ -29,10 +29,9 @@ class Factory {
         e.add(new math.Transform());
         e.get(math.Transform).position.copyFrom(position);
         e.get(math.Transform).scale = 0.2;
-        e.get(math.Transform).y = 166;
         e.add(new core.SpriteAnimator());
         e.get(core.SpriteAnimator).push("impact");
-        engine.addEntity(e);
+        return e;
     }
 
     static public function createMonster(position:math.Point) {
