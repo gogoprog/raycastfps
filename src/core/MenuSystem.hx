@@ -11,13 +11,9 @@ typedef Menu = {
 }
 
 class MenuSystem extends ecs.System {
-    var enabled = false;
     var font:display.Framebuffer = null;
-    var previousStates = {};
     var currentMenu:Menu;
     var currentMenuIndex:Int;
-
-    static var keyList = ["Escape", "ArrowUp", "ArrowDown", "Enter"];
 
     public function new() {
         super();
@@ -59,27 +55,7 @@ class MenuSystem extends ecs.System {
             return;
         }
 
-        var keys = Main.keys;
-        var currentStates = {};
-        var justPressed = {};
-
-        for(key in keyList) {
-            var state = untyped keys[key];
-
-            if(state && untyped !previousStates[key]) {
-                untyped justPressed[key] = true;
-            } else {
-                untyped justPressed[key] = false;
-            }
-
-            untyped previousStates[key] = state;
-        }
-
-        if(untyped justPressed['Escape']) {
-            enabled = !enabled;
-        }
-
-        if(untyped justPressed['ArrowUp']) {
+        if(Main.isJustPressed('ArrowUp')) {
             currentMenuIndex--;
 
             if(currentMenuIndex < 0) {
@@ -87,7 +63,7 @@ class MenuSystem extends ecs.System {
             }
         }
 
-        if(untyped justPressed['ArrowDown']) {
+        if(Main.isJustPressed('ArrowDown')) {
             currentMenuIndex++;
 
             if(currentMenuIndex >= currentMenu.entries.length) {
@@ -95,25 +71,23 @@ class MenuSystem extends ecs.System {
             }
         }
 
-        if(enabled) {
-            var renderer = Main.context.renderer;
-            var center_x = Std.int(display.Renderer.screenWidth * 0.5);
-            var offset_y = 150;
-            var index = 0;
-            renderer.pushText(font, [center_x, offset_y], currentMenu.title, true);
-            offset_y += 100;
+        var renderer = Main.context.renderer;
+        var center_x = Std.int(display.Renderer.screenWidth * 0.5);
+        var offset_y = 150;
+        var index = 0;
+        renderer.pushText(font, [center_x, offset_y], currentMenu.title, true);
+        offset_y += 100;
 
-            for(entry in currentMenu.entries) {
-                var text = entry.content;
+        for(entry in currentMenu.entries) {
+            var text = entry.content;
 
-                if(currentMenuIndex == index) {
-                    text = "> " + entry.content + " <";
-                }
-
-                renderer.pushText(font, [center_x, offset_y], text, true);
-                offset_y += 50;
-                index++;
+            if(currentMenuIndex == index) {
+                text = "> " + entry.content + " <";
             }
+
+            renderer.pushText(font, [center_x, offset_y], text, true);
+            offset_y += 50;
+            index++;
         }
     }
 }

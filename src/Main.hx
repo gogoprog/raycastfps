@@ -4,6 +4,7 @@ import math.Point;
 
 class Main {
     static public var context = new Context();
+    static public var previousKeys:Dynamic = {};
     static public var keys:Dynamic = {};
     static public var mx:Int = 0;
     static public var mouseButtons:Array<Bool> = [];
@@ -40,6 +41,7 @@ class Main {
             engine.addSystem(new core.MonsterSystem(), 101);
             engine.addSystem(new core.MenuSystem(), 666);
             engine.addSystem(consoleSystem, 667);
+            gotoIngame();
             {
                 for(i in 0...128) {
                     var e = Factory.createMonster([Math.random() * 2000, Math.random() * 2000]);
@@ -85,13 +87,52 @@ class Main {
             context.renderer.draw(context.level);
             context.renderer.flush();
             lastTime = t;
+
+            if(isJustPressed('Escape')) {
+                if(context.engine.isActive(core.ConsoleSystem)) {
+                    gotoIngame();
+                } else if(context.engine.isActive(core.MenuSystem)) {
+                    gotoIngame();
+                } else {
+                    gotoMenu();
+                }
+            }
+
+            if(isJustPressed('`')) {
+                if(context.engine.isActive(core.ConsoleSystem)) {
+                    gotoIngame();
+                } else {
+                    gotoConsole();
+                }
+            }
+
+            previousKeys = js.lib.Object.assign({}, keys);
             js.Browser.window.requestAnimationFrame(loop);
         }
         loop(0);
     }
 
+    static inline public function isJustPressed(k:String) {
+        return untyped !previousKeys[k] && untyped keys[k];
+    }
+
     static public function log(what) {
-        trace(what);
         consoleSystem.push(what);
+    }
+
+    static public function gotoMenu() {
+        context.engine.suspendSystem(core.ControlSystem);
+        context.engine.resumeSystem(core.MenuSystem);
+    }
+
+    static public function gotoIngame() {
+        context.engine.suspendSystem(core.MenuSystem);
+        context.engine.suspendSystem(core.ConsoleSystem);
+        context.engine.resumeSystem(core.ControlSystem);
+    }
+
+    static public function gotoConsole() {
+        context.engine.suspendSystem(core.ControlSystem);
+        context.engine.resumeSystem(core.ConsoleSystem);
     }
 }

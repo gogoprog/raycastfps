@@ -2,6 +2,7 @@ package ecs;
 
 class Engine {
     private var systems:Array<System> = [];
+    private var suspended:Array<System> = [];
     private var entities:Array<Entity> = [];
 
     public function new() {
@@ -16,6 +17,48 @@ class Engine {
     public function removeSystem(system_to_remove:System) {
         system_to_remove.engine = null;
         systems.remove(system_to_remove);
+    }
+
+    public function suspendSystem<T:System>(klass:Class<T> = null) {
+        var type_to_suspend = Type.getClassName(klass);
+
+        for(system in systems) {
+            var type = Type.getClassName(Type.getClass(system));
+
+            if(type == type_to_suspend) {
+                systems.remove(system);
+                suspended.push(system);
+                break;
+            }
+        }
+    }
+
+    public function resumeSystem<T:System>(klass:Class<T> = null) {
+        var type_to_resume = Type.getClassName(klass);
+
+        for(system in suspended) {
+            var type = Type.getClassName(Type.getClass(system));
+
+            if(type == type_to_resume) {
+                suspended.remove(system);
+                systems.push(system);
+                break;
+            }
+        }
+    }
+
+    public function isActive<T:System>(klass:Class<T> = null) {
+        var type_to_check = Type.getClassName(klass);
+
+        for(system in systems) {
+            var type = Type.getClassName(Type.getClass(system));
+
+            if(type == type_to_check) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function update(dt:Float) {
