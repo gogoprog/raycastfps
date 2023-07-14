@@ -37,6 +37,7 @@ class Main {
             engine.addSystem(new core.ObjectSystem(), 98);
             engine.addSystem(new core.QuadSystem(), 99);
             engine.addSystem(new core.MonsterSystem(), 101);
+            engine.addSystem(new core.MenuSystem(), 666);
             {
                 for(i in 0...128) {
                     var e = Factory.createMonster([Math.random() * 2000, Math.random() * 2000]);
@@ -83,13 +84,6 @@ class Main {
             context.renderer.flush();
             lastTime = t;
             js.Browser.window.requestAnimationFrame(loop);
-            {
-                var font = Main.context.textureManager.get("font");
-
-                if(font != null) {
-                    context.renderer.drawText(font, [10, 10], "Hello World!");
-                }
-            }
         }
         loop(0);
     }

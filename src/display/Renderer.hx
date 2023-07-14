@@ -76,8 +76,8 @@ class Renderer {
     var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
     var backbuffer:Framebuffer;
     var canvasContext:js.html.CanvasRenderingContext2D;
-    var screenWidth = 1024;
-    var screenHeight = 640;
+    static public var screenWidth = 1024;
+    static public var screenHeight = 640;
     var halfScreenHeight:Int;
     var halfScreenWidth:Int;
     var halfVerticalFov:Float;
@@ -443,14 +443,20 @@ class Renderer {
         }
     }
 
-    public function drawText(texture:Framebuffer, position:Point, content:String) {
+    public function drawText(texture:Framebuffer, position:Point, content:String, centered = false) {
         var char_extent:Point = [20, 20];
         var cols = 15;
 
         for(i in 0...content.length) {
             var code = content.charCodeAt(i);
             code = code - 32;
-            var pos:Point = [position.x + char_extent.x*i, position.y];
+            var offset = .0;
+
+            if(centered) {
+                offset -= content.length * char_extent.x * 0.5;
+            }
+
+            var pos:Point = [position.x + char_extent.x*i + offset, position.y];
             var src_pos:Point = [char_extent.x * (code % cols), Std.int(code/cols) * char_extent.y];
             pushQuad(texture, pos, char_extent, src_pos, char_extent);
         }

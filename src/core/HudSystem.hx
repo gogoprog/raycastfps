@@ -18,7 +18,7 @@ class HudSystem extends ecs.System {
         super();
         addComponentClass(Player);
         addComponentClass(Object);
-        weaponPosition = [1024 / 2 - 320, 640 - 375];
+        weaponPosition = [display.Renderer.screenWidth / 2 - 320, display.Renderer.screenHeight - 375];
         weaponExtent = [640, 400];
         weaponOffset = [0, 0];
     }
