@@ -443,7 +443,7 @@ class Renderer {
         }
     }
 
-    public function drawText(texture:Framebuffer, position:Point, content:String, centered = false) {
+    public function pushText(texture:Framebuffer, position:Point, content:String, centered = false) {
         var char_extent:Point = [20, 20];
         var cols = 15;
 

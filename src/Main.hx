@@ -7,6 +7,7 @@ class Main {
     static public var keys:Dynamic = {};
     static public var mx:Int = 0;
     static public var mouseButtons:Array<Bool> = [];
+    static public var consoleSystem = new core.ConsoleSystem();
 
     static function main() {
         var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
@@ -38,6 +39,7 @@ class Main {
             engine.addSystem(new core.QuadSystem(), 99);
             engine.addSystem(new core.MonsterSystem(), 101);
             engine.addSystem(new core.MenuSystem(), 666);
+            engine.addSystem(consoleSystem, 667);
             {
                 for(i in 0...128) {
                     var e = Factory.createMonster([Math.random() * 2000, Math.random() * 2000]);
@@ -86,5 +88,10 @@ class Main {
             js.Browser.window.requestAnimationFrame(loop);
         }
         loop(0);
+    }
+
+    static public function log(what) {
+        trace(what);
+        consoleSystem.push(what);
     }
 }

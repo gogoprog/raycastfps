@@ -59,7 +59,7 @@ class SpriteAnimationSystem extends ecs.System {
     private function load(name) {
         loader.load(name, function(data) {
             animations[name] = data;
-            trace('Loaded animation ${name}');
+            Main.log('Loaded animation ${name}');
         });
     }
 }

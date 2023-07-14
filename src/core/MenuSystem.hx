@@ -100,7 +100,7 @@ class MenuSystem extends ecs.System {
             var center_x = Std.int(display.Renderer.screenWidth * 0.5);
             var offset_y = 150;
             var index = 0;
-            renderer.drawText(font, [center_x, offset_y], currentMenu.title, true);
+            renderer.pushText(font, [center_x, offset_y], currentMenu.title, true);
             offset_y += 100;
 
             for(entry in currentMenu.entries) {
@@ -110,7 +110,7 @@ class MenuSystem extends ecs.System {
                     text = "> " + entry.content + " <";
                 }
 
-                renderer.drawText(font, [center_x, offset_y], text, true);
+                renderer.pushText(font, [center_x, offset_y], text, true);
                 offset_y += 50;
                 index++;
             }

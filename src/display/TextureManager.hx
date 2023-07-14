@@ -37,6 +37,7 @@ class TextureManager {
                 add("floor", textureBuffer);
                 */
         }
+        load("console");
         load("doomguy");
         load("floor");
         load("floor2");
@@ -68,7 +69,7 @@ class TextureManager {
 
             add(name, buffer);
 
-            trace('Loaded texture ${name}');
+            Main.log('Loaded texture ${name}');
             loadCount--;
         }
     }
@@ -92,7 +93,7 @@ class TextureManager {
                     add('${name}-${index}', buffer);
 
                     index++;
-                    trace('Loaded texture ${name}-${index}');
+                    Main.log('Loaded texture ${name}-${index}');
                 }
 
                 loadCount--;

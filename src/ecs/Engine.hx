@@ -13,6 +13,11 @@ class Engine {
         return system;
     }
 
+    public function removeSystem(system_to_remove:System) {
+        system_to_remove.engine = null;
+        systems.remove(system_to_remove);
+    }
+
     public function update(dt:Float) {
         var systems_copy = systems.slice(0);
         var entities_copy = entities.slice(0);
