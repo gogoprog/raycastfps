@@ -8,10 +8,12 @@ class Main {
     static public var keys:Dynamic = {};
     static public var mx:Int = 0;
     static public var mouseButtons:Array<Bool> = [];
+    static public var mousePosition:math.Point = [];
     static public var consoleSystem = new core.ConsoleSystem();
+    static public var canvas:js.html.CanvasElement;
 
     static function main() {
-        var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
+        canvas = cast js.Browser.document.getElementById("canvas");
         var engine = context.engine;
         var cameraTransform = context.cameraTransform;
         {
@@ -40,6 +42,7 @@ class Main {
             engine.addSystem(new core.QuadSystem(), 99);
             engine.addSystem(new core.MonsterSystem(), 101);
             engine.addSystem(new core.MenuSystem(), 666);
+            engine.addSystem(new core.editor.EditorSystem(), 666);
             engine.addSystem(consoleSystem, 667);
             gotoIngame();
             {
@@ -62,7 +65,6 @@ class Main {
             }
         }
         function setupControls() {
-            canvas.onclick = e->canvas.requestPointerLock();
             canvas.onmousedown = function(e) {
                 mouseButtons[e.button] = true;
             }
@@ -71,6 +73,8 @@ class Main {
             }
             canvas.onmousemove = function(e) {
                 mx += e.movementX;
+                mousePosition.x = e.x;
+                mousePosition.y = e.y;
             }
             untyped onkeydown = onkeyup = function(e) {
                 keys[e.key] = e.type[3] == 'd';
@@ -106,6 +110,14 @@ class Main {
                 }
             }
 
+            if(isJustPressed('e')) {
+                if(context.engine.isActive(core.editor.EditorSystem)) {
+                    gotoIngame();
+                } else {
+                    gotoEditor();
+                }
+            }
+
             previousKeys = js.lib.Object.assign({}, keys);
             js.Browser.window.requestAnimationFrame(loop);
         }
@@ -121,11 +133,14 @@ class Main {
     }
 
     static public function gotoMenu() {
+        canvas.onclick = function() {};
         context.engine.suspendSystem(core.ControlSystem);
         context.engine.resumeSystem(core.MenuSystem);
     }
 
     static public function gotoIngame() {
+        canvas.onclick = e->canvas.requestPointerLock();
+        context.engine.suspendSystem(core.editor.EditorSystem);
         context.engine.suspendSystem(core.MenuSystem);
         context.engine.suspendSystem(core.ConsoleSystem);
         context.engine.resumeSystem(core.ControlSystem);
@@ -134,5 +149,11 @@ class Main {
     static public function gotoConsole() {
         context.engine.suspendSystem(core.ControlSystem);
         context.engine.resumeSystem(core.ConsoleSystem);
+    }
+
+    static public function gotoEditor() {
+        canvas.onclick = function() {};
+        context.engine.suspendSystem(core.ControlSystem);
+        context.engine.resumeSystem(core.editor.EditorSystem);
     }
 }
