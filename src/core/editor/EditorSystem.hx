@@ -3,7 +3,6 @@ package core.editor;
 class EditorSystem extends ecs.System {
     var enabled = false;
     var font:display.Framebuffer = null;
-    var background:display.Framebuffer = null;
     var vertex:display.Framebuffer = null;
     var entries:Array<String> = [];
     var offset:math.Point = [200, 200];
@@ -17,9 +16,8 @@ class EditorSystem extends ecs.System {
     }
 
     override public function update(dt:Float) {
-        if(font == null || background == null || vertex == null) {
+        if(font == null || vertex == null) {
             font = Main.context.textureManager.get("font");
-            background = Main.context.textureManager.get("console");
             vertex = Main.context.textureManager.get("door");
             return;
         }
@@ -28,12 +26,15 @@ class EditorSystem extends ecs.System {
         var width = display.Renderer.screenWidth;
         var height = display.Renderer.screenHeight;
         var level = Main.context.level;
-        renderer.pushQuad(background, [0, 0], [width, height]);
+        renderer.pushRect([width/2, height/2], [width, height], 0x000000ff);
 
         for(sector in level.sectors) {
             for(wall in sector.walls) {
-                renderer.pushQuad(vertex, convertToMap(wall.a), [16, 16]);
-                renderer.pushQuad(vertex, convertToMap(wall.b), [16, 16]);
+                var a = convertToMap(wall.a);
+                var b = convertToMap(wall.b);
+                renderer.pushRect(a, [16, 16], 0xffffffff);
+                renderer.pushRect(b, [16, 16], 0xffffffff);
+                renderer.pushLine(a, b, 0xffffffff);
             }
         }
 

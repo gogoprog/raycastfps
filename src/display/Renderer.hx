@@ -72,6 +72,26 @@ private class Quad {
     }
 }
 
+@:allow(display.Renderer)
+private class Line {
+    public var a:Point;
+    public var b:Point;
+    public var color:Int;
+
+    public function new() {
+    }
+}
+
+@:allow(display.Renderer)
+private class Rect {
+    public var center:Point;
+    public var extent:Point;
+    public var color:Int;
+
+    public function new() {
+    }
+}
+
 class Renderer {
     var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
     var backbuffer:Framebuffer;
@@ -88,6 +108,8 @@ class Renderer {
     var cameraTransform:math.Transform;
     var sprites:Array<Sprite> = [];
     var quads:Array<Quad> = [];
+    var lines:Array<Line> = [];
+    var rects:Array<Rect> = [];
 
     public function new() {
     }
@@ -124,6 +146,10 @@ class Renderer {
         if((value & 0x11000000) != 0) {
             toBuffer.data32[toIndex] = value;
         }
+    }
+
+    inline function setPixel32(toBuffer:Framebuffer, x:Int, y:Int, value:Int) {
+        toBuffer.data32[toBuffer.width * y + x] = value;
     }
 
     inline function getDepth(x, y):Float {
@@ -374,7 +400,44 @@ class Renderer {
         }
     }
 
-    public function drawSprites() {
+    function drawLine(a:Point, b:Point, color:Int) {
+        var x0 = Std.int(a.x);
+        var y0 = Std.int(a.y);
+        var dx = Math.abs(b.x - a.x);
+        var dy = Math.abs(b.y - a.y);
+        var sx = (x0 < b.x) ? 1 : -1;
+        var sy = (y0 < b.y) ? 1 : -1;
+        var err = dx - dy;
+
+        while(true) {
+            setPixel32(backbuffer, x0, y0, color);
+
+            if((x0 == b.x) && (y0 == b.y)) {
+                break;
+            }
+
+            var e2 = 2*err;
+
+            if(e2 > -dy) { err -= dy; x0  += sx; }
+
+            if(e2 < dx) { err += dx; y0  += sy; }
+        }
+    }
+
+    function drawRect(center:Point, extent:Point, color:Int) {
+        var x0 = Std.int(center.x - extent.x / 2);
+        var y0 = Std.int(center.y - extent.y / 2);
+        var x1 = Std.int(center.x + extent.x / 2);
+        var y1 = Std.int(center.y + extent.y / 2);
+
+        for(y in y0...y1) {
+            for(x in x0...x1) {
+                setPixel32(backbuffer, x, y, color);
+            }
+        }
+    }
+
+    function drawSprites() {
         function sort(a:Sprite, b:Sprite) {
             if(a.distance < b.distance) { return 1; }
             else if(a.distance > b.distance) { return -1; }
@@ -399,6 +462,18 @@ class Renderer {
         }
     }
 
+    public function drawLines() {
+        for(line in lines) {
+            drawLine(line.a, line.b, line.color);
+        }
+    }
+
+    public function drawRects() {
+        for(rect in rects) {
+            drawRect(rect.center, rect.extent, rect.color);
+        }
+    }
+
     public function clear() {
         backbuffer.data32.fill(0);
     }
@@ -411,12 +486,16 @@ class Renderer {
         drawWalls(level.sectors);
         drawSprites();
         drawQuads();
+        drawRects();
+        drawLines();
     }
 
     public function flush() {
         canvasContext.putImageData(backbuffer.getImageData(), 0, 0);
         sprites = [];
         quads = [];
+        lines = [];
+        rects = [];
     }
 
     public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int, flip:Bool, scale:Float) {
@@ -460,5 +539,21 @@ class Renderer {
             var src_pos:Point = [char_extent.x * (code % cols), Std.int(code/cols) * char_extent.y];
             pushQuad(texture, pos, char_extent, src_pos, char_extent);
         }
+    }
+
+    public function pushLine(a:Point, b:Point, color:Int) {
+        var line = new Line();
+        line.a = a;
+        line.b = b;
+        line.color = color;
+        lines.push(line);
+    }
+
+    public function pushRect(center:Point, extent:Point, color:Int) {
+        var rect = new Rect();
+        rect.center = center;
+        rect.extent = extent;
+        rect.color = color;
+        rects.push(rect);
     }
 }
