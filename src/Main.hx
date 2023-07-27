@@ -9,6 +9,7 @@ class Main {
     static public var mx:Int = 0;
     static public var mouseButtons:Array<Bool> = [];
     static public var mousePosition:math.Point = [];
+    static public var mouseScreenPosition:math.Point = [];
     static public var consoleSystem = new core.ConsoleSystem();
     static public var canvas:js.html.CanvasElement;
     static public var playerEntity:ecs.Entity;
@@ -84,6 +85,8 @@ class Main {
             var deltaTime = (t - lastTime) / 1000;
             context.level.update();
             context.renderer.clear();
+            mouseScreenPosition.x = ((mousePosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
+            mouseScreenPosition.y = ((mousePosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
             engine.update(deltaTime);
             context.renderer.draw(context.level);
             context.renderer.flush();

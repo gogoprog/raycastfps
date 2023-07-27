@@ -11,6 +11,8 @@ class EditorSystem extends ecs.System {
     var startPanPosition:math.Point = [];
     var startPanOffset:math.Point = [];
 
+    var hoveredVertex:math.Point;
+
     public function new() {
         super();
     }
@@ -25,28 +27,41 @@ class EditorSystem extends ecs.System {
         var renderer = Main.context.renderer;
 
         if(editing) {
+            var mouse_position = Main.mouseScreenPosition;
             var width = display.Renderer.screenWidth;
             var height = display.Renderer.screenHeight;
             var level = Main.context.level;
             renderer.pushRect([width/2, height/2], [width, height], 0xff000000);
+            var data = level.data;
 
-            for(sector in level.sectors) {
-                for(wall in sector.walls) {
-                    var a = convertToMap(wall.a);
-                    var b = convertToMap(wall.b);
-                    renderer.pushRect(a, [16, 16], 0xffffffff);
-                    renderer.pushRect(b, [16, 16], 0xffffffff);
-                    renderer.pushLine(a, b, 0xffffffff);
+            for(v in data.vertices) {
+                var sv = convertToMap(v);
+                var delta = (mouse_position - sv);
+                var color = 0xffffffff;
+
+                if(delta.getLength() < 16) {
+                    hoveredVertex = v;
+                    color = 0xff1111ee;
                 }
+
+                renderer.pushRect(sv, [16, 16], color);
+            }
+
+                renderer.pushRect(mouse_position, [16, 16], 0xff55dd44);
+
+            for(w in data.walls) {
+                var a = convertToMap(data.vertices[w.a]);
+                var b = convertToMap(data.vertices[w.b]);
+                renderer.pushLine(a, b, 0xffffffff);
             }
 
             if(Main.mouseButtons[2]) {
                 if(!isPanning) {
                     isPanning = true;
-                    startPanPosition.copyFrom(Main.mousePosition);
+                    startPanPosition.copyFrom(mouse_position);
                     startPanOffset.copyFrom(offset);
                 } else {
-                    var delta = Main.mousePosition - startPanPosition;
+                    var delta = mouse_position - startPanPosition;
                     offset = startPanOffset + delta;
                 }
             } else {
