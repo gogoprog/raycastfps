@@ -23,4 +23,9 @@ class System {
     public function updateSingle(dt:Float, entity:Entity) {
     }
 
+    public function onResume() {
+    }
+
+    public function onSuspend() {
+    }
 }

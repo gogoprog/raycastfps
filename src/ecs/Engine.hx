@@ -11,6 +11,7 @@ class Engine {
     public function addSystem<T:System>(system:T, priority:Int, klass:Class<T> = null):T {
         systems.push(system);
         system.engine = this;
+        system.onResume();
         return system;
     }
 
@@ -28,6 +29,7 @@ class Engine {
             if(type == type_to_suspend) {
                 systems.remove(system);
                 suspended.push(system);
+                system.onSuspend();
                 break;
             }
         }
@@ -42,6 +44,7 @@ class Engine {
             if(type == type_to_resume) {
                 suspended.remove(system);
                 systems.push(system);
+                system.onResume();
                 break;
             }
         }

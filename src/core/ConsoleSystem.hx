@@ -1,7 +1,6 @@
 package core;
 
 class ConsoleSystem extends ecs.System {
-    var enabled = false;
     var font:display.Framebuffer = null;
     var background:display.Framebuffer = null;
     var entries:Array<String> = [];

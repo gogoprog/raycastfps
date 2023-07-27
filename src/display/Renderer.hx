@@ -403,6 +403,8 @@ class Renderer {
     function drawLine(a:Point, b:Point, color:Int) {
         var x0 = Std.int(a.x);
         var y0 = Std.int(a.y);
+        var x1 = Std.int(b.x);
+        var y1 = Std.int(b.y);
         var dx = Math.abs(b.x - a.x);
         var dy = Math.abs(b.y - a.y);
         var sx = (x0 < b.x) ? 1 : -1;
@@ -412,15 +414,15 @@ class Renderer {
         while(true) {
             setPixel32(backbuffer, x0, y0, color);
 
-            if((x0 == b.x) && (y0 == b.y)) {
+            if((x0 == x1) && (y0 == y1)) {
                 break;
             }
 
             var e2 = 2*err;
 
-            if(e2 > -dy) { err -= dy; x0  += sx; }
+            if(e2 > -dy) { err -= dy; x0 += sx; }
 
-            if(e2 < dx) { err += dx; y0  += sy; }
+            if(e2 < dx) { err += dx; y0 += sy; }
         }
     }
 
@@ -485,9 +487,9 @@ class Renderer {
 
         drawWalls(level.sectors);
         drawSprites();
-        drawQuads();
         drawRects();
         drawLines();
+        drawQuads();
     }
 
     public function flush() {

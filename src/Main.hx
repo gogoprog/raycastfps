@@ -11,6 +11,7 @@ class Main {
     static public var mousePosition:math.Point = [];
     static public var consoleSystem = new core.ConsoleSystem();
     static public var canvas:js.html.CanvasElement;
+    static public var playerEntity:ecs.Entity;
 
     static function main() {
         canvas = cast js.Browser.document.getElementById("canvas");
@@ -55,12 +56,8 @@ class Main {
                     var e = Factory.createPlayer();
                     engine.addEntity(e);
                     hudSystem.setPlayerEntity(e);
-                }
-
-                {
-                    var e = Factory.createHudWeapon();
-                    engine.addEntity(e);
-                    hudSystem.setWeaponEntity(e);
+                    e.get(math.Transform).position.copyFrom(context.level.data.startPosition);
+                    playerEntity = e;
                 }
             }
         }
@@ -144,6 +141,9 @@ class Main {
         context.engine.suspendSystem(core.MenuSystem);
         context.engine.suspendSystem(core.ConsoleSystem);
         context.engine.resumeSystem(core.ControlSystem);
+        context.engine.resumeSystem(core.MonsterSystem);
+        context.engine.resumeSystem(core.MoveSystem);
+        context.engine.resumeSystem(core.HudSystem);
     }
 
     static public function gotoConsole() {
@@ -152,8 +152,18 @@ class Main {
     }
 
     static public function gotoEditor() {
+        js.Browser.document.exitPointerLock();
         canvas.onclick = function() {};
         context.engine.suspendSystem(core.ControlSystem);
+        context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
+    }
+    static public function gotoEditorPreview() {
+        canvas.requestPointerLock();
+        context.level.generateSectors();
+        playerEntity.get(math.Transform).position.copyFrom(context.level.data.startPosition);
+        context.engine.suspendSystem(core.ControlSystem);
+        context.engine.suspendSystem(core.MonsterSystem);
+        context.engine.suspendSystem(core.MoveSystem);
     }
 }

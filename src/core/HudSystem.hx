@@ -21,6 +21,8 @@ class HudSystem extends ecs.System {
         weaponPosition = [display.Renderer.screenWidth / 2 - 320, display.Renderer.screenHeight - 375];
         weaponExtent = [640, 400];
         weaponOffset = [0, 0];
+        var e = Factory.createHudWeapon();
+        setWeaponEntity(e);
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
@@ -53,6 +55,14 @@ class HudSystem extends ecs.System {
                 animator.replace1("shotgun-fire");
             }
         }
+    }
+
+    override public function onResume() {
+        engine.addEntity(weaponEntity);
+    }
+
+    override public function onSuspend() {
+        engine.removeEntity(weaponEntity);
     }
 
     public function setWeaponEntity(e:ecs.Entity) {
