@@ -152,6 +152,13 @@ class Renderer {
         toBuffer.data32[toBuffer.width * y + x] = value;
     }
 
+    inline function blendPixel32(toBuffer:Framebuffer, x:Int, y:Int, dst:Int) {
+        var src = toBuffer.data32[toBuffer.width * y + x];
+        var value =
+        (((src >> 24) & 0xff) + ((dst >> 24) & 0xff) << 24) ;
+        toBuffer.data32[toBuffer.width * y + x] = value;
+    }
+
     inline function getDepth(x, y):Float {
         return depth[screenWidth * y + x];
     }
