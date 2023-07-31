@@ -152,11 +152,18 @@ class Renderer {
         toBuffer.data32[toBuffer.width * y + x] = value;
     }
 
-    inline function blendPixel32(toBuffer:Framebuffer, x:Int, y:Int, dst:Int) {
+    function blendPixel32(toBuffer:Framebuffer, x:Int, y:Int, dst:Int) {
         var src = toBuffer.data32[toBuffer.width * y + x];
-        var value =
-        (((src >> 24) & 0xff) + ((dst >> 24) & 0xff) << 24) ;
-        toBuffer.data32[toBuffer.width * y + x] = value;
+        var alpha:Float = ((dst >> 24) & 0xff) / 0xff;
+        var inv_alpha = 1.0 - alpha;
+        var src_b = Std.int((src >> 16) & 0xff);
+        var src_g = Std.int((src >> 8) & 0xff);
+        var src_r = Std.int((src >> 0) & 0xff);
+        var dst_b = Std.int((dst >> 16) & 0xff);
+        var dst_g = Std.int((dst >> 8) & 0xff);
+        var dst_r = Std.int((dst >> 0) & 0xff);
+        var value = Std.int(src_r * inv_alpha);
+        toBuffer.data32[toBuffer.width * y + x] = value | 0xff000000;
     }
 
     inline function getDepth(x, y):Float {
@@ -441,7 +448,8 @@ class Renderer {
 
         for(y in y0...y1) {
             for(x in x0...x1) {
-                setPixel32(backbuffer, x, y, color);
+                blendPixel32(backbuffer, x, y, color);
+                // setPixel32(backbuffer, x, y, color);
             }
         }
     }

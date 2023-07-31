@@ -31,7 +31,8 @@ class EditorSystem extends ecs.System {
             var width = display.Renderer.screenWidth;
             var height = display.Renderer.screenHeight;
             var level = Main.context.level;
-            renderer.pushRect([width/2, height/2], [width, height], 0xff000000);
+            // renderer.pushRect([width/2, height/2], [width, height], 0x11000000);
+            renderer.pushRect([width/2, height/2], [width, height], 0xaa000000);
             var data = level.data;
 
             for(v in data.vertices) {
