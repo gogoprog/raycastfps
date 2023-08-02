@@ -152,9 +152,8 @@ class Renderer {
         toBuffer.data32[toBuffer.width * y + x] = value;
     }
 
-    function blendPixel32(toBuffer:Framebuffer, x:Int, y:Int, dst:Int) {
+    function blendPixel32(toBuffer:Framebuffer, x:Int, y:Int, dst:Int, alpha:Float) {
         var src = toBuffer.data32[toBuffer.width * y + x];
-        var alpha:Float = ((dst >> 24) & 0xff) / 0xff;
         var inv_alpha = 1.0 - alpha;
         var src_b = Std.int((src >> 16) & 0xff);
         var src_g = Std.int((src >> 8) & 0xff);
@@ -445,11 +444,19 @@ class Renderer {
         var y0 = Std.int(center.y - extent.y / 2);
         var x1 = Std.int(center.x + extent.x / 2);
         var y1 = Std.int(center.y + extent.y / 2);
+        var alpha:Float = ((color >> 24) & 0xff) / 0xff;
 
-        for(y in y0...y1) {
-            for(x in x0...x1) {
-                blendPixel32(backbuffer, x, y, color);
-                // setPixel32(backbuffer, x, y, color);
+        if(alpha != 1) {
+            for(y in y0...y1) {
+                for(x in x0...x1) {
+                    blendPixel32(backbuffer, x, y, color, alpha);
+                }
+            }
+        } else {
+            for(y in y0...y1) {
+                for(x in x0...x1) {
+                    setPixel32(backbuffer, x, y, color);
+                }
             }
         }
     }
