@@ -8,6 +8,7 @@ class Main {
     static public var keys:Dynamic = {};
     static public var mx:Int = 0;
     static public var mouseButtons:Array<Bool> = [];
+    static public var previousMouseButtons:Array<Bool> = [];
     static public var mousePosition:math.Point = [];
     static public var mouseScreenPosition:math.Point = [];
     static public var consoleSystem = new core.ConsoleSystem();
@@ -119,6 +120,7 @@ class Main {
             }
 
             previousKeys = js.lib.Object.assign({}, keys);
+            previousMouseButtons = mouseButtons.slice(0);
             js.Browser.window.requestAnimationFrame(loop);
         }
         loop(0);
@@ -126,6 +128,14 @@ class Main {
 
     static inline public function isJustPressed(k:String) {
         return untyped !previousKeys[k] && untyped keys[k];
+    }
+
+    static inline public function isMouseButtonJustPressed(i:Int) {
+        return !previousMouseButtons[i] && mouseButtons[i];
+    }
+
+    static inline public function isMouseButtonJustReleased(i:Int) {
+        return previousMouseButtons[i] && !mouseButtons[i];
     }
 
     static public function log(what) {
@@ -161,6 +171,7 @@ class Main {
         context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
     }
+
     static public function gotoEditorPreview() {
         canvas.requestPointerLock();
         context.level.generateSectors();

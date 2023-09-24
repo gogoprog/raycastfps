@@ -418,10 +418,10 @@ class Renderer {
         var y0 = Std.int(a.y);
         var x1 = Std.int(b.x);
         var y1 = Std.int(b.y);
-        var dx = Math.abs(b.x - a.x);
-        var dy = Math.abs(b.y - a.y);
-        var sx = (x0 < b.x) ? 1 : -1;
-        var sy = (y0 < b.y) ? 1 : -1;
+        var dx = Math.abs(x1 - x0);
+        var dy = Math.abs(y1 - y0);
+        var sx = (x0 < x1) ? 1 : -1;
+        var sy = (y0 < y1) ? 1 : -1;
         var err = dx - dy;
 
         while(true) {

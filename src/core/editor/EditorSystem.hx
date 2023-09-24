@@ -1,5 +1,12 @@
 package core.editor;
 
+private enum Action {
+    Selecting;
+    MovingVertex;
+    Panning;
+    CreatingRoom;
+}
+
 class EditorSystem extends ecs.System {
     var editing = true;
     var font:display.Framebuffer = null;
@@ -11,7 +18,10 @@ class EditorSystem extends ecs.System {
     var startPanPosition:math.Point = [];
     var startPanOffset:math.Point = [];
 
-    var hoveredVertex:math.Point;
+    var hoveredVertexIndex:Int;
+    var movingVertexIndex:Int;
+
+    var action = Selecting;
 
     public function new() {
         super();
@@ -28,51 +38,9 @@ class EditorSystem extends ecs.System {
 
         if(editing) {
             var mouse_position = Main.mouseScreenPosition;
-            var width = display.Renderer.screenWidth;
-            var height = display.Renderer.screenHeight;
-            var level = Main.context.level;
-            // renderer.pushRect([width/2, height/2], [width, height], 0x11000000);
-            renderer.pushRect([width/2, height/2], [width, height], 0xaa000000);
-            var data = level.data;
-
-            for(v in data.vertices) {
-                var sv = convertToMap(v);
-                var delta = (mouse_position - sv);
-                var color = 0xffffffff;
-
-                if(delta.getLength() < 16) {
-                    hoveredVertex = v;
-                    color = 0xff1111ee;
-                }
-
-                renderer.pushRect(sv, [16, 16], color);
-            }
-
-                renderer.pushRect(mouse_position, [16, 16], 0xff55dd44);
-
-            for(w in data.walls) {
-                var a = convertToMap(data.vertices[w.a]);
-                var b = convertToMap(data.vertices[w.b]);
-                renderer.pushLine(a, b, 0xffffffff);
-            }
-
-            if(Main.mouseButtons[2]) {
-                if(!isPanning) {
-                    isPanning = true;
-                    startPanPosition.copyFrom(mouse_position);
-                    startPanOffset.copyFrom(offset);
-                } else {
-                    var delta = mouse_position - startPanPosition;
-                    offset = startPanOffset + delta;
-                }
-            } else {
-                isPanning = false;
-            }
-
-            if(Main.isJustPressed('Enter')) {
-                editing = false;
-                Main.gotoEditorPreview();
-            }
+            draw();
+            processAction();
+            processControls();
         } else {
             if(Main.isJustPressed('Enter')) {
                 editing = true;
@@ -85,5 +53,140 @@ class EditorSystem extends ecs.System {
 
     function convertToMap(p:math.Point):math.Point {
         return [p.x * zoom + offset.x, p.y * zoom + offset.y];
+    }
+
+    function convertFromMap(p:math.Point):math.Point {
+        return [Std.int((p.x - offset.x) / zoom), Std.int((p.y - offset.y) / zoom)];
+    }
+
+    function draw() {
+        drawVertices();
+        drawWalls();
+        drawItems();
+    }
+
+    function drawVertices() {
+        var renderer = Main.context.renderer;
+        var mouse_position = Main.mouseScreenPosition;
+        var width = display.Renderer.screenWidth;
+        var height = display.Renderer.screenHeight;
+        var level = Main.context.level;
+        var data = level.data;
+        var index = 0;
+        renderer.pushRect([width/2, height/2], [width, height], 0xaa000000);
+        hoveredVertexIndex = null;
+
+        for(v in data.vertices) {
+            var sv = convertToMap(v);
+            var delta = (mouse_position - sv);
+            var color = 0xffffffff;
+
+            if(delta.getLength() < 16) {
+                hoveredVertexIndex = index;
+                color = 0xff1111ee;
+            }
+
+            renderer.pushRect(sv, [16, 16], color);
+            index++;
+        }
+    }
+
+    function drawWalls() {
+        var renderer = Main.context.renderer;
+        var level = Main.context.level;
+        var data = level.data;
+
+        for(w in data.walls) {
+            var a = convertToMap(data.vertices[w.a]);
+            var b = convertToMap(data.vertices[w.b]);
+            renderer.pushLine(a, b, 0xffffffff);
+        }
+    }
+
+    function drawItems() {
+        var mouse_position = Main.mouseScreenPosition;
+        var renderer = Main.context.renderer;
+        renderer.pushRect(mouse_position, [16, 16], 0xff55dd44);
+    }
+
+    function onMouseLeftPressed() {
+        switch(action) {
+            case Selecting: {
+                if(hoveredVertexIndex != null) {
+                    action = MovingVertex;
+                    movingVertexIndex = hoveredVertexIndex;
+                }
+            }
+
+            default:
+        }
+    }
+
+    function onMouseLeftReleased() {
+        switch(action) {
+            case MovingVertex: {
+                action = Selecting;
+            }
+
+            default:
+        }
+    }
+
+    function onSpacePressed() {
+        if(action == Selecting) {
+            action = CreatingRoom;
+        }
+    }
+
+    function processAction() {
+        var level = Main.context.level;
+        var data = level.data;
+        var mouse_position = Main.mouseScreenPosition;
+
+        switch(action) {
+            case MovingVertex: {
+                var new_position = convertFromMap(mouse_position);
+                data.vertices[movingVertexIndex].copyFrom(new_position);
+            }
+
+            case Selecting: {
+            }
+
+            default:
+        }
+    }
+
+    function processControls() {
+        var mouse_position = Main.mouseScreenPosition;
+
+        if(Main.mouseButtons[2]) {
+            if(!isPanning) {
+                isPanning = true;
+                startPanPosition.copyFrom(mouse_position);
+                startPanOffset.copyFrom(offset);
+            } else {
+                var delta = mouse_position - startPanPosition;
+                offset = startPanOffset + delta;
+            }
+        } else {
+            isPanning = false;
+        }
+
+        if(Main.isJustPressed('Enter')) {
+            editing = false;
+            Main.gotoEditorPreview();
+        }
+
+        if(Main.isMouseButtonJustPressed(0)) {
+            onMouseLeftPressed();
+        }
+
+        if(Main.isMouseButtonJustReleased(0)) {
+            onMouseLeftReleased();
+        }
+
+        if(Main.isJustPressed(' ')) {
+            onSpacePressed();
+        }
     }
 }
