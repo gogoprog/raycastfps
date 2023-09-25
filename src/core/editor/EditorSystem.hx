@@ -21,6 +21,8 @@ class EditorSystem extends ecs.System {
     var hoveredVertexIndex:Int;
     var movingVertexIndex:Int;
 
+    var roomVertices:Array<Int> = [];
+
     var action = Selecting;
 
     public function new() {
@@ -133,8 +135,34 @@ class EditorSystem extends ecs.System {
     }
 
     function onSpacePressed() {
-        if(action == Selecting) {
-            action = CreatingRoom;
+        var mouse_position = Main.mouseScreenPosition;
+
+        switch(action) {
+            case Selecting: {
+                action = CreatingRoom;
+
+                if(hoveredVertexIndex != null) {
+                    roomVertices.push(hoveredVertexIndex);
+                } else {
+                    var new_position = convertFromMap(mouse_position);
+                    // create vertex
+                    var vindex = createVertex(new_position);
+                    roomVertices.push(vindex);
+                }
+            }
+
+            case CreatingRoom : {
+                if(hoveredVertexIndex != null) {
+                    roomVertices.push(hoveredVertexIndex);
+                } else {
+                    var new_position = convertFromMap(mouse_position);
+                    // create vertex
+                    var vindex = createVertex(new_position);
+                    roomVertices.push(vindex);
+                }
+            }
+
+            default:
         }
     }
 
@@ -188,5 +216,20 @@ class EditorSystem extends ecs.System {
         if(Main.isJustPressed(' ')) {
             onSpacePressed();
         }
+
+        if(Main.isJustPressed('PageDown')) {
+            zoom *= 1.1;
+        }
+
+        if(Main.isJustPressed('PageUp')) {
+            zoom /= 1.1;
+        }
+    }
+
+    function createVertex(position) {
+        var level = Main.context.level;
+        var data = level.data;
+        data.vertices.push(position);
+        return data.vertices.length - 1;
     }
 }
