@@ -129,13 +129,6 @@ class Renderer {
         this.cameraTransform = cameraTransform;
     }
 
-    inline function copyPixel(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
-        toBuffer.data[toIndex * 4 + 0] = fromBuffer.data[fromIndex * 4 + 0];
-        toBuffer.data[toIndex * 4 + 1] = fromBuffer.data[fromIndex * 4 + 1];
-        toBuffer.data[toIndex * 4 + 2] = fromBuffer.data[fromIndex * 4 + 2];
-        toBuffer.data[toIndex * 4 + 3] = fromBuffer.data[fromIndex * 4 + 3];
-    }
-
     inline function copyPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
         toBuffer.data32[toIndex] = fromBuffer.data32[fromIndex];
     }
@@ -152,7 +145,7 @@ class Renderer {
         toBuffer.data32[toBuffer.width * y + x] = value;
     }
 
-    function blendPixel32(toBuffer:Framebuffer, x:Int, y:Int, dst:Int, alpha:Float) {
+    inline function blendPixel32(toBuffer:Framebuffer, x:Int, y:Int, dst:Int, alpha:Float) {
         var src = toBuffer.data32[toBuffer.width * y + x];
         var inv_alpha = 1.0 - alpha;
         var src_b = Std.int((src >> 16) & 0xff);
@@ -183,6 +176,11 @@ class Renderer {
         for(y in a...b) {
             depth[screenWidth * y + x] = value;
         }
+    }
+
+    inline function getBackbufferIndex(x, y):Int {
+        return y * screenWidth + x;
+        // return Std.int(y * 0.5 * screenWidth + x * 0.5);
     }
 
     function drawSkyColumn(texture:Framebuffer, tx, x) {
@@ -236,8 +234,7 @@ class Renderer {
                 var tx = Std.int(texture.width * (floorX - cellX)) & (texture.width - 1);
                 var ty = Std.int(texture.height * (floorY - cellY)) & (texture.height - 1);
                 var texIndex = (texture.width * ty + tx);
-                var backbufferIndex = (y * screenWidth + x);
-                copyPixel32(texture, backbuffer, texIndex, backbufferIndex);
+                copyPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x,y));
             }
         }
     }
@@ -261,10 +258,9 @@ class Renderer {
             var y:Int = halfScreenHeight - i - offset;
 
             if(y>0 && y<screenHeight) {
-                var index:Int = (y * screenWidth + x);
                 var texY = texture.height - (Std.int((i/toi) * texture.height * texScale) % texture.height) - 1;
                 var texIndex = (texY * texture.width + tx);
-                copyPixel32(texture, backbuffer, texIndex, index);
+                copyPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x,y));
             }
         }
     }
@@ -353,10 +349,9 @@ class Renderer {
             }
 
             if(depth < getDepth(x, y)) {
-                var index:Int = (y * screenWidth + x);
                 var texY = Std.int((i/h) * texture.height);
                 var texIndex = (texY * texture.width + tx);
-                blitPixel32(texture, backbuffer, texIndex, index);
+                blitPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x, y));
             }
         }
     }
@@ -406,9 +401,8 @@ class Renderer {
 
             for(y in 0...h) {
                 var ty = Std.int(sy + Std.int((y / h) * sh));
-                var dst_index:Int = ((oy + y) * screenWidth + (ox + x));
                 var src_index = (ty * texture.width + tx);
-                blitPixel32(texture, backbuffer, src_index, dst_index);
+                blitPixel32(texture, backbuffer, src_index, getBackbufferIndex(x + ox, y + oy));
             }
         }
     }
