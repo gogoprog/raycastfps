@@ -1,5 +1,7 @@
 package core.editor;
 
+import world.Level;
+
 private enum Action {
     Selecting;
     MovingVertex;
@@ -18,6 +20,8 @@ class EditorSystem extends ecs.System {
     var startPanPosition:math.Point = [];
     var startPanOffset:math.Point = [];
 
+    var data:world.LevelData;
+
     var hoveredVertexIndex:Int;
     var movingVertexIndex:Int;
 
@@ -27,6 +31,14 @@ class EditorSystem extends ecs.System {
 
     public function new() {
         super();
+    }
+
+    override public function onResume() {
+        var level = Main.context.level;
+        data = level.data;
+    }
+
+    override public function onSuspend() {
     }
 
     override public function update(dt:Float) {
@@ -72,8 +84,6 @@ class EditorSystem extends ecs.System {
         var mouse_position = Main.mouseScreenPosition;
         var width = display.Renderer.screenWidth;
         var height = display.Renderer.screenHeight;
-        var level = Main.context.level;
-        var data = level.data;
         var index = 0;
         renderer.pushRect([width/2, height/2], [width, height], 0xaa000000);
         hoveredVertexIndex = null;
@@ -84,7 +94,10 @@ class EditorSystem extends ecs.System {
             var color = 0xffffffff;
 
             if(delta.getLength() < 16) {
-                hoveredVertexIndex = index;
+                if(index != movingVertexIndex) {
+                    hoveredVertexIndex = index;
+                }
+
                 color = 0xff1111ee;
             }
 
@@ -96,7 +109,6 @@ class EditorSystem extends ecs.System {
     function drawWalls() {
         var renderer = Main.context.renderer;
         var level = Main.context.level;
-        var data = level.data;
 
         for(w in data.walls) {
             var a = convertToMap(data.vertices[w.a]);
@@ -128,6 +140,7 @@ class EditorSystem extends ecs.System {
         switch(action) {
             case MovingVertex: {
                 action = Selecting;
+                movingVertexIndex = null;
             }
 
             default:
@@ -136,29 +149,63 @@ class EditorSystem extends ecs.System {
 
     function onSpacePressed() {
         var mouse_position = Main.mouseScreenPosition;
+        var new_position = convertFromMap(mouse_position);
 
         switch(action) {
             case Selecting: {
                 action = CreatingRoom;
 
                 if(hoveredVertexIndex != null) {
-                    roomVertices.push(hoveredVertexIndex);
+                    data.vertices.push(new_position);
+                    var last_index = data.vertices.length - 1;
+                    var wall:world.WallData = {
+                        a: hoveredVertexIndex,
+                        b: last_index,
+                        bottomTextureName: "door",
+                        textureName: "wall",
+                        height: 1,
+                        textureScale: [1, 1]
+                    };
+                    data.walls.push(wall);
+                    movingVertexIndex = last_index;
+                    // roomVertices.push(hoveredVertexIndex);
                 } else {
-                    var new_position = convertFromMap(mouse_position);
+                    // var new_position = convertFromMap(mouse_position);
                     // create vertex
-                    var vindex = createVertex(new_position);
-                    roomVertices.push(vindex);
+                    // var vindex = createVertex(new_position);
+                    // roomVertices.push(vindex);
                 }
             }
 
             case CreatingRoom : {
                 if(hoveredVertexIndex != null) {
-                    roomVertices.push(hoveredVertexIndex);
+                    data.vertices.pop();
+                    data.walls.pop();
+                    var last_index = data.vertices.length - 1;
+                    var wall:world.WallData = {
+                        a: last_index,
+                        b: hoveredVertexIndex,
+                        bottomTextureName: "door",
+                        textureName: "wall",
+                        height: 1,
+                        textureScale: [1, 1]
+                    };
+                    data.walls.push(wall);
+                    movingVertexIndex = null;
+                    action = Selecting;
                 } else {
-                    var new_position = convertFromMap(mouse_position);
-                    // create vertex
-                    var vindex = createVertex(new_position);
-                    roomVertices.push(vindex);
+                    data.vertices.push(new_position);
+                    var last_index = data.vertices.length - 1;
+                    var wall:world.WallData = {
+                        a: movingVertexIndex,
+                        b: last_index,
+                        bottomTextureName: "door",
+                        textureName: "wall",
+                        height: 1,
+                        textureScale: [1, 1]
+                    };
+                    data.walls.push(wall);
+                    movingVertexIndex = last_index;
                 }
             }
 
@@ -167,17 +214,19 @@ class EditorSystem extends ecs.System {
     }
 
     function processAction() {
-        var level = Main.context.level;
-        var data = level.data;
         var mouse_position = Main.mouseScreenPosition;
+        var new_position = convertFromMap(mouse_position);
 
         switch(action) {
             case MovingVertex: {
-                var new_position = convertFromMap(mouse_position);
                 data.vertices[movingVertexIndex].copyFrom(new_position);
             }
 
             case Selecting: {
+            }
+
+            case CreatingRoom: {
+                data.vertices[movingVertexIndex].copyFrom(new_position);
             }
 
             default:
