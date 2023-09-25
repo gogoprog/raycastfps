@@ -168,12 +168,21 @@ class EditorSystem extends ecs.System {
                     };
                     data.walls.push(wall);
                     movingVertexIndex = last_index;
-                    // roomVertices.push(hoveredVertexIndex);
                 } else {
-                    // var new_position = convertFromMap(mouse_position);
-                    // create vertex
-                    // var vindex = createVertex(new_position);
-                    // roomVertices.push(vindex);
+                    trace("start");
+                    data.vertices.push(new_position);
+                    data.vertices.push(new_position);
+                    var last_index = data.vertices.length - 1;
+                    var wall:world.WallData = {
+                        a: last_index - 1,
+                        b: last_index,
+                        bottomTextureName: "door",
+                        textureName: "wall",
+                        height: 1,
+                        textureScale: [1, 1]
+                    };
+                    data.walls.push(wall);
+                    movingVertexIndex = last_index;
                 }
             }
 
