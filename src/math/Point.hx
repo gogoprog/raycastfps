@@ -76,4 +76,8 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         this[0] = Math.cos(angle);
         this[1] = Math.sin(angle);
     }
+
+    public function getCopy():Point {
+        return new Point(this[0], this[1]);
+    }
 }

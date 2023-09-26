@@ -8,6 +8,7 @@ class Main {
     static public var keys:Dynamic = {};
     static public var mx:Int = 0;
     static public var mouseButtons:Array<Bool> = [];
+    static public var mouseWheelDelta:Int = 0;
     static public var previousMouseButtons:Array<Bool> = [];
     static public var mousePosition:math.Point = [];
     static public var mouseScreenPosition:math.Point = [];
@@ -78,6 +79,9 @@ class Main {
             untyped onkeydown = onkeyup = function(e) {
                 keys[e.key] = e.type[3] == 'd';
             }
+            canvas.onwheel = function(e) {
+                mouseWheelDelta = e.deltaY;
+            }
             canvas.oncontextmenu = e->false;
         }
         setupControls();
@@ -121,6 +125,7 @@ class Main {
 
             previousKeys = js.lib.Object.assign({}, keys);
             previousMouseButtons = mouseButtons.slice(0);
+            mouseWheelDelta = 0;
             js.Browser.window.requestAnimationFrame(loop);
         }
         loop(0);

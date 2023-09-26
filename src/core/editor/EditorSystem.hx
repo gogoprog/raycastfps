@@ -24,6 +24,7 @@ class EditorSystem extends ecs.System {
 
     var hoveredVertexIndex:Int;
     var movingVertexIndex:Int;
+    var previousVertexIndex:Int;
 
     var roomVertices:Array<Int> = [];
 
@@ -93,7 +94,7 @@ class EditorSystem extends ecs.System {
             var delta = (mouse_position - sv);
             var color = 0xffffffff;
 
-            if(delta.getLength() < 16) {
+            if(delta.getLength() < 64 * zoom) {
                 if(index != movingVertexIndex) {
                     hoveredVertexIndex = index;
                 }
@@ -101,7 +102,7 @@ class EditorSystem extends ecs.System {
                 color = 0xff1111ee;
             }
 
-            renderer.pushRect(sv, [16, 16], color);
+            renderer.pushRect(sv, [64 * zoom, 64 * zoom], color);
             index++;
         }
     }
@@ -156,7 +157,7 @@ class EditorSystem extends ecs.System {
                 action = CreatingRoom;
 
                 if(hoveredVertexIndex != null) {
-                    data.vertices.push(new_position);
+                    data.vertices.push(new_position.getCopy());
                     var last_index = data.vertices.length - 1;
                     var wall:world.WallData = {
                         a: hoveredVertexIndex,
@@ -168,10 +169,10 @@ class EditorSystem extends ecs.System {
                     };
                     data.walls.push(wall);
                     movingVertexIndex = last_index;
+                    previousVertexIndex = hoveredVertexIndex;
                 } else {
-                    trace("start");
-                    data.vertices.push(new_position);
-                    data.vertices.push(new_position);
+                    data.vertices.push(new_position.getCopy());
+                    data.vertices.push(new_position.getCopy());
                     var last_index = data.vertices.length - 1;
                     var wall:world.WallData = {
                         a: last_index - 1,
@@ -183,6 +184,7 @@ class EditorSystem extends ecs.System {
                     };
                     data.walls.push(wall);
                     movingVertexIndex = last_index;
+                    previousVertexIndex = last_index - 1;
                 }
             }
 
@@ -190,9 +192,8 @@ class EditorSystem extends ecs.System {
                 if(hoveredVertexIndex != null) {
                     data.vertices.pop();
                     data.walls.pop();
-                    var last_index = data.vertices.length - 1;
                     var wall:world.WallData = {
-                        a: last_index,
+                        a: previousVertexIndex,
                         b: hoveredVertexIndex,
                         bottomTextureName: "door",
                         textureName: "wall",
@@ -201,9 +202,10 @@ class EditorSystem extends ecs.System {
                     };
                     data.walls.push(wall);
                     movingVertexIndex = null;
+                    previousVertexIndex = null;
                     action = Selecting;
                 } else {
-                    data.vertices.push(new_position);
+                    data.vertices.push(new_position.getCopy());
                     var last_index = data.vertices.length - 1;
                     var wall:world.WallData = {
                         a: movingVertexIndex,
@@ -214,6 +216,7 @@ class EditorSystem extends ecs.System {
                         textureScale: [1, 1]
                     };
                     data.walls.push(wall);
+                    previousVertexIndex = movingVertexIndex;
                     movingVertexIndex = last_index;
                 }
             }
@@ -275,19 +278,12 @@ class EditorSystem extends ecs.System {
             onSpacePressed();
         }
 
-        if(Main.isJustPressed('PageDown')) {
+        if(Main.isJustPressed('PageDown') || Main.mouseWheelDelta > 0) {
             zoom *= 1.1;
         }
 
-        if(Main.isJustPressed('PageUp')) {
+        if(Main.isJustPressed('PageUp') || Main.mouseWheelDelta < 0) {
             zoom /= 1.1;
         }
-    }
-
-    function createVertex(position) {
-        var level = Main.context.level;
-        var data = level.data;
-        data.vertices.push(position);
-        return data.vertices.length - 1;
     }
 }
