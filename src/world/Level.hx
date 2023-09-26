@@ -96,7 +96,9 @@ class Level {
                 [0, 0],
                 [1024, 0],
                 [1024, 1024],
-                [0, 1024]
+                [0, 1024],
+                [-1024, 1024],
+                [-1024, 0]
             ],
             walls: [
             {
@@ -127,15 +129,46 @@ class Level {
                 a: 3,
                 b: 0,
                 bottomTextureName: "door",
+                textureName: null,
+                height: 1,
+                textureScale: [1, 1]
+            },
+            {
+                a: 3,
+                b: 4,
+                bottomTextureName: "door",
+                textureName: "wall",
+                height: 1,
+                textureScale: [1, 1]
+            },
+            {
+                a: 4,
+                b: 5,
+                bottomTextureName: "door",
+                textureName: "wall",
+                height: 1,
+                textureScale: [1, 1]
+            },
+            {
+                a: 5,
+                b: 0,
+                bottomTextureName: "door",
                 textureName: "wall",
                 height: 1,
                 textureScale: [1, 1]
             }
+
             ],
             rooms: [
             {
                 walls: [0, 1, 2, 3],
                 floorTextureName: "floor",
+                bottom: 0,
+                top: 3
+            },
+            {
+                walls: [3, 4, 5, 6],
+                floorTextureName: "floor2",
                 bottom: 0,
                 top: 3
             }
@@ -202,6 +235,8 @@ class Level {
             sector.floorTextureName = room.floorTextureName;
             sector.bottom = room.bottom;
             sector.top = room.top;
+            sector.computeCenter();
+            sector.reorderWalls();
             sectors.push(sector);
             Main.log("Sector added.");
         }
