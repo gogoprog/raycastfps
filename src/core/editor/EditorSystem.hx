@@ -5,6 +5,7 @@ import world.Level;
 private enum Action {
     Selecting;
     MovingVertex;
+    MovingWall;
     Panning;
     CreatingRoom;
 }
@@ -25,6 +26,9 @@ class EditorSystem extends ecs.System {
     var hoveredVertexIndex:Int;
     var movingVertexIndex:Int;
     var previousVertexIndex:Int;
+
+    var hoveredWallIndex:Int;
+    var movingWallIndex:Int;
 
     var roomVertices:Array<Int> = [];
 
@@ -75,12 +79,12 @@ class EditorSystem extends ecs.System {
     }
 
     function draw() {
-        drawVertices();
-        drawWalls();
+        processVertices();
+        processWalls();
         drawItems();
     }
 
-    function drawVertices() {
+    function processVertices() {
         var renderer = Main.context.renderer;
         var mouse_position = Main.mouseScreenPosition;
         var width = display.Renderer.screenWidth;
@@ -107,14 +111,27 @@ class EditorSystem extends ecs.System {
         }
     }
 
-    function drawWalls() {
+    function processWalls() {
         var renderer = Main.context.renderer;
         var level = Main.context.level;
+        var mouse_position = Main.mouseScreenPosition;
+        var index = 0;
+        hoveredWallIndex = null;
 
         for(w in data.walls) {
             var a = convertToMap(data.vertices[w.a]);
             var b = convertToMap(data.vertices[w.b]);
-            renderer.pushLine(a, b, 0xffffffff);
+            var color = 0xffffffff;
+            var center = (a + b) / 2;
+            var delta = (mouse_position - center);
+
+            if(delta.getLength() < 64) {
+                hoveredWallIndex = index;
+                color = 0xff1111ee;
+            }
+
+            renderer.pushLine(a, b, color);
+            ++index;
         }
     }
 
@@ -130,6 +147,9 @@ class EditorSystem extends ecs.System {
                 if(hoveredVertexIndex != null) {
                     action = MovingVertex;
                     movingVertexIndex = hoveredVertexIndex;
+                } else if(hoveredWallIndex != null) {
+                    action = MovingWall;
+                    movingWallIndex = hoveredWallIndex;
                 }
             }
 
@@ -142,6 +162,11 @@ class EditorSystem extends ecs.System {
             case MovingVertex: {
                 action = Selecting;
                 movingVertexIndex = null;
+            }
+
+            case MovingWall: {
+                action = Selecting;
+                movingWallIndex = null;
             }
 
             default:
@@ -230,11 +255,15 @@ class EditorSystem extends ecs.System {
         var new_position = convertFromMap(mouse_position);
 
         switch(action) {
+            case Selecting: {
+            }
+
             case MovingVertex: {
                 data.vertices[movingVertexIndex].copyFrom(new_position);
             }
 
-            case Selecting: {
+            case MovingWall: {
+                data.vertices[movingVertexIndex].copyFrom(new_position);
             }
 
             case CreatingRoom: {
