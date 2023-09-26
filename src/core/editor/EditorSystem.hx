@@ -15,12 +15,13 @@ class EditorSystem extends ecs.System {
     var font:display.Framebuffer = null;
     var vertex:display.Framebuffer = null;
     var entries:Array<String> = [];
-    var offset:math.Point = [200, 200];
+    var offset:math.Point = [400, 200];
     var zoom = 0.2;
     var isPanning = false;
     var startPanPosition:math.Point = [];
     var startPanOffset:math.Point = [];
 
+    var level:world.Level;
     var data:world.LevelData;
 
     var hoveredVertexIndex:Int;
@@ -30,7 +31,7 @@ class EditorSystem extends ecs.System {
     var hoveredWallIndex:Int;
     var movingWallIndex:Int;
 
-    var roomVertices:Array<Int> = [];
+    var currentRoomWalls:Array<Int> = [];
 
     var action = Selecting;
 
@@ -39,7 +40,7 @@ class EditorSystem extends ecs.System {
     }
 
     override public function onResume() {
-        var level = Main.context.level;
+        level = Main.context.level;
         data = level.data;
     }
 
@@ -81,6 +82,7 @@ class EditorSystem extends ecs.System {
     function draw() {
         processVertices();
         processWalls();
+        processSectors();
         drawItems();
     }
 
@@ -135,10 +137,19 @@ class EditorSystem extends ecs.System {
         }
     }
 
+    function processSectors() {
+        var renderer = Main.context.renderer;
+
+        for(sector in level.sectors) {
+            var pos = convertToMap(sector.center);
+            renderer.pushRect(pos, [16, 16], 0xff888888);
+        }
+    }
+
     function drawItems() {
         var mouse_position = Main.mouseScreenPosition;
         var renderer = Main.context.renderer;
-        renderer.pushRect(mouse_position, [16, 16], 0xff55dd44);
+        // renderer.pushRect(mouse_position, [16, 16], 0xff55dd44);
     }
 
     function onMouseLeftPressed() {
@@ -195,6 +206,7 @@ class EditorSystem extends ecs.System {
                     data.walls.push(wall);
                     movingVertexIndex = last_index;
                     previousVertexIndex = hoveredVertexIndex;
+                    currentRoomWalls.push(data.walls.length - 1);
                 } else {
                     data.vertices.push(new_position.getCopy());
                     data.vertices.push(new_position.getCopy());
@@ -210,6 +222,7 @@ class EditorSystem extends ecs.System {
                     data.walls.push(wall);
                     movingVertexIndex = last_index;
                     previousVertexIndex = last_index - 1;
+                    currentRoomWalls.push(data.walls.length - 1);
                 }
             }
 
