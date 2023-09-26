@@ -132,6 +132,10 @@ class EditorSystem extends ecs.System {
                 color = 0xff1111ee;
             }
 
+            if(w.textureName == null) {
+                color = 0xff888888;
+            }
+
             renderer.pushLine(a, b, color);
             ++index;
         }
@@ -149,7 +153,7 @@ class EditorSystem extends ecs.System {
     function drawItems() {
         var mouse_position = Main.mouseScreenPosition;
         var renderer = Main.context.renderer;
-        // renderer.pushRect(mouse_position, [16, 16], 0xff55dd44);
+        renderer.pushRect(mouse_position, [2, 2], 0xff55dd44);
     }
 
     function onMouseLeftPressed() {
@@ -178,6 +182,32 @@ class EditorSystem extends ecs.System {
             case MovingWall: {
                 action = Selecting;
                 movingWallIndex = null;
+            }
+
+            default:
+        }
+    }
+
+    function onMouseRightPressed() {
+        switch(action) {
+            case Selecting: {
+                if(hoveredVertexIndex != null) {
+                } else if(hoveredWallIndex != null) {
+                    var wall = data.walls[hoveredWallIndex];
+                    wall.textureName = null;
+                }
+            }
+
+            default:
+        }
+    }
+
+    function onMouseRightReleased() {
+        switch(action) {
+            case MovingVertex: {
+            }
+
+            case MovingWall: {
             }
 
             default:
@@ -230,6 +260,7 @@ class EditorSystem extends ecs.System {
                 if(hoveredVertexIndex != null) {
                     data.vertices.pop();
                     data.walls.pop();
+                    currentRoomWalls.pop();
                     var wall:world.WallData = {
                         a: previousVertexIndex,
                         b: hoveredVertexIndex,
@@ -241,6 +272,17 @@ class EditorSystem extends ecs.System {
                     data.walls.push(wall);
                     movingVertexIndex = null;
                     previousVertexIndex = null;
+                    currentRoomWalls.push(data.walls.length - 1);
+                    {
+                        data.rooms.push({
+                            walls: currentRoomWalls,
+                            floorTextureName: "floor",
+                            bottom: 0,
+                            top: 3
+                        });
+                        currentRoomWalls = [];
+                        level.generateSectors();
+                    }
                     action = Selecting;
                 } else {
                     data.vertices.push(new_position.getCopy());
@@ -256,6 +298,7 @@ class EditorSystem extends ecs.System {
                     data.walls.push(wall);
                     previousVertexIndex = movingVertexIndex;
                     movingVertexIndex = last_index;
+                    currentRoomWalls.push(data.walls.length - 1);
                 }
             }
 
@@ -314,6 +357,14 @@ class EditorSystem extends ecs.System {
 
         if(Main.isMouseButtonJustReleased(0)) {
             onMouseLeftReleased();
+        }
+
+        if(Main.isMouseButtonJustPressed(2)) {
+            onMouseRightPressed();
+        }
+
+        if(Main.isMouseButtonJustReleased(2)) {
+            onMouseRightReleased();
         }
 
         if(Main.isJustPressed(' ')) {
