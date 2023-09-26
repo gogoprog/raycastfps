@@ -20,6 +20,9 @@ class EditorSystem extends ecs.System {
     var isPanning = false;
     var startPanPosition:math.Point = [];
     var startPanOffset:math.Point = [];
+    var startMoveWallMousePosition:math.Point = [];
+    var startMoveWallAPosition:math.Point = [];
+    var startMoveWallBPosition:math.Point = [];
 
     var level:world.Level;
     var data:world.LevelData;
@@ -127,7 +130,7 @@ class EditorSystem extends ecs.System {
             var center = (a + b) / 2;
             var delta = (mouse_position - center);
 
-            if(delta.getLength() < 64) {
+            if(delta.getLength() < 64 * zoom) {
                 hoveredWallIndex = index;
                 color = 0xff1111ee;
             }
@@ -157,6 +160,8 @@ class EditorSystem extends ecs.System {
     }
 
     function onMouseLeftPressed() {
+        var mouse_position = Main.mouseScreenPosition;
+
         switch(action) {
             case Selecting: {
                 if(hoveredVertexIndex != null) {
@@ -165,6 +170,10 @@ class EditorSystem extends ecs.System {
                 } else if(hoveredWallIndex != null) {
                     action = MovingWall;
                     movingWallIndex = hoveredWallIndex;
+                    var wall = data.walls[movingWallIndex];
+                    startMoveWallMousePosition.copyFrom(convertFromMap(mouse_position));
+                    startMoveWallAPosition.copyFrom(data.vertices[wall.a]);
+                    startMoveWallBPosition.copyFrom(data.vertices[wall.b]);
                 }
             }
 
@@ -319,7 +328,10 @@ class EditorSystem extends ecs.System {
             }
 
             case MovingWall: {
-                data.vertices[movingVertexIndex].copyFrom(new_position);
+                var wall = data.walls[movingWallIndex];
+                var delta = convertFromMap(mouse_position) - startMoveWallMousePosition;
+                data.vertices[wall.a].copyFrom(startMoveWallAPosition + delta);
+                data.vertices[wall.b].copyFrom(startMoveWallBPosition + delta);
             }
 
             case CreatingRoom: {
