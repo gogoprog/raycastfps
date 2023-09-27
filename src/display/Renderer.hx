@@ -92,6 +92,11 @@ private class Rect {
     }
 }
 
+typedef FontInfo = {
+    var charExtent:Point;
+    var textureName:String;
+}
+
 class Renderer {
     var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
     var backbuffer:Framebuffer;
@@ -110,6 +115,7 @@ class Renderer {
     var quads:Array<Quad> = [];
     var lines:Array<Line> = [];
     var rects:Array<Rect> = [];
+    var fonts:Map<String, FontInfo> = new Map();
 
     public function new() {
     }
@@ -127,6 +133,13 @@ class Renderer {
         halfScreenHeightByTanFov = halfScreenHeight / Math.tan(halfVerticalFov);
         halfHorizontalFov = Math.atan2(halfScreenWidth, halfScreenHeightByTanFov);
         this.cameraTransform = cameraTransform;
+    }
+
+    public function registerFont(name, texture_name, char_width, char_height) {
+        fonts[name] = {
+            charExtent: [char_width, char_height],
+            textureName: texture_name
+        };
     }
 
     inline function copyPixel32(fromBuffer:Framebuffer, toBuffer:Framebuffer, fromIndex:Int, toIndex:Int) {
@@ -234,7 +247,7 @@ class Renderer {
                 var tx = Std.int(texture.width * (floorX - cellX)) & (texture.width - 1);
                 var ty = Std.int(texture.height * (floorY - cellY)) & (texture.height - 1);
                 var texIndex = (texture.width * ty + tx);
-                copyPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x,y));
+                copyPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x, y));
             }
         }
     }
@@ -260,7 +273,7 @@ class Renderer {
             if(y>0 && y<screenHeight) {
                 var texY = texture.height - (Std.int((i/toi) * texture.height * texScale) % texture.height) - 1;
                 var texIndex = (texY * texture.width + tx);
-                copyPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x,y));
+                copyPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x, y));
             }
         }
     }
@@ -540,9 +553,14 @@ class Renderer {
         }
     }
 
-    public function pushText(texture:Framebuffer, position:Point, content:String, centered = false) {
-        var char_extent:Point = [20, 20];
-        var cols = 15;
+    public function pushText(font_name:String, position:Point, content:String, centered = false) {
+        var font = fonts[font_name];
+
+        if(font == null) {return;}
+
+        var char_extent:Point = font.charExtent;
+        var texture = Main.context.textureManager.get(font.textureName);
+        var cols = texture.width / char_extent.x;
 
         for(i in 0...content.length) {
             var code = content.charCodeAt(i);

@@ -71,7 +71,7 @@ class EditorSystem extends ecs.System {
             }
         }
 
-        renderer.pushText(font, [2, 2], "EDITOR", false);
+        renderer.pushText("main", [2, 2], "EDITOR", false);
     }
 
     function convertToMap(p:math.Point):math.Point {
@@ -130,13 +130,13 @@ class EditorSystem extends ecs.System {
             var center = (a + b) / 2;
             var delta = (mouse_position - center);
 
+            if(w.textureName == null) {
+                color = 0xff888888;
+            }
+
             if(delta.getLength() < 64 * zoom) {
                 hoveredWallIndex = index;
                 color = 0xff1111ee;
-            }
-
-            if(w.textureName == null) {
-                color = 0xff888888;
             }
 
             renderer.pushLine(a, b, color);
@@ -383,11 +383,11 @@ class EditorSystem extends ecs.System {
             onSpacePressed();
         }
 
-        if(Main.isJustPressed('PageDown') || Main.mouseWheelDelta > 0) {
+        if(Main.isJustPressed('PageDown') || Main.mouseWheelDelta < 0) {
             zoom *= 1.1;
         }
 
-        if(Main.isJustPressed('PageUp') || Main.mouseWheelDelta < 0) {
+        if(Main.isJustPressed('PageUp') || Main.mouseWheelDelta > 0) {
             zoom /= 1.1;
         }
     }

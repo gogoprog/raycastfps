@@ -43,7 +43,6 @@ class TextureManager {
         load("floor2");
         load("wall");
         load("sky");
-        load("font");
         load("door");
         loadSheet("grell");
         loadSheet("impact");
@@ -51,6 +50,9 @@ class TextureManager {
         for(i in 0...14) {
             load('shotgun/${i}');
         }
+
+        load("font");
+        load("font2");
     }
 
     function add(name:String, texture:Framebuffer) {

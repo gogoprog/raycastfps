@@ -27,6 +27,8 @@ class Main {
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
             context.level.load();
+            context.renderer.registerFont("main", "font", 20, 20);
+            context.renderer.registerFont("mini", "font2", 4, 6);
         }
         {
             engine.addSystem(new core.ControlSystem(), 1);
