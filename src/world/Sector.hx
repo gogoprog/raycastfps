@@ -6,6 +6,8 @@ class Sector {
     public var walls:Array<Wall> = [];
     public var bottom:Float = 0;
     public var top:Float = 3;
+    public var initialBottom:Float;
+    public var initialTop:Float;
     public var center:math.Point;
 
     public function new() {
@@ -30,6 +32,9 @@ class Sector {
         }
 
         center /= walls.length * 2;
+
+        initialBottom = bottom;
+        initialTop = top;
     }
 
     public function reorderWalls() {

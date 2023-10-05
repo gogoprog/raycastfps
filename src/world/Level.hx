@@ -14,6 +14,7 @@ typedef RoomData = {
     var floorTextureName:String;
     var bottom:Float;
     var top:Float;
+    @:optional var door:Bool;
 }
 
 typedef LevelData = {
@@ -169,8 +170,9 @@ class Level {
             {
                 walls: [3, 4, 5, 6],
                 floorTextureName: "floor2",
-                bottom: 0,
-                top: 3
+                bottom: 47,
+                top: 46,
+                door: true
             }
             ],
             startPosition: [128, 128]
@@ -207,12 +209,11 @@ class Level {
         }
     }
 
-    function createDoor(wall:Wall) {
+    function createDoor(sector:Sector) {
         var e = new ecs.Entity();
         e.add(new math.Transform());
-        e.add(new core.Door());
-        e.get(math.Transform).position = wall.center;
-        e.get(core.Door).wall = wall;
+        e.add(new core.Door(sector));
+        e.get(math.Transform).position = sector.center;
         Main.context.engine.addEntity(e);
     }
 
@@ -238,6 +239,11 @@ class Level {
             sector.computeCenter();
             sector.reorderWalls();
             sectors.push(sector);
+            {
+                if(room.door) {
+                    createDoor(sector);
+                }
+            }
             Main.log("Sector added.");
         }
     }
