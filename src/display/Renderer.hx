@@ -172,23 +172,19 @@ class Renderer {
     }
 
     inline function getDepth(x, y):Float {
-        return depth[screenWidth * y + x];
+        return depth[screenHeight * x + y];
     }
 
     inline function setDepth(x, y, value) {
-        depth[screenWidth * y + x] = value;
+        depth[screenHeight * x + y] = value;
     }
 
     inline function setDepthColumn(x, value) {
-        for(y in 0...screenHeight) {
-            depth[screenWidth * y + x] = value;
-        }
+        depth.fill(value, screenHeight * x, screenHeight * (x+1));
     }
 
     inline function setDepthColumn2(x, value, a, b) {
-        for(y in a...b) {
-            depth[screenWidth * y + x] = value;
-        }
+        depth.fill(value, screenHeight * x + a, screenHeight * x + b);
     }
 
     inline function getBackbufferIndex(x, y):Int {
