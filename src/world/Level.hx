@@ -5,7 +5,6 @@ typedef WallData = {
     var b:Int;
     var bottomTextureName:String;
     var textureName:String;
-    var height:Float;
     var textureScale:math.Point;
 }
 
@@ -35,62 +34,6 @@ class Level {
     }
 
     public function load() {
-        /*
-            var sector = new Sector();
-            sector.floorTextureName = "floor";
-            addWall(sector, 0, 0, 6, 0, "wall");
-            addWall(sector, 6, 0, 6, 6, "wall");
-            addWall(sector, 6, 6, 0, 6, "wall");
-            addWall(sector, 0, 6, 0, 0, null, "wall");
-            sectors.push(sector);
-            var sector = new Sector();
-            sector.floorTextureName = "floor";
-            addWall(sector, 0, 0, 0, 6, null, "wall");
-            addWall(sector, 0, 6, -1, 6, "wall");
-            addWall(sector, -1, 6, -1, 0, null, "wall");
-            addWall(sector, -1, 0, 0, 0, "wall");
-            sector.bottom = 10;
-            sectors.push(sector);
-            var sector = new Sector();
-            sector.floorTextureName = "floor";
-            addWall(sector, -1, 0, -1, 6, null, "wall");
-            addWall(sector, -1, 6, -2, 6, "wall");
-            addWall(sector, -2, 6, -2, 0, "null", "wall");
-            addWall(sector, -2, 0, -1, 0, "wall");
-            sector.bottom = 20;
-            sectors.push(sector);
-            var sector = new Sector();
-            sector.floorTextureName = "floor";
-            addWall(sector, -2, 0, -2, 6, null, "wall");
-            addWall(sector, -2, 6, -3, 6, "wall");
-            addWall(sector, -3, 6, -3, 0, "wall");
-            addWall(sector, -3, 0, -2, 0, "wall");
-            sector.bottom = 30;
-            sectors.push(sector);
-
-            */
-        /*
-            addWall(0, 0, 9, 4);
-            addWall(9, 4, 6, 4);
-            addWall(6, 9, 6, 4);
-            addWall(6, 9, 4, 9, "floor");
-            var w = addWall(5.5, 6, 5.5, 6.5, "door");
-            w.height = 0.5;
-            createDoor(w);
-            var w = addWall(5.5, 6.5, 5.5, 7.0, "door");
-            w.height = 0.5;
-            w.offset = 10;
-            createDoor(w);
-            addWall(4, 4, 4, 9);
-            addWall(4, 4, -12, 4);
-            addWall(-12, 3, -12, 4);
-            addWall(-12, 3, 0, 3);
-            addWall(0, 0, 0, 3);
-            addWall(1, 1, 8, 1);
-            addWall(8, 2, 8, 1);
-            addWall(8, 2, 1, 2);
-            addWall(1, 1, 1, 2);
-            */
         data = {
             skyTextureName: "sky",
             vertices: [
@@ -107,7 +50,6 @@ class Level {
                 b: 1,
                 bottomTextureName: "door",
                 textureName: "wall",
-                height: 1,
                 textureScale: [1, 1]
             },
             {
@@ -115,7 +57,6 @@ class Level {
                 b: 2,
                 bottomTextureName: "door",
                 textureName: "wall",
-                height: 1,
                 textureScale: [1, 1]
             },
             {
@@ -123,7 +64,6 @@ class Level {
                 b: 3,
                 bottomTextureName: "door",
                 textureName: "wall",
-                height: 1,
                 textureScale: [1, 1]
             },
             {
@@ -131,7 +71,6 @@ class Level {
                 b: 0,
                 bottomTextureName: "door",
                 textureName: null,
-                height: 1,
                 textureScale: [1, 1]
             },
             {
@@ -139,7 +78,6 @@ class Level {
                 b: 4,
                 bottomTextureName: "door",
                 textureName: "wall",
-                height: 1,
                 textureScale: [1, 1]
             },
             {
@@ -147,7 +85,6 @@ class Level {
                 b: 5,
                 bottomTextureName: "door",
                 textureName: "wall",
-                height: 1,
                 textureScale: [1, 1]
             },
             {
@@ -155,7 +92,6 @@ class Level {
                 b: 0,
                 bottomTextureName: "door",
                 textureName: "wall",
-                height: 1,
                 textureScale: [1, 1]
             }
 
@@ -165,13 +101,13 @@ class Level {
                 walls: [0, 1, 2, 3],
                 floorTextureName: "floor",
                 bottom: 0,
-                top: 3
+                top: 64
             },
             {
                 walls: [3, 4, 5, 6],
                 floorTextureName: "floor2",
-                bottom: 47,
-                top: 46,
+                bottom: 10,
+                top: 64,
                 door: true
             }
             ],
@@ -182,7 +118,6 @@ class Level {
 
     function addWall(sector:Sector, a:Float, b:Float, c:Float, d:Float, texName:String = null, bottomTexName:String = null) {
         var wall = new Wall([a* 200, b * 200], [c * 200, d * 200], texName, bottomTexName);
-        wall.height = 1 + Std.random(3);
         sector.walls.push(wall);
         return wall;
     }
@@ -228,7 +163,6 @@ class Level {
             for(w in room.walls) {
                 var wdata = data.walls[w];
                 var wall = new Wall(v[wdata.a], v[wdata.b], wdata.textureName, wdata.bottomTextureName);
-                wall.height = wdata.height;
                 wall.textureScale = wdata.textureScale;
                 sector.walls.push(wall);
             }

@@ -239,7 +239,6 @@ class EditorSystem extends ecs.System {
                         b: last_index,
                         bottomTextureName: "door",
                         textureName: "wall",
-                        height: 1,
                         textureScale: [1, 1]
                     };
                     data.walls.push(wall);
@@ -255,7 +254,6 @@ class EditorSystem extends ecs.System {
                         b: last_index,
                         bottomTextureName: "door",
                         textureName: "wall",
-                        height: 1,
                         textureScale: [1, 1]
                     };
                     data.walls.push(wall);
@@ -275,7 +273,6 @@ class EditorSystem extends ecs.System {
                         b: hoveredVertexIndex,
                         bottomTextureName: "door",
                         textureName: "wall",
-                        height: 1,
                         textureScale: [1, 1]
                     };
                     data.walls.push(wall);
@@ -301,7 +298,6 @@ class EditorSystem extends ecs.System {
                         b: last_index,
                         bottomTextureName: "door",
                         textureName: "wall",
-                        height: 1,
                         textureScale: [1, 1]
                     };
                     data.walls.push(wall);

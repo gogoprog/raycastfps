@@ -300,6 +300,7 @@ class Renderer {
             setDepthColumn(x, 1000000);
 
             if(results.results.length > 0) {
+                var magic = 0.275;
                 var i = results.results.length - 1;
                 var previous_sector:world.Sector = null;
 
@@ -314,7 +315,9 @@ class Renderer {
 
                     if(texture != null) {
                         var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
-                        drawWallColumn(texture, tx, x, Std.int(h), wall.height, Std.int(offset), wall.textureScale.y, depth);
+                        var delta = wr.sector.top - wr.sector.bottom;
+                        var ratio = magic * delta/wallH;
+                        drawWallColumn(texture, tx, x, Std.int(h), ratio, Std.int(offset), wall.textureScale.y * ratio, depth);
                         setDepthColumn2(x, depth, bottom, screenHeight);
                     }
 
@@ -327,7 +330,8 @@ class Renderer {
 
                             if(texture != null) {
                                 var tx = Std.int(wr.gamma * wr.wall.length * wr.wall.textureScale.x) % texture.width;
-                                drawWallColumn(texture, tx, x, Std.int(h), 0.275 * delta/wallH, Std.int(offset), wall.textureScale.y * (delta/wallH), depth);
+                                var ratio = magic * delta/wallH;
+                                drawWallColumn(texture, tx, x, Std.int(h), ratio, Std.int(offset), wall.textureScale.y * ratio, depth);
                             }
                         } else {
                             setDepthColumn2(x, depth, bottom, screenHeight);
