@@ -34,6 +34,9 @@ class EditorSystem extends ecs.System {
     var hoveredWallIndex:Int;
     var movingWallIndex:Int;
 
+    var hoveredRoomIndex:Int;
+    var movingRoomIndex:Int;
+
     var currentRoomWalls:Array<Int> = [];
 
     var action = Selecting;
@@ -85,7 +88,7 @@ class EditorSystem extends ecs.System {
     function draw() {
         processVertices();
         processWalls();
-        processSectors();
+        processRooms();
         drawItems();
     }
 
@@ -144,11 +147,13 @@ class EditorSystem extends ecs.System {
         }
     }
 
-    function processSectors() {
+    function processRooms() {
+        var center:math.Point = [0, 0];
         var renderer = Main.context.renderer;
 
-        for(sector in level.sectors) {
-            var pos = convertToMap(sector.center);
+        for(room in data.rooms) {
+            computeRoomCenter(room, center);
+            var pos = convertToMap(center);
             renderer.pushRect(pos, [16, 16], 0xff888888);
         }
     }
@@ -386,5 +391,19 @@ class EditorSystem extends ecs.System {
         if(Main.isJustPressed('PageUp') || Main.mouseWheelDelta > 0) {
             zoom /= 1.1;
         }
+    }
+
+    function computeRoomCenter(room:RoomData, center:math.Point) {
+        center.set(0, 0);
+        var v = data.vertices;
+
+        for(wi in room.walls) {
+            var wall = data.walls[wi];
+            center += v[wall.a];
+            center += v[wall.b];
+        }
+
+        var len = room.walls.length * 2;
+        center.set(center.x/len, center.y/len);
     }
 }
