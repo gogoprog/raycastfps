@@ -305,7 +305,7 @@ class Renderer {
             setDepthColumn(x, 1000000);
 
             if(results.results.length > 0) {
-                var magic = 0.275;
+                var magic = 0.2625;
                 var i = results.results.length - 1;
                 var previous_sector:world.Sector = null;
 
