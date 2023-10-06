@@ -259,17 +259,22 @@ class Renderer {
         return screenHeight;
     }
 
-    function drawWallColumn(texture:Framebuffer, tx, x, h, h_factor:Float, offset:Int, texScale:Float, depth:Float) {
+    function drawWallColumn(texture:Framebuffer, tx, x, h, h_factor:Float, offset:Int, tex_scale:Float, depth:Float) {
         var toi = Std.int(h * h_factor) + 1;
         setDepthColumn2(x, depth, halfScreenHeight - toi - offset, halfScreenHeight - offset);
+        var theight = texture.height;
+        var twidth = texture.width;
+        var theight_scaled = theight * tex_scale;
+        var init_tex_y = Std.int(theight_scaled);
 
         for(i in 0...toi) {
             var y:Int = halfScreenHeight - i - offset;
 
             if(y>0 && y<screenHeight) {
-                var texY = texture.height - (Std.int((i/toi) * texture.height * texScale) % texture.height) - 1;
-                var texIndex = (texY * texture.width + tx);
-                copyPixel32(texture, backbuffer, texIndex, getBackbufferIndex(x, y));
+                var tex_y = init_tex_y - (Std.int((i/toi) * theight_scaled) % theight) - 1;
+                tex_y %= theight;
+                var tex_index = (tex_y * twidth + tx);
+                copyPixel32(texture, backbuffer, tex_index, getBackbufferIndex(x, y));
             }
         }
     }
@@ -307,22 +312,24 @@ class Renderer {
                 while(i>=0) {
                     var wr = results.results[i];
                     var wall = wr.wall;
+                    var sector = wr.sector;
                     var texture = wr.wall.texture;
                     var h = (screenHeight / wallH) / wr.distance;
-                    var offset = (-cameraTransform.y + wr.sector.bottom) / wr.distance;
+                    var offset = (-cameraTransform.y + sector.bottom) / wr.distance;
                     var bottom = getWallBottom(Std.int(h), Std.int(offset));
                     var depth = wr.distance * 1024;
 
                     if(texture != null) {
                         var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
-                        var delta = wr.sector.top - wr.sector.bottom;
+                        var delta = sector.top - sector.bottom;
                         var ratio = magic * delta/wallH;
-                        drawWallColumn(texture, tx, x, Std.int(h), ratio, Std.int(offset), wall.textureScale.y * ratio, depth);
+                        var tex_scale = delta / (sector.initialTop - sector.initialBottom);
+                        drawWallColumn(texture, tx, x, Std.int(h), ratio, Std.int(offset), wall.textureScale.y * tex_scale, depth);
                         setDepthColumn2(x, depth, bottom, screenHeight);
                     }
 
                     if(previous_sector != null) {
-                        var delta = previous_sector.bottom - wr.sector.bottom;
+                        var delta = previous_sector.bottom - sector.bottom;
 
                         if(delta > 0) {
                             var h = (screenHeight / wallH) / wr.distance;
@@ -338,12 +345,12 @@ class Renderer {
                         }
                     }
 
-                    if(bottom < screenHeight && wr.sector.floorTexture != null) {
-                        drawFloorColumn(wr.sector.floorTexture, x, bottom, screenHeight, -wr.sector.bottom);
+                    if(bottom < screenHeight && sector.floorTexture != null) {
+                        drawFloorColumn(sector.floorTexture, x, bottom, screenHeight, -sector.bottom);
                     }
 
                     --i;
-                    previous_sector = wr.sector;
+                    previous_sector = sector;
                 }
             }
         }
