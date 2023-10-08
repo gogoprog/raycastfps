@@ -11,6 +11,7 @@ private enum Action {
 }
 
 class EditorSystem extends ecs.System {
+    static var selectedColor = 0xff11ee11;
     var editing = true;
     var font:display.Framebuffer = null;
     var vertex:display.Framebuffer = null;
@@ -111,7 +112,7 @@ class EditorSystem extends ecs.System {
                     hoveredVertexIndex = index;
                 }
 
-                color = 0xff1111ee;
+                color = selectedColor;
             }
 
             renderer.pushRect(sv, [64 * zoom, 64 * zoom], color);
@@ -139,7 +140,7 @@ class EditorSystem extends ecs.System {
 
             if(delta.getLength() < 64 * zoom) {
                 hoveredWallIndex = index;
-                color = 0xff1111ee;
+                color = selectedColor;
             }
 
             renderer.pushLine(a, b, color);
@@ -150,11 +151,43 @@ class EditorSystem extends ecs.System {
     function processRooms() {
         var center:math.Point = [0, 0];
         var renderer = Main.context.renderer;
+        var mouse_position = Main.mouseScreenPosition;
+        var index = 0;
+        hoveredRoomIndex = null;
 
         for(room in data.rooms) {
             computeRoomCenter(room, center);
             var pos = convertToMap(center);
-            renderer.pushRect(pos, [16, 16], 0xff888888);
+            var delta = (mouse_position - pos);
+            var color = 0xff444444;
+
+            if(delta.getLength() < 16) {
+                hoveredRoomIndex = index;
+                color = selectedColor;
+            }
+
+            renderer.pushRect(pos, [8, 8], color);
+
+            if(room.door) {
+                renderer.pushText("mini", pos, "D");
+            }
+
+            ++index;
+        }
+
+        if(hoveredRoomIndex != null) {
+            for(wi in data.rooms[hoveredRoomIndex].walls) {
+                var w = data.walls[wi];
+                var a = convertToMap(data.vertices[w.a]);
+                var b = convertToMap(data.vertices[w.b]);
+                var color = selectedColor;
+
+                if(w.textureName == null) {
+                    color = 0xff888888;
+                }
+
+                renderer.pushLine(a, b, color);
+            }
         }
     }
 
@@ -205,7 +238,9 @@ class EditorSystem extends ecs.System {
     function onMouseRightPressed() {
         switch(action) {
             case Selecting: {
-                if(hoveredVertexIndex != null) {
+                if(hoveredRoomIndex != null) {
+                    data.rooms[hoveredRoomIndex].door = !data.rooms[hoveredRoomIndex].door;
+                } else if(hoveredVertexIndex != null) {
                 } else if(hoveredWallIndex != null) {
                     var wall = data.walls[hoveredWallIndex];
                     wall.textureName = null;
@@ -289,7 +324,7 @@ class EditorSystem extends ecs.System {
                             walls: currentRoomWalls,
                             floorTextureName: "floor",
                             bottom: 0,
-                            top: 3
+                            top: 64
                         });
                         currentRoomWalls = [];
                         level.generateSectors();
@@ -399,8 +434,8 @@ class EditorSystem extends ecs.System {
 
         for(wi in room.walls) {
             var wall = data.walls[wi];
-            center += v[wall.a];
-            center += v[wall.b];
+            center.add(v[wall.a]);
+            center.add(v[wall.b]);
         }
 
         var len = room.walls.length * 2;

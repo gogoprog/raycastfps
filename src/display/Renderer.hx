@@ -289,7 +289,7 @@ class Renderer {
             var dx = Math.cos(a) * 1024;
             var dy = Math.sin(a) * 1024;
             var camTarget = [camPos[0]+dx, camPos[1]+dy];
-            var results = new WallResults(5);
+            var results = new WallResults(6);
 
             for(s in sectors) {
                 for(w in s.walls) {

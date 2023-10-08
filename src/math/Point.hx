@@ -81,5 +81,8 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         return new Point(this[0], this[1]);
     }
 
-    public function add
+    public function add(other:Point) {
+        this[0] += other.x;
+        this[1] += other.y;
+    }
 }

@@ -41,6 +41,8 @@ class Level {
                 [1024, 0],
                 [1024, 1024],
                 [0, 1024],
+                [-102, 1024],
+                [-102, 0],
                 [-1024, 1024],
                 [-1024, 0]
             ],
@@ -84,12 +86,33 @@ class Level {
                 a: 4,
                 b: 5,
                 bottomTextureName: "door",
-                textureName: "wall",
+                textureName: null,
                 textureScale: [1, 1]
             },
             {
                 a: 5,
                 b: 0,
+                bottomTextureName: "door",
+                textureName: "wall",
+                textureScale: [1, 1]
+            },
+            {
+                a: 4,
+                b: 6,
+                bottomTextureName: "door",
+                textureName: "wall",
+                textureScale: [1, 1]
+            },
+            {
+                a: 6,
+                b: 7,
+                bottomTextureName: "door",
+                textureName: "wall",
+                textureScale: [1, 1]
+            },
+            {
+                a: 7,
+                b: 5,
                 bottomTextureName: "door",
                 textureName: "wall",
                 textureScale: [1, 1]
@@ -105,13 +128,19 @@ class Level {
             },
             {
                 walls: [3, 4, 5, 6],
-                floorTextureName: "floor2",
+                floorTextureName: "door",
                 bottom: 10,
                 top: 64,
                 door: true
+            },
+            {
+                walls: [7, 8, 9, 4],
+                floorTextureName: "floor2",
+                bottom: 0,
+                top: 64
             }
             ],
-            startPosition: [128, 128]
+            startPosition: [-512, 128]
         };
         generateSectors();
     }
