@@ -129,12 +129,12 @@ class Level {
             {
                 walls: [3, 4, 5, 6],
                 floorTextureName: "door",
-                bottom: 10,
+                bottom: 0,
                 top: 64,
                 door: true
             },
             {
-                walls: [7, 8, 9, 4],
+                walls: [7, 8, 9, 5],
                 floorTextureName: "floor2",
                 bottom: 0,
                 top: 64
