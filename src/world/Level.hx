@@ -176,8 +176,11 @@ class Level {
     function createDoor(sector:Sector) {
         var e = new ecs.Entity();
         e.add(new math.Transform());
-        e.add(new core.Door(sector));
+        var door = new core.Door(sector);
+        e.add(door);
         e.get(math.Transform).position = sector.center;
+        door.open = false;
+        sector.bottom =sector.initialTop;
         Main.context.engine.addEntity(e);
     }
 

@@ -31,6 +31,7 @@ class EditorSystem extends ecs.System {
     var hoveredVertexIndex:Int;
     var movingVertexIndex:Int;
     var previousVertexIndex:Int;
+    var startVertexIndex:Int;
 
     var hoveredWallIndex:Int;
     var movingWallIndex:Int;
@@ -39,6 +40,7 @@ class EditorSystem extends ecs.System {
     var movingRoomIndex:Int;
 
     var currentRoomWalls:Array<Int> = [];
+    var creatingRoomNewVerticesCount = 0;
 
     var action = Selecting;
 
@@ -52,6 +54,7 @@ class EditorSystem extends ecs.System {
     }
 
     override public function onSuspend() {
+        level.generateSectors();
     }
 
     override public function update(dt:Float) {
@@ -240,6 +243,10 @@ class EditorSystem extends ecs.System {
             case Selecting: {
                 if(hoveredRoomIndex != null) {
                     data.rooms[hoveredRoomIndex].door = !data.rooms[hoveredRoomIndex].door;
+
+                    if(data.rooms[hoveredRoomIndex].door) {
+                        data.rooms[hoveredRoomIndex].floorTextureName = "door";
+                    }
                 } else if(hoveredVertexIndex != null) {
                 } else if(hoveredWallIndex != null) {
                     var wall = data.walls[hoveredWallIndex];
@@ -270,9 +277,11 @@ class EditorSystem extends ecs.System {
         switch(action) {
             case Selecting: {
                 action = CreatingRoom;
+                creatingRoomNewVerticesCount = 0;
 
                 if(hoveredVertexIndex != null) {
                     data.vertices.push(new_position.getCopy());
+                    creatingRoomNewVerticesCount++;
                     var last_index = data.vertices.length - 1;
                     var wall:world.WallData = {
                         a: hoveredVertexIndex,
@@ -284,8 +293,10 @@ class EditorSystem extends ecs.System {
                     data.walls.push(wall);
                     movingVertexIndex = last_index;
                     previousVertexIndex = hoveredVertexIndex;
+                    startVertexIndex = hoveredVertexIndex;
                     currentRoomWalls.push(data.walls.length - 1);
                 } else {
+                    creatingRoomNewVerticesCount++;
                     data.vertices.push(new_position.getCopy());
                     data.vertices.push(new_position.getCopy());
                     var last_index = data.vertices.length - 1;
@@ -318,19 +329,35 @@ class EditorSystem extends ecs.System {
                     data.walls.push(wall);
                     movingVertexIndex = null;
                     previousVertexIndex = null;
-                    currentRoomWalls.push(data.walls.length - 1);
-                    {
-                        data.rooms.push({
-                            walls: currentRoomWalls,
-                            floorTextureName: "floor",
-                            bottom: 0,
-                            top: 64
-                        });
-                        currentRoomWalls = [];
-                        level.generateSectors();
+                    var missing_wall = findWall(startVertexIndex, hoveredVertexIndex);
+
+                    if(missing_wall != null) {
+                        currentRoomWalls.push(missing_wall);
+                        currentRoomWalls.push(data.walls.length - 1);
+                        {
+                            data.rooms.push({
+                                walls: currentRoomWalls,
+                                floorTextureName: "floor",
+                                bottom: 0,
+                                top: 64
+                            });
+                            currentRoomWalls = [];
+                            level.generateSectors();
+                        }
+                        data.walls[missing_wall].textureName = null;
+                    } else {
+                        for(i in 0...currentRoomWalls.length + 1) {
+                            data.walls.pop();
+                        }
+
+                        for(i in 0...creatingRoomNewVerticesCount - 1) {
+                            data.vertices.pop();
+                        }
                     }
+
                     action = Selecting;
                 } else {
+                    creatingRoomNewVerticesCount++;
                     data.vertices.push(new_position.getCopy());
                     var last_index = data.vertices.length - 1;
                     var wall:world.WallData = {
@@ -440,5 +467,17 @@ class EditorSystem extends ecs.System {
 
         var len = room.walls.length * 2;
         center.set(center.x/len, center.y/len);
+    }
+
+    function findWall(a, b) {
+        for(index in 0...data.walls.length) {
+            var wall = data.walls[index];
+
+            if((wall.a == a && wall.b == b) || (wall.a == b && wall.b == a)) {
+                return index;
+            }
+        }
+
+        return null;
     }
 }

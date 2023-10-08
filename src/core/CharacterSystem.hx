@@ -38,7 +38,7 @@ class CharacterSystem extends ecs.System {
                 var door_pos = e.get(math.Transform).position;
                 var distance = math.Point.getSquareDistance(door_pos, transform.position);
 
-                if(distance < 6000 * 6000) {
+                if(distance < 200 * 200) {
                     if(e.get(core.DoorChange) == null) {
                         var door_change = new core.DoorChange();
                         var door = e.get(core.Door);
