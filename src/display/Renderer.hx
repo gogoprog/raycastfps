@@ -427,11 +427,19 @@ class Renderer {
         }
     }
 
+    inline function clampX(x) {
+        return Std.int(Math.min(Math.max(x, 0), screenWidth));
+    }
+
+    inline function clampY(y) {
+        return Std.int(Math.min(Math.max(y, 0), screenHeight));
+    }
+
     function drawLine(a:Point, b:Point, color:Int) {
-        var x0 = Std.int(a.x);
-        var y0 = Std.int(a.y);
-        var x1 = Std.int(b.x);
-        var y1 = Std.int(b.y);
+        var x0 = clampX(a.x);
+        var y0 = clampY(a.y);
+        var x1 = clampX(b.x);
+        var y1 = clampY(b.y);
         var dx = Math.abs(x1 - x0);
         var dy = Math.abs(y1 - y0);
         var sx = (x0 < x1) ? 1 : -1;
@@ -454,6 +462,8 @@ class Renderer {
     }
 
     function drawRect(center:Point, extent:Point, color:Int) {
+        if(center.x < 0 || center.y < 0 || center.x > screenWidth || center.y > screenHeight) { return; }
+
         var x0 = Std.int(center.x - extent.x / 2);
         var y0 = Std.int(center.y - extent.y / 2);
         var x1 = Std.int(center.x + extent.x / 2);

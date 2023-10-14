@@ -321,6 +321,7 @@ class EditorSystem extends ecs.System {
                         textureScale: [1, 1]
                     };
                     data.walls.push(wall);
+                    startVertexIndex = last_index - 1;
                     movingVertexIndex = last_index;
                     previousVertexIndex = last_index - 1;
                     currentRoomWalls.push(data.walls.length - 1);
@@ -344,8 +345,11 @@ class EditorSystem extends ecs.System {
                     previousVertexIndex = null;
                     var missing_wall = findWall(startVertexIndex, hoveredVertexIndex);
 
-                    if(missing_wall != null) {
-                        currentRoomWalls.push(missing_wall);
+                    if(missing_wall != null || startVertexIndex == hoveredVertexIndex) {
+                        if(missing_wall != null) {
+                            currentRoomWalls.push(missing_wall);
+                        }
+
                         currentRoomWalls.push(data.walls.length - 1);
                         {
                             data.rooms.push({
@@ -357,7 +361,10 @@ class EditorSystem extends ecs.System {
                             currentRoomWalls = [];
                             level.generateSectors();
                         }
-                        data.walls[missing_wall].textureName = null;
+
+                        if(missing_wall != null) {
+                            data.walls[missing_wall].textureName = null;
+                        }
                     } else {
                         for(i in 0...currentRoomWalls.length + 1) {
                             data.walls.pop();
@@ -400,6 +407,12 @@ class EditorSystem extends ecs.System {
             }
 
             case MovingVertex: {
+                if(Main.isPressed("Shift")) {
+                    var align = 64;
+                    new_position.x = Std.int(new_position.x / 64) * 64;
+                    new_position.y = Std.int(new_position.y / 64) * 64;
+                }
+
                 data.vertices[movingVertexIndex].copyFrom(new_position);
             }
 

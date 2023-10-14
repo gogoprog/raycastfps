@@ -137,6 +137,10 @@ class Main {
         return untyped !previousKeys[k] && untyped keys[k];
     }
 
+    static inline public function isPressed(k:String) {
+        return untyped keys[k];
+    }
+
     static inline public function isMouseButtonJustPressed(i:Int) {
         return !previousMouseButtons[i] && mouseButtons[i];
     }
