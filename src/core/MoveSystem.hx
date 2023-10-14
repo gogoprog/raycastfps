@@ -56,32 +56,67 @@ class MoveSystem extends ecs.System {
             }
 
             if(!collides) {
+                var current_height = 0.0;
+
                 for(s in Main.context.level.sectors) {
-                    for(w in s.walls) {
-                        if(w.texture == null) { continue; }
+                    if(s.contains(transform.position)) {
+                        current_height = s.bottom;
 
-                        var r = math.Utils.segmentToSegmentIntersection(transform.position, test_position, w.a, w.b);
+                        for(w in s.walls) {
+                            if(w.texture == null) { continue; }
 
-                        if(r!= null && r[0] < 1)  {
-                            collides = true;
-                            break;
+                            var r = math.Utils.segmentToSegmentIntersection(transform.position, test_position, w.a, w.b);
+
+                            if(r != null && r[0] < 1)  {
+                                collides = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if(collides) {
                         break;
                     }
                 }
 
                 if(!collides) {
-                    transform.position.copyFrom(test_position);
+                    for(s in Main.context.level.sectors) {
+                        if(s.contains(test_position)) {
+                            var new_height = s.bottom;
+
+                            if(new_height - current_height < 20) {
+                                transform.position.copyFrom(test_position);
+                                object.currentSector = s;
+                            }
+
+                            break;
+                        }
+                    }
                 }
             }
         }
 
-        for(sector in Main.context.level.sectors) {
-            if(sector.contains(transform.position)) {
-                transform.y = sector.bottom + 32;
+        if(object.currentSector != null) {
+            var floor_height = object.currentSector.bottom + 32;
+
+            if(floor_height < transform.y) {
+                object.velocityY -= 1000 * dt;
+                transform.y += object.velocityY * dt;
+
+                if(floor_height > transform.y) {
+                    transform.y = floor_height;
+                    object.velocityY = 0;
+                }
+            }
+
+            if(floor_height > transform.y) {
+                transform.y = floor_height;
+                object.velocityY = 0;
+            }
+        } else {
+            for(s in Main.context.level.sectors) {
+                if(s.contains(test_position)) {
+                    object.currentSector = s;
+                    transform.y = object.currentSector.bottom + 32;
+                }
             }
         }
     }

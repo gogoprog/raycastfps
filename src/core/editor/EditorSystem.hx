@@ -198,6 +198,19 @@ class EditorSystem extends ecs.System {
         var mouse_position = Main.mouseScreenPosition;
         var renderer = Main.context.renderer;
         renderer.pushRect(mouse_position, [2, 2], 0xff55dd44);
+        var players = engine.getMatchingEntities(core.Player);
+
+        for(player in players) {
+            var pos = convertToMap(player.get(math.Transform).position);
+            renderer.pushRect(pos, [8, 8], 0xffdd5544);
+        }
+
+        var monsters = engine.getMatchingEntities(core.Monster);
+
+        for(monster in monsters) {
+            var pos = convertToMap(monster.get(math.Transform).position);
+            renderer.pushRect(pos, [8, 8], 0xff4444dd);
+        }
     }
 
     function onMouseLeftPressed() {
