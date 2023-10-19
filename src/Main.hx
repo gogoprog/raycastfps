@@ -51,9 +51,14 @@ class Main {
             engine.addSystem(new core.editor.EditorSystem(), 666);
             engine.addSystem(consoleSystem, 667);
             gotoIngame();
-            {
-                for(i in 0...128) {
-                    var e = Factory.createMonster([Math.random() * 2000, Math.random() * 2000]);
+            function init() {
+                for(i in 0...2) {
+                    var e = Factory.createMonster("grell", [Math.random() * 200, Math.random() * 1000]);
+                    engine.addEntity(e);
+                }
+
+                for(i in 0...1) {
+                    var e = Factory.createMonster("supergrell", [Math.random() * 200, Math.random() * 1000]);
                     engine.addEntity(e);
                 }
 
@@ -65,6 +70,7 @@ class Main {
                     playerEntity = e;
                 }
             }
+            Factory.initialize(init);
         }
         function setupControls() {
             canvas.onmousedown = function(e) {
@@ -125,6 +131,10 @@ class Main {
                 }
             }
 
+            if(isJustPressed('r')) {
+                context.level.restart();
+            }
+
             previousKeys = js.lib.Object.assign({}, keys);
             previousMouseButtons = mouseButtons.slice(0);
             mouseWheelDelta = 0;
@@ -181,14 +191,5 @@ class Main {
         context.engine.suspendSystem(core.ControlSystem);
         context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
-    }
-
-    static public function gotoEditorPreview() {
-        canvas.requestPointerLock();
-        context.level.generateSectors();
-        playerEntity.get(math.Transform).position.copyFrom(context.level.data.startPosition);
-        context.engine.suspendSystem(core.ControlSystem);
-        context.engine.suspendSystem(core.MonsterSystem);
-        context.engine.suspendSystem(core.MoveSystem);
     }
 }

@@ -1,6 +1,20 @@
 package;
 
 class Factory {
+    static private var monsters = new Map<String, def.Monster>();
+
+    static public function initialize(callback) {
+        var loader = new def.Loader<def.Monsters>(Main.context.dataRoot);
+        loader.load2("monsters", function(data) {
+
+            for(entry in data) {
+                monsters[entry.name] = entry;
+            }
+            Main.log('Loaded monsters');
+            callback();
+        });
+    }
+
     static public function createGibs(engine:ecs.Engine, position:math.Point) {
         for(i in 0...128) {
             var e = new ecs.Entity();
@@ -34,17 +48,19 @@ class Factory {
         return e;
     }
 
-    static public function createMonster(position:math.Point) {
+    static public function createMonster(which:String, position:math.Point) {
+        var monster = monsters[which];
         var e = new ecs.Entity();
         e.add(new core.Sprite());
         e.add(new core.Object());
         e.add(new core.Hittable());
+        e.get(core.Hittable).life = monster.life;
         e.add(new core.Character());
         e.add(new math.Transform());
         e.get(math.Transform).position = position;
         e.get(math.Transform).angle = Math.random() * Math.PI * 2;
         e.add(new core.SpriteAnimator());
-        e.get(core.SpriteAnimator).push("grell-idle");
+        e.get(core.SpriteAnimator).push(monster.animations.idle);
         e.add(new core.Monster());
         return e;
     }

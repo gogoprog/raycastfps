@@ -71,11 +71,6 @@ class EditorSystem extends ecs.System {
             draw();
             processAction();
             processControls();
-        } else {
-            if(Main.isJustPressed('Enter')) {
-                editing = true;
-                Main.gotoEditor();
-            }
         }
 
         renderer.pushText("main", [2, 2], "EDITOR", false);
@@ -445,11 +440,6 @@ class EditorSystem extends ecs.System {
             }
         } else {
             isPanning = false;
-        }
-
-        if(Main.isJustPressed('Enter')) {
-            editing = false;
-            Main.gotoEditorPreview();
         }
 
         if(Main.isMouseButtonJustPressed(0)) {

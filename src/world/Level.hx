@@ -16,10 +16,17 @@ typedef RoomData = {
     @:optional var door:Bool;
 }
 
+typedef ItemData = {
+    var type:String;
+    var name:String;
+    var position:math.Point;
+}
+
 typedef LevelData = {
     var vertices:Array<math.Point>;
     var walls:Array<WallData>;
     var rooms:Array<RoomData>;
+    var items:Array<ItemData>;
     var skyTextureName:String;
     var startPosition:math.Point;
 }
@@ -140,7 +147,10 @@ class Level {
                 top: 64
             }
             ],
-            startPosition: [-512, 128]
+            startPosition: [-512, 128],
+            items:[
+
+            ]
         };
         generateSectors();
     }
@@ -184,6 +194,9 @@ class Level {
         Main.context.engine.addEntity(e);
     }
 
+    function placeItems() {
+    }
+
     public function generateSectors() {
         Main.log("Generating sectors...");
         sectors = [];
@@ -212,5 +225,10 @@ class Level {
             }
             Main.log("Sector added.");
         }
+    }
+
+    public function restart() {
+        generateSectors();
+        placeItems();
     }
 }
