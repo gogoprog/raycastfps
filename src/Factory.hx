@@ -65,7 +65,7 @@ class Factory {
         return e;
     }
 
-    static public function createPlayer() {
+    static public function createPlayer(position) {
         var e = new ecs.Entity();
         e.add(new math.Transform());
         e.add(new core.Player());
@@ -73,7 +73,8 @@ class Factory {
         e.add(new core.Object());
         e.add(new core.Control());
         e.add(new core.Camera());
-        e.get(math.Transform).position = [1024, 1024];
+        e.get(math.Transform).position.copyFrom(position);
+        e.get(math.Transform).scale = 0.2;
         e.get(math.Transform).y = 32;
         e.get(core.Object).radius = 32;
         return e;

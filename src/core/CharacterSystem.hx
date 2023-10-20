@@ -32,7 +32,7 @@ class CharacterSystem extends ecs.System {
         }
 
         if(character.requestOpen) {
-            var doors =  engine.getMatchingEntities(core.Door);
+            var doors = engine.getMatchingEntities(core.Door);
 
             for(e in doors) {
                 var door_pos = e.get(math.Transform).position;

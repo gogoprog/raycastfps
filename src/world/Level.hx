@@ -16,7 +16,7 @@ typedef RoomData = {
     @:optional var door:Bool;
 }
 
-typedef ItemData = {
+typedef ObjectData = {
     var type:String;
     var name:String;
     var position:math.Point;
@@ -26,7 +26,7 @@ typedef LevelData = {
     var vertices:Array<math.Point>;
     var walls:Array<WallData>;
     var rooms:Array<RoomData>;
-    var items:Array<ItemData>;
+    var objects:Array<ObjectData>;
     var skyTextureName:String;
     var startPosition:math.Point;
 }
@@ -36,6 +36,8 @@ class Level {
 
     public var sectors:Array<Sector> = [];
     public var skyTexture:display.Framebuffer;
+
+    public var playerEntity:ecs.Entity;
 
     public function new() {
     }
@@ -148,7 +150,19 @@ class Level {
             }
             ],
             startPosition: [-512, 128],
-            items:[
+            objects:[
+            {
+                type: "start",
+                name: "player",
+                position:[-512, 128]
+
+            },
+            {
+                type: "monster",
+                name: "grell",
+                position:[100, 500]
+
+            }
 
             ]
         };
@@ -194,7 +208,26 @@ class Level {
         Main.context.engine.addEntity(e);
     }
 
-    function placeItems() {
+    function placeObjects() {
+        var engine = Main.context.engine;
+        var es = engine.getMatchingEntities(core.Object);
+
+        for(e in es) {
+            engine.removeEntity(e);
+        }
+
+        for(obj in data.objects) {
+            switch(obj.type) {
+                case "monster":
+                    var e = Factory.createMonster(obj.name, obj.position);
+                    engine.addEntity(e);
+
+                case "start":
+                    var e = Factory.createPlayer(obj.position);
+                    engine.addEntity(e);
+                    playerEntity = e;
+            }
+        }
     }
 
     public function generateSectors() {
@@ -229,6 +262,6 @@ class Level {
 
     public function restart() {
         generateSectors();
-        placeItems();
+        placeObjects();
     }
 }

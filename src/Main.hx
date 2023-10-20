@@ -52,23 +52,9 @@ class Main {
             engine.addSystem(consoleSystem, 667);
             gotoIngame();
             function init() {
-                for(i in 0...2) {
-                    var e = Factory.createMonster("grell", [Math.random() * 200, Math.random() * 1000]);
-                    engine.addEntity(e);
-                }
-
-                for(i in 0...1) {
-                    var e = Factory.createMonster("supergrell", [Math.random() * 200, Math.random() * 1000]);
-                    engine.addEntity(e);
-                }
-
-                {
-                    var e = Factory.createPlayer();
-                    engine.addEntity(e);
-                    hudSystem.setPlayerEntity(e);
-                    e.get(math.Transform).position.copyFrom(context.level.data.startPosition);
-                    playerEntity = e;
-                }
+                context.level.restart();
+                playerEntity = context.level.playerEntity;
+                hudSystem.setPlayerEntity(playerEntity);
             }
             Factory.initialize(init);
         }
