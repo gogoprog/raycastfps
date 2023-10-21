@@ -206,12 +206,14 @@ class Level {
         Main.context.engine.addEntity(e);
     }
 
-    function placeObjects() {
+    public function placeObjects(skip_start = false) {
         var engine = Main.context.engine;
         var es = engine.getMatchingEntities(core.Object);
 
         for(e in es) {
-            engine.removeEntity(e);
+            if(!skip_start || e.get(core.Player) == null) {
+                engine.removeEntity(e);
+            }
         }
 
         for(obj in data.objects) {
@@ -221,9 +223,11 @@ class Level {
                     engine.addEntity(e);
 
                 case "start":
-                    var e = Factory.createPlayer(obj.position);
-                    engine.addEntity(e);
-                    Main.context.playerEntity = e;
+                    if(!skip_start) {
+                        var e = Factory.createPlayer(obj.position);
+                        engine.addEntity(e);
+                        Main.context.playerEntity = e;
+                    }
             }
         }
     }

@@ -173,6 +173,7 @@ class Main {
         js.Browser.document.exitPointerLock();
         canvas.onclick = function() {};
         context.engine.suspendSystem(core.TransformControlSystem);
+        context.engine.suspendSystem(core.MonsterSystem);
         context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
     }

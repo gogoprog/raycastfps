@@ -410,6 +410,40 @@ class EditorSystem extends ecs.System {
 
         switch(action) {
             case Selecting: {
+                if(hoveredRoomIndex != null) {
+                    var room = data.rooms[hoveredRoomIndex];
+                    var step = 16;
+
+                    if(Main.isJustPressed("PageUp")) {
+                        room.bottom += step;
+                        level.generateSectors();
+                    }
+
+                    if(Main.isJustPressed("PageDown")) {
+                        room.bottom -= step;
+                        level.generateSectors();
+                    }
+
+                    if(Main.isJustPressed("Home")) {
+                        room.top += step;
+                        level.generateSectors();
+                    }
+
+                    if(Main.isJustPressed("End")) {
+                        room.top -= step;
+                        level.generateSectors();
+                    }
+                }
+
+                if(Main.isJustPressed("m")) {
+                    var obj = {
+                        type: "monster",
+                        name: "grell",
+                        position:new_position
+                    };
+                    data.objects.push(obj);
+                    level.placeObjects(true);
+                }
             }
 
             case MovingVertex: {
@@ -479,31 +513,6 @@ class EditorSystem extends ecs.System {
 
         if(Main.isJustPressed('+') || Main.mouseWheelDelta > 0) {
             zoom /= 1.1;
-        }
-
-        if(hoveredRoomIndex != null) {
-            var room = data.rooms[hoveredRoomIndex];
-            var step = 16;
-
-            if(Main.isJustPressed("PageUp")) {
-                room.bottom += step;
-                level.generateSectors();
-            }
-
-            if(Main.isJustPressed("PageDown")) {
-                room.bottom -= step;
-                level.generateSectors();
-            }
-
-            if(Main.isJustPressed("Home")) {
-                room.top += step;
-                level.generateSectors();
-            }
-
-            if(Main.isJustPressed("End")) {
-                room.top -= step;
-                level.generateSectors();
-            }
         }
     }
 
