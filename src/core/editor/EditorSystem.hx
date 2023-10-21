@@ -473,12 +473,37 @@ class EditorSystem extends ecs.System {
             onSpacePressed();
         }
 
-        if(Main.isJustPressed('PageDown') || Main.mouseWheelDelta < 0) {
+        if(Main.isJustPressed('-') || Main.mouseWheelDelta < 0) {
             zoom *= 1.1;
         }
 
-        if(Main.isJustPressed('PageUp') || Main.mouseWheelDelta > 0) {
+        if(Main.isJustPressed('+') || Main.mouseWheelDelta > 0) {
             zoom /= 1.1;
+        }
+
+        if(hoveredRoomIndex != null) {
+            var room = data.rooms[hoveredRoomIndex];
+            var step = 16;
+
+            if(Main.isJustPressed("PageUp")) {
+                room.bottom += step;
+                level.generateSectors();
+            }
+
+            if(Main.isJustPressed("PageDown")) {
+                room.bottom -= step;
+                level.generateSectors();
+            }
+
+            if(Main.isJustPressed("Home")) {
+                room.top += step;
+                level.generateSectors();
+            }
+
+            if(Main.isJustPressed("End")) {
+                room.top -= step;
+                level.generateSectors();
+            }
         }
     }
 
