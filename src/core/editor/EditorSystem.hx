@@ -6,6 +6,7 @@ private enum Action {
     Selecting;
     MovingVertex;
     MovingWall;
+    MovingRoom;
     Panning;
     CreatingRoom;
 }
@@ -22,9 +23,10 @@ class EditorSystem extends ecs.System {
     var isPanning = false;
     var startPanPosition:math.Point = [];
     var startPanOffset:math.Point = [];
-    var startMoveWallMousePosition:math.Point = [];
+    var startMoveMousePosition:math.Point = [];
     var startMoveWallAPosition:math.Point = [];
     var startMoveWallBPosition:math.Point = [];
+    var startMoveRoomVertexPosition:Array<math.Point> = [];
 
     var level:world.Level;
     var data:world.LevelData;
@@ -231,9 +233,22 @@ class EditorSystem extends ecs.System {
                     action = MovingWall;
                     movingWallIndex = hoveredWallIndex;
                     var wall = data.walls[movingWallIndex];
-                    startMoveWallMousePosition.copyFrom(convertFromMap(mouse_position));
+                    startMoveMousePosition.copyFrom(convertFromMap(mouse_position));
                     startMoveWallAPosition.copyFrom(data.vertices[wall.a]);
                     startMoveWallBPosition.copyFrom(data.vertices[wall.b]);
+                } else if(hoveredRoomIndex != null) {
+                    action = MovingRoom;
+                    movingRoomIndex = hoveredRoomIndex;
+                    startMoveMousePosition.copyFrom(convertFromMap(mouse_position));
+                    var room = data.rooms[movingRoomIndex];
+
+                    startMoveRoomVertexPosition = [];
+
+                    for(w in room.walls) {
+                        var wall = data.walls[w];
+                        startMoveRoomVertexPosition.push(data.vertices[wall.a].getCopy());
+                        startMoveRoomVertexPosition.push(data.vertices[wall.b].getCopy());
+                    }
                 }
             }
 
@@ -251,6 +266,11 @@ class EditorSystem extends ecs.System {
             case MovingWall: {
                 action = Selecting;
                 movingWallIndex = null;
+            }
+
+            case MovingRoom : {
+                action = Selecting;
+                movingRoomIndex = null;
             }
 
             default:
@@ -412,7 +432,7 @@ class EditorSystem extends ecs.System {
             case Selecting: {
                 if(hoveredRoomIndex != null) {
                     var room = data.rooms[hoveredRoomIndex];
-                    var step = 16;
+                    var step = 8;
 
                     if(Main.isJustPressed("PageUp")) {
                         room.bottom += step;
@@ -447,10 +467,10 @@ class EditorSystem extends ecs.System {
             }
 
             case MovingVertex: {
-                if(Main.isPressed("Shift")) {
-                    var align = 64;
-                    new_position.x = Std.int(new_position.x / 64) * 64;
-                    new_position.y = Std.int(new_position.y / 64) * 64;
+                if(!Main.isPressed("Shift")) {
+                    var align = 32;
+                    new_position.x = Std.int(new_position.x / align) * align;
+                    new_position.y = Std.int(new_position.y / align) * align;
                 }
 
                 data.vertices[movingVertexIndex].copyFrom(new_position);
@@ -458,9 +478,22 @@ class EditorSystem extends ecs.System {
 
             case MovingWall: {
                 var wall = data.walls[movingWallIndex];
-                var delta = convertFromMap(mouse_position) - startMoveWallMousePosition;
+                var delta = convertFromMap(mouse_position) - startMoveMousePosition;
                 data.vertices[wall.a].copyFrom(startMoveWallAPosition + delta);
                 data.vertices[wall.b].copyFrom(startMoveWallBPosition + delta);
+            }
+
+            case MovingRoom : {
+                var room = data.rooms[movingRoomIndex];
+                var delta = convertFromMap(mouse_position) - startMoveMousePosition;
+                var i = 0;
+
+                for(w in room.walls) {
+                    var wall = data.walls[w];
+                    data.vertices[wall.a].copyFrom(startMoveRoomVertexPosition[i] + delta);
+                    data.vertices[wall.b].copyFrom(startMoveRoomVertexPosition[i + 1] + delta);
+                    i+=2;
+                }
             }
 
             case CreatingRoom: {
@@ -508,11 +541,11 @@ class EditorSystem extends ecs.System {
         }
 
         if(Main.isJustPressed('-') || Main.mouseWheelDelta < 0) {
-            zoom *= 1.1;
+            zoom *= 1.4;
         }
 
         if(Main.isJustPressed('+') || Main.mouseWheelDelta > 0) {
-            zoom /= 1.1;
+            zoom /= 1.4;
         }
     }
 
