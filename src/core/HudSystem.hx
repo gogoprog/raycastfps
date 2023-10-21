@@ -12,7 +12,6 @@ class HudSystem extends ecs.System {
     var velocity = new Point();
 
     var weaponEntity:ecs.Entity;
-    var playerEntity:ecs.Entity;
 
     public function new() {
         super();
@@ -48,8 +47,8 @@ class HudSystem extends ecs.System {
 
         weaponEntity.get(math.Transform).position.copyFrom(weaponPosition+weaponOffset);
         {
-            if(playerEntity != null) {
-                var character = playerEntity.get(Character);
+            if(Main.context.playerEntity != null) {
+                var character = Main.context.playerEntity.get(Character);
                 var animator = weaponEntity.get(SpriteAnimator);
 
                 if(character.didFire) {
@@ -69,9 +68,5 @@ class HudSystem extends ecs.System {
 
     public function setWeaponEntity(e:ecs.Entity) {
         weaponEntity = e;
-    }
-
-    public function setPlayerEntity(e:ecs.Entity) {
-        playerEntity = e;
     }
 }

@@ -12,6 +12,7 @@ private enum Action {
 
 class EditorSystem extends ecs.System {
     static var selectedColor = 0xff11ee11;
+    static var objectsColors = [ "monster" => 0xff4444dd, "start" =>  0xffdd5544];
     var editing = true;
     var font:display.Framebuffer = null;
     var vertex:display.Framebuffer = null;
@@ -88,7 +89,7 @@ class EditorSystem extends ecs.System {
         processVertices();
         processWalls();
         processRooms();
-        drawItems();
+        processObjects();
     }
 
     function processVertices() {
@@ -189,23 +190,17 @@ class EditorSystem extends ecs.System {
         }
     }
 
-    function drawItems() {
+    function processObjects() {
         var mouse_position = Main.mouseScreenPosition;
         var renderer = Main.context.renderer;
         renderer.pushRect(mouse_position, [2, 2], 0xff55dd44);
-        var players = engine.getMatchingEntities(core.Player);
 
-        for(player in players) {
-            var pos = convertToMap(player.get(math.Transform).position);
-            renderer.pushRect(pos, [8, 8], 0xffdd5544);
+        for(obj in data.objects) {
+            var pos = convertToMap(obj.position);
+            renderer.pushRect(pos, [8, 8], objectsColors[obj.type]);
         }
 
-        var monsters = engine.getMatchingEntities(core.Monster);
-
-        for(monster in monsters) {
-            var pos = convertToMap(monster.get(math.Transform).position);
-            renderer.pushRect(pos, [8, 8], 0xff4444dd);
-        }
+        return;
     }
 
     function onMouseLeftPressed() {

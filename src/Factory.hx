@@ -57,7 +57,7 @@ class Factory {
         e.get(core.Hittable).life = monster.life;
         e.add(new core.Character());
         e.add(new math.Transform());
-        e.get(math.Transform).position = position;
+        e.get(math.Transform).position.copyFrom(position);
         e.get(math.Transform).angle = Math.random() * Math.PI * 2;
         e.add(new core.SpriteAnimator());
         e.get(core.SpriteAnimator).push(monster.animations.idle);

@@ -37,8 +37,6 @@ class Level {
     public var sectors:Array<Sector> = [];
     public var skyTexture:display.Framebuffer;
 
-    public var playerEntity:ecs.Entity;
-
     public function new() {
     }
 
@@ -225,13 +223,20 @@ class Level {
                 case "start":
                     var e = Factory.createPlayer(obj.position);
                     engine.addEntity(e);
-                    playerEntity = e;
+                    Main.context.playerEntity = e;
             }
         }
     }
 
     public function generateSectors() {
         Main.log("Generating sectors...");
+        var engine = Main.context.engine;
+        var es = engine.getMatchingEntities(core.Door);
+
+        for(e in es) {
+            engine.removeEntity(e);
+        }
+
         sectors = [];
         var v = data.vertices;
 

@@ -7,6 +7,7 @@ class Context {
     public var textureManager = new display.TextureManager();
     public var level = new world.Level();
     public var engine = new ecs.Engine();
+    public var playerEntity:ecs.Entity;
 
     public function new() {
     }

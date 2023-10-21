@@ -53,8 +53,6 @@ class Main {
             gotoIngame();
             function init() {
                 context.level.restart();
-                playerEntity = context.level.playerEntity;
-                hudSystem.setPlayerEntity(playerEntity);
             }
             Factory.initialize(init);
         }
@@ -151,7 +149,7 @@ class Main {
 
     static public function gotoMenu() {
         canvas.onclick = function() {};
-        context.engine.suspendSystem(core.ControlSystem);
+        context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.resumeSystem(core.MenuSystem);
     }
 
@@ -160,21 +158,21 @@ class Main {
         context.engine.suspendSystem(core.editor.EditorSystem);
         context.engine.suspendSystem(core.MenuSystem);
         context.engine.suspendSystem(core.ConsoleSystem);
-        context.engine.resumeSystem(core.ControlSystem);
+        context.engine.resumeSystem(core.TransformControlSystem);
         context.engine.resumeSystem(core.MonsterSystem);
         context.engine.resumeSystem(core.MoveSystem);
         context.engine.resumeSystem(core.HudSystem);
     }
 
     static public function gotoConsole() {
-        context.engine.suspendSystem(core.ControlSystem);
+        context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.resumeSystem(core.ConsoleSystem);
     }
 
     static public function gotoEditor() {
         js.Browser.document.exitPointerLock();
         canvas.onclick = function() {};
-        context.engine.suspendSystem(core.ControlSystem);
+        context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
     }
