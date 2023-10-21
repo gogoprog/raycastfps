@@ -190,10 +190,26 @@ class EditorSystem extends ecs.System {
         }
     }
 
+    static var tmp = new math.Point();
     function processObjects() {
         var mouse_position = Main.mouseScreenPosition;
         var renderer = Main.context.renderer;
         renderer.pushRect(mouse_position, [2, 2], 0xff55dd44);
+        {
+            var camTransform = Main.context.cameraTransform;
+            var pos = convertToMap(camTransform.position);
+            renderer.pushRect(pos, [4, 4], 0xffffffff);
+
+            tmp.setFromAngle(camTransform.angle - 0.5, 20);
+            tmp.add(pos);
+
+            renderer.pushLine(pos, tmp, 0xffffffff);
+
+            tmp.setFromAngle(camTransform.angle + 0.5, 20);
+            tmp.add(pos);
+
+            renderer.pushLine(pos, tmp, 0xffffffff);
+        }
 
         for(obj in data.objects) {
             var pos = convertToMap(obj.position);

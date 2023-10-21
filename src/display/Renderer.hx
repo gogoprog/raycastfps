@@ -326,9 +326,7 @@ class Renderer {
                         var tex_scale = delta / (sector.initialTop - sector.initialBottom);
                         drawWallColumn(texture, tx, x, Std.int(h), ratio, Std.int(offset), wall.textureScale.y * tex_scale, depth);
                         setDepthColumn2(x, depth, bottom, screenHeight);
-                    }
-
-                    if(previous_sector != null) {
+                    } else if(previous_sector != null) {
                         var delta = previous_sector.bottom - sector.bottom;
 
                         if(delta > 0) {
@@ -596,8 +594,8 @@ class Renderer {
 
     public function pushLine(a:Point, b:Point, color:Int) {
         var line = new Line();
-        line.a = a;
-        line.b = b;
+        line.a = a.getCopy();
+        line.b = b.getCopy();
         line.color = color;
         lines.push(line);
     }
