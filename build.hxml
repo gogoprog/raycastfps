@@ -2,3 +2,5 @@
 -cp deps/Ash-Haxe/src
 -js build/main.js
 -main Main
+-D dataPath=./data
+-D dataRelativePath=../data

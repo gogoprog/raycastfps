@@ -1,6 +1,8 @@
 package display;
 
 class TextureManager {
+    static var rootPath = Macro.getDataRootPath("textures");
+    static var filePaths = Macro.getDataFilePaths("textures");
     var textures:Map<String, Framebuffer> = new Map();
     var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
     var textureContext:js.html.CanvasRenderingContext2D;
@@ -11,37 +13,44 @@ class TextureManager {
 
     public function initialize() {
         textureContext = textureCanvas.getContext("2d");
-        load("console");
-        load("doomguy");
-        load("floor");
-        load("floor2");
-        load("wall");
-        load("sky");
-        load("door");
+
+        for(file in filePaths) {
+            load(file);
+        }
+
+        // load("console");
+        // load("doomguy");
+        // load("floor");
+        // load("floor2");
+        // load("wall");
+        // load("sky");
+        // load("door");
         loadSheet("grell");
         loadSheet("impact");
 
-        for(i in 0...14) {
-            load('shotgun/${i}');
-        }
+        // for(i in 0...14) {
+        //     load('shotgun/${i}');
+        // }
 
-        load("font");
-        load("font2");
+        // load("font");
+        // load("font2");
     }
 
     function add(name:String, texture:Framebuffer) {
         textures[name] = texture;
     }
 
-    function load(name) {
+    function load(filename) {
         loadCount++;
         var img = new js.html.Image();
-        img.src = '../data/textures/${name}.png';
+        img.src = '${rootPath}/${filename}';
         img.onload = function() {
             textureCanvas.width = img.width;
             textureCanvas.height = img.height;
             textureContext.drawImage(img, 0, 0, img.width, img.height);
             var buffer = Framebuffer.create(textureContext, img.width, img.height);
+
+            var name = filename.substring(0, filename.length - 4);
 
             add(name, buffer);
 
@@ -53,7 +62,7 @@ class TextureManager {
     function loadSheet(name) {
         loadCount++;
         var img = new js.html.Image();
-        img.src = '../data/textures/${name}.png';
+        img.src = '${rootPath}/${name}.png';
         img.onload = function() {
             var loader = new def.Loader<def.Sheet>(Main.context.dataRoot);
             loader.load(name, function(data) {
