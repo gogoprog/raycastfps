@@ -12,5 +12,6 @@ typedef FrameEntry = {
 }
 
 typedef Sheet = {
+    var name:String;
     var frames:Array<FrameEntry>;
 }

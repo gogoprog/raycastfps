@@ -1,0 +1,10 @@
+[{
+    "name": "shotgun",
+    "rate": 1.4,
+    "type": "instant",
+    "fireCount": 3,
+    "animations": {
+        "fire": "shotgun-fire",
+        "idle": "shotgun-idle"
+    }
+}]

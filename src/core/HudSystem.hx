@@ -52,7 +52,11 @@ class HudSystem extends ecs.System {
                 var animator = weaponEntity.get(SpriteAnimator);
 
                 if(character.didFire) {
-                    animator.replace1("shotgun-fire");
+                    animator.replace1(character.weapon.animations.fire);
+                }
+
+                if(animator.getAnimationsCount() == 0) {
+                    animator.push(character.weapon.animations.idle);
                 }
             }
         }
@@ -60,6 +64,7 @@ class HudSystem extends ecs.System {
 
     override public function onResume() {
         engine.addEntity(weaponEntity);
+        weaponEntity.get(core.SpriteAnimator).clear();
     }
 
     override public function onSuspend() {

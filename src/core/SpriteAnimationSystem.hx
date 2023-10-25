@@ -4,6 +4,8 @@ import math.Point;
 import math.Transform;
 
 class SpriteAnimationSystem extends ecs.System {
+    static var rootPath = Macro.getDataRootPath("animations");
+    static var filePaths = Macro.getDataFilePaths("animations");
     private var loader = new def.Loader<def.Animation>(Main.context.dataRoot);
     private var animations:Map<String, def.Animation> = new Map();
 
@@ -11,12 +13,10 @@ class SpriteAnimationSystem extends ecs.System {
         super();
         addComponentClass(Sprite);
         addComponentClass(SpriteAnimator);
-        load("grell-static");
-        load("grell-idle");
-        load("grell-death");
-        load("shotgun-idle");
-        load("shotgun-fire");
-        load("impact");
+
+        for(file in filePaths) {
+            load(file);
+        }
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity):Void {
@@ -56,7 +56,8 @@ class SpriteAnimationSystem extends ecs.System {
         }
     }
 
-    private function load(name) {
+    private function load(filename) {
+        var name = filename.substring(0, filename.length - 5);
         loader.load(name, function(data) {
             animations[name] = data;
             Main.log('Loaded animation ${name}');

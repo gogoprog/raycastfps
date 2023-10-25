@@ -4,8 +4,8 @@ package core;
 class Character {
     public var requestFire = false;
     public var requestOpen = false;
-    public var fireRate = 1.4;
     public var didFire = false;
+    public var weapon:def.Weapon;
 
     public function new() {
     }
