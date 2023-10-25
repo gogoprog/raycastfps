@@ -26,7 +26,7 @@ class CharacterSystem extends ecs.System {
                 character.requestFire = false;
 
                 if(weapon.type == "instant") {
-                    var gap = 0.01;
+                    var gap = weapon.fireGap;
                     var offset = (weapon.fireCount - 1) * gap * 0.5;
 
                     for(i in 0...weapon.fireCount) {

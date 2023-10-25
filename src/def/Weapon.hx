@@ -5,6 +5,7 @@ typedef Weapon = {
     var rate:Float;
     var type:String;
     var fireCount:Int;
+    var fireGap:Float;
     var animations:{
         idle:String,
         fire:String

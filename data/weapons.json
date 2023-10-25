@@ -3,6 +3,7 @@
     "rate": 1.4,
     "type": "instant",
     "fireCount": 3,
+    "fireGap": 0.01,
     "animations": {
         "fire": "shotgun-fire",
         "idle": "shotgun-idle"
