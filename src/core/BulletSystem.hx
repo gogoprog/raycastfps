@@ -39,7 +39,7 @@ class BulletSystem extends ecs.System {
                 var distance = Point.getSquareDistance(htransform.position, start);
 
                 if(distance < best_distance) {
-                    best_distance =distance;
+                    best_distance = distance;
                     best_entity = h;
                 }
             }
@@ -47,8 +47,16 @@ class BulletSystem extends ecs.System {
 
         for(s in Main.context.level.sectors) {
             for(w in s.walls) {
-                if(w.texture != null) {
-                    var r = math.Utils.segmentToSegmentIntersection(start, end, w.a, w.b);
+                if(w.texture != null || transform.y < s.bottom) {
+                    var a = w.a;
+                    var b = w.b;
+
+                    if(w.texture == null) {
+                        a = w.b;
+                        b = w.a;
+                    }
+
+                    var r = math.Utils.segmentToSegmentIntersection(start, end, a, b);
 
                     if(r != null) {
                         var distance = r[0] * ray_length;
@@ -74,7 +82,6 @@ class BulletSystem extends ecs.System {
             }
         }
     }
-
 
     private function hit(target:ecs.Entity) {
         var hittable = target.get(Hittable);

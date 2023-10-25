@@ -57,6 +57,7 @@ class CharacterSystem extends ecs.System {
         b.add(new core.Bullet());
         b.add(new math.Transform());
         b.get(Transform).copyFrom(transform);
+        b.get(Transform).y -= 4;
         b.get(Transform).angle += angle_offset;
         engine.addEntity(b);
     }
