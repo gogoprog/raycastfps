@@ -145,6 +145,7 @@ class Main {
 
     static public function log(what) {
         consoleSystem.push(what);
+        js.Browser.console.log(what);
     }
 
     static public function gotoMenu() {

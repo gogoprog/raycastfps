@@ -40,6 +40,7 @@ class Factory {
         var e = new ecs.Entity();
         e.add(new core.Sprite());
         e.add(new core.Object());
+        e.get(core.Object).isStatic = true;
         e.add(new math.Transform());
         e.get(math.Transform).position.copyFrom(position);
         e.get(math.Transform).scale = 0.2;

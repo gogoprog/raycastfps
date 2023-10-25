@@ -34,11 +34,13 @@ class ObjectSystem extends ecs.System {
             renderer.pushSprite(textureManager.get(texture.name), transform.position, Std.int(transform.y) + (texture.offset != null ? texture.offset : 0), texture.flip, transform.scale);
         }
 
-        if(object.currentSector == null) {
-            for(s in Main.context.level.sectors) {
-                if(s.contains(position)) {
-                    object.currentSector = s;
-                    transform.y = object.currentSector.bottom + 32;
+        if(!object.isStatic) {
+            if(object.currentSector == null) {
+                for(s in Main.context.level.sectors) {
+                    if(s.contains(position)) {
+                        object.currentSector = s;
+                        transform.y = object.currentSector.bottom + 32;
+                    }
                 }
             }
         }

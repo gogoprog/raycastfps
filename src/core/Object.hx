@@ -5,6 +5,7 @@ class Object {
     public var lastTranslation = new math.Point();
     public var currentSector:world.Sector;
     public var velocityY = 0.0;
+    public var isStatic = false;
 
     public function new() {
     }
