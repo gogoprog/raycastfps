@@ -2,7 +2,8 @@ package core;
 
 typedef MenuEntry = {
     var content:String;
-    var target:String;
+    var action:String;
+    @:optional var param:String;
 }
 
 typedef Menu = {
@@ -20,24 +21,24 @@ class MenuSystem extends ecs.System {
             title: "Main Menu",
             entries: [
             {
-                content: "New Game",
-                target: ""
+                content: "Load Level",
+                action: "list_levels"
             },
             {
                 content: "Load Game",
-                target: ""
+                action: ""
             },
             {
                 content: "Options",
-                target: ""
+                action: ""
             },
             {
                 content: "Credits",
-                target: ""
+                action: ""
             },
             {
                 content: "Quit",
-                target: ""
+                action: ""
             }
             ]
         };
@@ -65,6 +66,10 @@ class MenuSystem extends ecs.System {
             }
         }
 
+        if(Main.isJustPressed('Enter')) {
+            apply(currentMenu.entries[currentMenuIndex]);
+        }
+
         var renderer = Main.context.renderer;
         var center_x = Std.int(display.Renderer.screenWidth * 0.5);
         var offset_y = 150;
@@ -82,6 +87,33 @@ class MenuSystem extends ecs.System {
             renderer.pushText("main", [center_x, offset_y], text, true);
             offset_y += 50;
             index++;
+        }
+    }
+
+    function apply(entry:MenuEntry) {
+        switch(entry.action) {
+            case "list_levels": {
+                var menu:Menu = {
+                    title: "Load level",
+                    entries: []
+                };
+
+                for(k => v in Factory.levels) {
+                    menu.entries.push({
+                        content: k,
+                        action: "load_level",
+                        param: k
+                    });
+                }
+
+                currentMenu = menu;
+            }
+
+            case "load_level": {
+                var level = Factory.levels[entry.param];
+                Main.context.level.load(level);
+                Main.context.level.restart();
+            }
         }
     }
 }

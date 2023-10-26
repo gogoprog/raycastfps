@@ -204,11 +204,13 @@ class EditorSystem extends ecs.System {
             renderer.pushRect(pos, [4, 4], 0xffffffff);
 
             tmp.setFromAngle(camTransform.angle - 0.5, 20);
+
             tmp.add(pos);
 
             renderer.pushLine(pos, tmp, 0xffffffff);
 
             tmp.setFromAngle(camTransform.angle + 0.5, 20);
+
             tmp.add(pos);
 
             renderer.pushLine(pos, tmp, 0xffffffff);
@@ -242,7 +244,6 @@ class EditorSystem extends ecs.System {
                     movingRoomIndex = hoveredRoomIndex;
                     startMoveMousePosition.copyFrom(convertFromMap(mouse_position));
                     var room = data.rooms[movingRoomIndex];
-
                     startMoveRoomVertexPosition = [];
 
                     for(w in room.walls) {
@@ -465,6 +466,10 @@ class EditorSystem extends ecs.System {
                     data.objects.push(obj);
                     level.placeObjects(true);
                 }
+
+                if(Main.isJustPressed("s")) {
+                    save();
+                }
             }
 
             case MovingVertex: {
@@ -556,7 +561,9 @@ class EditorSystem extends ecs.System {
 
         for(wi in room.walls) {
             var wall = data.walls[wi];
+
             center.add(v[wall.a]);
+
             center.add(v[wall.b]);
         }
 
@@ -574,5 +581,21 @@ class EditorSystem extends ecs.System {
         }
 
         return null;
+    }
+
+    function save() {
+        var content = haxe.Json.stringify(data, "  ");
+        Main.log(content);
+        download("level.json", content);
+    }
+
+    function download(filename, text) {
+        var element = js.Browser.document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + untyped encodeURIComponent(text));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        js.Browser.document.body.appendChild(element);
+        element.click();
+        js.Browser.document.body.removeChild(element);
     }
 }

@@ -23,6 +23,7 @@ typedef Object = {
 }
 
 typedef Level = {
+    @:optional var name:String;
     var vertices:Array<math.Point>;
     var walls:Array<Wall>;
     var rooms:Array<Room>;

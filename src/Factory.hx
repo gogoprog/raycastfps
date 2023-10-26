@@ -1,11 +1,13 @@
 package;
 
 class Factory {
+    static var levelFilePaths = Macro.getDataFilePaths("levels");
     static private var monsters = new Map<String, def.Monster>();
     static private var weapons = new Map<String, def.Weapon>();
+    static public var levels = new Map<String, def.Level>();
 
     static public function initialize(callback) {
-        var loaders = 2;
+        var loaders = 3;
         function localcallback() {
             --loaders;
 
@@ -17,6 +19,8 @@ class Factory {
         loader.fill(monsters, localcallback);
         var loader = new def.Loader<def.Weapon>(Main.context.dataRoot);
         loader.fill(weapons, localcallback);
+        var loader = new def.Loader<def.Level>(Main.context.dataRoot);
+        loader.fill2(levels, levelFilePaths, localcallback);
     }
 
     static public function createGibs(engine:ecs.Engine, position:math.Point) {

@@ -10,7 +10,7 @@ class Level {
     public function new() {
     }
 
-    public function load() {
+    public function old() {
         data = {
             skyTextureName: "sky",
             vertices: [
@@ -135,6 +135,10 @@ class Level {
             ]
         };
         generateSectors();
+    }
+
+    public function load(data:def.Level) {
+        this.data = data;
     }
 
     function addWall(sector:Sector, a:Float, b:Float, c:Float, d:Float, texName:String = null, bottomTexName:String = null) {

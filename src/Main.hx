@@ -26,7 +26,7 @@ class Main {
             context.dataRoot = "../data/";
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
-            context.level.load();
+            context.level.old();
             context.renderer.registerFont("main", "font", 20, 20);
             context.renderer.registerFont("mini", "font2", 4, 6);
         }
@@ -143,7 +143,7 @@ class Main {
         return previousMouseButtons[i] && !mouseButtons[i];
     }
 
-    static public function log(what) {
+    static inline public function log(what) {
         consoleSystem.push(what);
         js.Browser.console.log(what);
     }

@@ -1,0 +1,357 @@
+{
+  "skyTextureName": "sky",
+  "vertices": [
+    [
+      0,
+      0
+    ],
+    [
+      1024,
+      0
+    ],
+    [
+      1024,
+      224
+    ],
+    [
+      0,
+      224
+    ],
+    [
+      -96,
+      224
+    ],
+    [
+      -102,
+      0
+    ],
+    [
+      -1024,
+      224
+    ],
+    [
+      -1024,
+      0
+    ],
+    [
+      2133,
+      -32
+    ],
+    [
+      2100,
+      1829
+    ],
+    [
+      1016,
+      1625
+    ]
+  ],
+  "walls": [
+    {
+      "a": 0,
+      "b": 1,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 1,
+      "b": 2,
+      "bottomTextureName": "door",
+      "textureName": null,
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 2,
+      "b": 3,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 3,
+      "b": 0,
+      "bottomTextureName": "door",
+      "textureName": null,
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 3,
+      "b": 4,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 4,
+      "b": 5,
+      "bottomTextureName": "door",
+      "textureName": null,
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 5,
+      "b": 0,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 4,
+      "b": 6,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 6,
+      "b": 7,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 7,
+      "b": 5,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 1,
+      "b": 8,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 8,
+      "b": 9,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 9,
+      "b": 10,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    },
+    {
+      "a": 10,
+      "b": 2,
+      "bottomTextureName": "door",
+      "textureName": "wall",
+      "textureScale": [
+        1,
+        1
+      ]
+    }
+  ],
+  "rooms": [
+    {
+      "walls": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "floorTextureName": "floor",
+      "bottom": 0,
+      "top": 64
+    },
+    {
+      "walls": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "floorTextureName": "door",
+      "bottom": 0,
+      "top": 64,
+      "door": true
+    },
+    {
+      "walls": [
+        7,
+        8,
+        9,
+        5
+      ],
+      "floorTextureName": "floor2",
+      "bottom": 0,
+      "top": 64
+    },
+    {
+      "walls": [
+        10,
+        11,
+        12,
+        1,
+        13
+      ],
+      "floorTextureName": "floor",
+      "bottom": 0,
+      "top": 64
+    }
+  ],
+  "startPosition": [
+    -512,
+    128
+  ],
+  "objects": [
+    {
+      "type": "start",
+      "name": "player",
+      "position": [
+        -512,
+        128
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        100,
+        500
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1470,
+        940
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1743,
+        917
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1632,
+        1334
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1345,
+        1380
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1243,
+        1227
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1396,
+        1088
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1743,
+        1120
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1850,
+        1296
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1618,
+        1611
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1521,
+        1190
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1628,
+        931
+      ]
+    },
+    {
+      "type": "monster",
+      "name": "grell",
+      "position": [
+        1678,
+        630
+      ]
+    }
+  ]
+}

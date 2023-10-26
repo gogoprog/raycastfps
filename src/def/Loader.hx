@@ -1,7 +1,7 @@
 package def;
 
 @:generic
-class Loader<T:{name:String}> {
+class Loader<T: {name:String}> {
     private var prefix:String;
     private var prefixOnly:String;
     private var type:String;
@@ -44,5 +44,30 @@ class Loader<T:{name:String}> {
             callback();
         };
         req.request(false);
+    }
+
+    public function fill2(result:Map<String, T>, filePaths:Array<String>, callback) {
+        var group = type + 's';
+        var count = filePaths.length;
+        function localcallback() {
+            count--;
+
+            if(count == 0) {
+                callback();
+            }
+        }
+
+        for(filename in filePaths) {
+            var req = new haxe.Http('${prefixOnly}/${group}/${filename}');
+            var name = filename.substring(0, filename.length - 5);
+            req.onData = function(datatxt) {
+                var data:T = haxe.Json.parse(datatxt);
+
+                result[name] = data;
+
+                localcallback();
+            };
+            req.request(false);
+        }
     }
 }

@@ -21,7 +21,7 @@ class ConsoleSystem extends ecs.System {
         var offset_y = center_y - 7;
         renderer.pushQuad(background, [0, 0], [width, center_y]);
 
-        for(i in 0...24) {
+        for(i in 0...46) {
             var entry = entries[entries.length - 1 - i];
 
             if(entry != null) {
