@@ -1,38 +1,8 @@
 package world;
 
-typedef WallData = {
-    var a:Int;
-    var b:Int;
-    var bottomTextureName:String;
-    var textureName:String;
-    var textureScale:math.Point;
-}
-
-typedef RoomData = {
-    var walls:Array<Int>;
-    var floorTextureName:String;
-    var bottom:Float;
-    var top:Float;
-    @:optional var door:Bool;
-}
-
-typedef ObjectData = {
-    var type:String;
-    var name:String;
-    var position:math.Point;
-}
-
-typedef LevelData = {
-    var vertices:Array<math.Point>;
-    var walls:Array<WallData>;
-    var rooms:Array<RoomData>;
-    var objects:Array<ObjectData>;
-    var skyTextureName:String;
-    var startPosition:math.Point;
-}
 
 class Level {
-    public var data:LevelData;
+    public var data:def.Level;
 
     public var sectors:Array<Sector> = [];
     public var skyTexture:display.Framebuffer;

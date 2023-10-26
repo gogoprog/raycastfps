@@ -1,6 +1,7 @@
 package core.editor;
 
 import world.Level;
+import def.Level;
 
 private enum Action {
     Selecting;
@@ -29,7 +30,7 @@ class EditorSystem extends ecs.System {
     var startMoveRoomVertexPosition:Array<math.Point> = [];
 
     var level:world.Level;
-    var data:world.LevelData;
+    var data:def.Level;
 
     var hoveredVertexIndex:Int;
     var movingVertexIndex:Int;
@@ -322,7 +323,7 @@ class EditorSystem extends ecs.System {
                     data.vertices.push(new_position.getCopy());
                     creatingRoomNewVerticesCount++;
                     var last_index = data.vertices.length - 1;
-                    var wall:world.WallData = {
+                    var wall:def.Wall = {
                         a: hoveredVertexIndex,
                         b: last_index,
                         bottomTextureName: "door",
@@ -339,7 +340,7 @@ class EditorSystem extends ecs.System {
                     data.vertices.push(new_position.getCopy());
                     data.vertices.push(new_position.getCopy());
                     var last_index = data.vertices.length - 1;
-                    var wall:world.WallData = {
+                    var wall:def.Wall = {
                         a: last_index - 1,
                         b: last_index,
                         bottomTextureName: "door",
@@ -359,7 +360,7 @@ class EditorSystem extends ecs.System {
                     data.vertices.pop();
                     data.walls.pop();
                     currentRoomWalls.pop();
-                    var wall:world.WallData = {
+                    var wall:def.Wall = {
                         a: previousVertexIndex,
                         b: hoveredVertexIndex,
                         bottomTextureName: "door",
@@ -406,7 +407,7 @@ class EditorSystem extends ecs.System {
                     creatingRoomNewVerticesCount++;
                     data.vertices.push(new_position.getCopy());
                     var last_index = data.vertices.length - 1;
-                    var wall:world.WallData = {
+                    var wall:def.Wall = {
                         a: movingVertexIndex,
                         b: last_index,
                         bottomTextureName: "door",
@@ -549,7 +550,7 @@ class EditorSystem extends ecs.System {
         }
     }
 
-    function computeRoomCenter(room:RoomData, center:math.Point) {
+    function computeRoomCenter(room:def.Room, center:math.Point) {
         center.set(0, 0);
         var v = data.vertices;
 
