@@ -5,12 +5,14 @@ class TextureManager {
     static var filePaths = Macro.getDataFilePaths("textures");
     static var sheetRootPath = Macro.getDataRootPath("sheets");
     static var sheetFilePaths = Macro.getDataFilePaths("sheets");
+    var context:Context;
     var textures:Map<String, Framebuffer> = new Map();
     var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
     var textureContext:js.html.CanvasRenderingContext2D;
     var loadCount = 0;
 
-    public function new() {
+    public function new(context) {
+        this.context = context;
     }
 
     public function initialize() {
@@ -58,7 +60,7 @@ class TextureManager {
         var img = new js.html.Image();
         img.src = '${sheetRootPath}/${name}.png';
         img.onload = function() {
-            var loader = new def.Loader<def.Sheet>(Main.context.dataRoot);
+            var loader = new def.Loader<def.Sheet>(Context.dataRoot);
             loader.load(name, function(data) {
                 var index = 0;
 

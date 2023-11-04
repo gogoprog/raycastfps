@@ -70,7 +70,7 @@ class MenuSystem extends ecs.System {
             apply(currentMenu.entries[currentMenuIndex]);
         }
 
-        var renderer = Main.context.renderer;
+        var renderer = context.renderer;
         var center_x = Std.int(display.Renderer.screenWidth * 0.5);
         var offset_y = 150;
         var index = 0;
@@ -111,8 +111,8 @@ class MenuSystem extends ecs.System {
 
             case "load_level": {
                 var level = Factory.levels[entry.param];
-                Main.context.level.load(level);
-                Main.context.level.restart();
+                context.level.load(level);
+                context.level.restart();
             }
         }
     }

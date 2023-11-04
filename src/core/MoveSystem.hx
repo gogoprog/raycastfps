@@ -25,7 +25,7 @@ class MoveSystem extends ecs.System {
             while(collides) {
                 collides = false;
 
-                for(s in Main.context.level.sectors) {
+                for(s in context.level.sectors) {
                     for(w in s.walls) {
                         if(w.texture == null) { continue; }
 
@@ -58,7 +58,7 @@ class MoveSystem extends ecs.System {
             if(!collides) {
                 var current_height = 0.0;
 
-                for(s in Main.context.level.sectors) {
+                for(s in context.level.sectors) {
                     if(s.contains(transform.position)) {
                         current_height = s.bottom;
 
@@ -78,7 +78,7 @@ class MoveSystem extends ecs.System {
                 }
 
                 if(!collides) {
-                    for(s in Main.context.level.sectors) {
+                    for(s in context.level.sectors) {
                         if(s.contains(test_position)) {
                             var new_height = s.bottom;
 
@@ -112,7 +112,7 @@ class MoveSystem extends ecs.System {
                 object.velocityY = 0;
             }
         } else {
-            for(s in Main.context.level.sectors) {
+            for(s in context.level.sectors) {
                 if(s.contains(test_position)) {
                     object.currentSector = s;
                     transform.y = object.currentSector.bottom + 32;

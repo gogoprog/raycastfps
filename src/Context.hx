@@ -1,14 +1,23 @@
 package;
 
 class Context {
-    public var dataRoot:String;
-    public var renderer = new display.Renderer();
-    public var cameraTransform = new math.Transform();
-    public var textureManager = new display.TextureManager();
-    public var level = new world.Level();
-    public var engine = new ecs.Engine();
+    static public var dataRoot:String;
+    public var renderer:display.Renderer;
+    public var cameraTransform:math.Transform;
+    public var textureManager:display.TextureManager;
+    public var level:world.Level;
+    public var engine:ecs.Engine;
+    public var mouse:input.Mouse;
+    public var keyboard:input.Keyboard;
     public var playerEntity:ecs.Entity;
 
     public function new() {
+        renderer = new display.Renderer(this);
+        cameraTransform = new math.Transform();
+        textureManager = new display.TextureManager(this);
+        level = new world.Level(this);
+        engine = new ecs.Engine(this);
+        mouse = new input.Mouse();
+        keyboard = new input.Keyboard();
     }
 }

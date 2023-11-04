@@ -10,11 +10,11 @@ class ConsoleSystem extends ecs.System {
 
     override public function update(dt:Float) {
         if(background == null) {
-            background = Main.context.textureManager.get("console");
+            background = context.textureManager.get("console");
             return;
         }
 
-        var renderer = Main.context.renderer;
+        var renderer = context.renderer;
         var width = display.Renderer.screenWidth;
         var center_x = Std.int(display.Renderer.screenWidth * 0.5);
         var center_y = Std.int(display.Renderer.screenHeight * 0.5);

@@ -45,7 +45,7 @@ class BulletSystem extends ecs.System {
             }
         }
 
-        for(s in Main.context.level.sectors) {
+        for(s in context.level.sectors) {
             for(w in s.walls) {
                 if(w.texture != null || transform.y < s.bottom) {
                     var a = w.a;

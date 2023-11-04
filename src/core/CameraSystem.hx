@@ -7,7 +7,10 @@ class CameraSystem extends ecs.System {
         super();
         addComponentClass(Camera);
         addComponentClass(math.Transform);
-        cameraTransform = Main.context.cameraTransform;
+    }
+
+    override public function onResume() {
+        cameraTransform = context.cameraTransform;
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {

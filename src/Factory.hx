@@ -5,6 +5,7 @@ class Factory {
     static private var monsters = new Map<String, def.Monster>();
     static private var weapons = new Map<String, def.Weapon>();
     static public var levels = new Map<String, def.Level>();
+    static public var context:Context;
 
     static public function initialize(callback) {
         var loaders = 3;
@@ -15,11 +16,11 @@ class Factory {
                 callback();
             }
         }
-        var loader = new def.Loader<def.Monster>(Main.context.dataRoot);
+        var loader = new def.Loader<def.Monster>(Context.dataRoot);
         loader.fill(monsters, localcallback);
-        var loader = new def.Loader<def.Weapon>(Main.context.dataRoot);
+        var loader = new def.Loader<def.Weapon>(Context.dataRoot);
         loader.fill(weapons, localcallback);
-        var loader = new def.Loader<def.Level>(Main.context.dataRoot);
+        var loader = new def.Loader<def.Level>(Context.dataRoot);
         loader.fill2(levels, levelFilePaths, localcallback);
     }
 

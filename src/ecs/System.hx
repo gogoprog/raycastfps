@@ -2,8 +2,8 @@ package ecs;
 
 @:allow(ecs.Engine)
 class System {
-
     private var engine:Engine;
+    private var context:Context;
     private var classes:Array<String> = [];
     private var entities:Array<Entity> = [];
 

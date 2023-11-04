@@ -47,8 +47,8 @@ class HudSystem extends ecs.System {
 
         weaponEntity.get(math.Transform).position.copyFrom(weaponPosition+weaponOffset);
         {
-            if(Main.context.playerEntity != null) {
-                var character = Main.context.playerEntity.get(Character);
+            if(context.playerEntity != null) {
+                var character = context.playerEntity.get(Character);
                 var animator = weaponEntity.get(SpriteAnimator);
 
                 if(character.didFire) {

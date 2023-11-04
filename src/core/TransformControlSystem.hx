@@ -10,7 +10,10 @@ class TransformControlSystem extends ecs.System {
         super();
         addComponentClass(Control);
         addComponentClass(Transform);
-        cameraTransform = Main.context.cameraTransform;
+    }
+
+    override public function onResume() {
+        cameraTransform = context.cameraTransform;
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
@@ -21,6 +24,7 @@ class TransformControlSystem extends ecs.System {
 
         if(move == null) {
             move = new core.Move();
+
             e.add(move);
         }
 

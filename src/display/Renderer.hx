@@ -98,6 +98,7 @@ typedef FontInfo = {
 }
 
 class Renderer {
+    var context:Context;
     var canvas:js.html.CanvasElement = cast js.Browser.document.getElementById("canvas");
     var backbuffer:Framebuffer;
     var canvasContext:js.html.CanvasRenderingContext2D;
@@ -117,7 +118,9 @@ class Renderer {
     var rects:Array<Rect> = [];
     var fonts:Map<String, FontInfo> = new Map();
 
-    public function new() {
+
+    public function new(context) {
+        this.context = context;
     }
 
     public function initialize(cameraTransform) {

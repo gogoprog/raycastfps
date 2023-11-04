@@ -13,9 +13,12 @@ class ObjectSystem extends ecs.System {
         addComponentClass(Transform);
         addComponentClass(Object);
         addComponentClass(Sprite);
-        renderer = Main.context.renderer;
-        textureManager = Main.context.textureManager;
-        cameraTransform = Main.context.cameraTransform;
+    }
+
+    override public function onResume() {
+        renderer = context.renderer;
+        textureManager = context.textureManager;
+        cameraTransform = context.cameraTransform;
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
@@ -36,7 +39,7 @@ class ObjectSystem extends ecs.System {
 
         if(!object.isStatic) {
             if(object.currentSector == null) {
-                for(s in Main.context.level.sectors) {
+                for(s in context.level.sectors) {
                     if(s.contains(position)) {
                         object.currentSector = s;
                         transform.y = object.currentSector.bottom + 32;

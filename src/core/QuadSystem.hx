@@ -12,8 +12,11 @@ class QuadSystem extends ecs.System {
         addComponentClass(Transform);
         addComponentClass(Quad);
         addComponentClass(Sprite);
-        renderer = Main.context.renderer;
-        textureManager = Main.context.textureManager;
+    }
+
+    override public function onResume() {
+        renderer = context.renderer;
+        textureManager = context.textureManager;
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {

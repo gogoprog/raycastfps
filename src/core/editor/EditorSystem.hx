@@ -53,7 +53,7 @@ class EditorSystem extends ecs.System {
     }
 
     override public function onResume() {
-        level = Main.context.level;
+        level = context.level;
         data = level.data;
     }
 
@@ -63,15 +63,15 @@ class EditorSystem extends ecs.System {
 
     override public function update(dt:Float) {
         if(font == null || vertex == null) {
-            font = Main.context.textureManager.get("font");
-            vertex = Main.context.textureManager.get("door");
+            font = context.textureManager.get("font");
+            vertex = context.textureManager.get("door");
             return;
         }
 
-        var renderer = Main.context.renderer;
+        var renderer = context.renderer;
 
         if(editing) {
-            var mouse_position = Main.mouseScreenPosition;
+            var mouse_position = context.mouse.position;
             draw();
             processAction();
             processControls();
@@ -96,8 +96,8 @@ class EditorSystem extends ecs.System {
     }
 
     function processVertices() {
-        var renderer = Main.context.renderer;
-        var mouse_position = Main.mouseScreenPosition;
+        var renderer = context.renderer;
+        var mouse_position = context.mouse.position;
         var width = display.Renderer.screenWidth;
         var height = display.Renderer.screenHeight;
         var index = 0;
@@ -123,9 +123,9 @@ class EditorSystem extends ecs.System {
     }
 
     function processWalls() {
-        var renderer = Main.context.renderer;
-        var level = Main.context.level;
-        var mouse_position = Main.mouseScreenPosition;
+        var renderer = context.renderer;
+        var level = context.level;
+        var mouse_position = context.mouse.position;
         var index = 0;
         hoveredWallIndex = null;
 
@@ -152,8 +152,8 @@ class EditorSystem extends ecs.System {
 
     function processRooms() {
         var center:math.Point = [0, 0];
-        var renderer = Main.context.renderer;
-        var mouse_position = Main.mouseScreenPosition;
+        var renderer = context.renderer;
+        var mouse_position = context.mouse.position;
         var index = 0;
         hoveredRoomIndex = null;
 
@@ -195,11 +195,11 @@ class EditorSystem extends ecs.System {
 
     static var tmp = new math.Point();
     function processObjects() {
-        var mouse_position = Main.mouseScreenPosition;
-        var renderer = Main.context.renderer;
+        var mouse_position = context.mouse.position;
+        var renderer = context.renderer;
         renderer.pushRect(mouse_position, [2, 2], 0xff55dd44);
         {
-            var camTransform = Main.context.cameraTransform;
+            var camTransform = context.cameraTransform;
             var pos = convertToMap(camTransform.position);
             renderer.pushRect(pos, [4, 4], 0xffffffff);
 
@@ -225,7 +225,7 @@ class EditorSystem extends ecs.System {
     }
 
     function onMouseLeftPressed() {
-        var mouse_position = Main.mouseScreenPosition;
+        var mouse_position = context.mouse.position;
 
         switch(action) {
             case Selecting: {
@@ -312,7 +312,7 @@ class EditorSystem extends ecs.System {
     }
 
     function onSpacePressed() {
-        var mouse_position = Main.mouseScreenPosition;
+        var mouse_position = context.mouse.position;
         var new_position = convertFromMap(mouse_position);
 
         switch(action) {
@@ -427,7 +427,7 @@ class EditorSystem extends ecs.System {
     }
 
     function processAction() {
-        var mouse_position = Main.mouseScreenPosition;
+        var mouse_position = context.mouse.position;
         var new_position = convertFromMap(mouse_position);
 
         switch(action) {
@@ -511,9 +511,9 @@ class EditorSystem extends ecs.System {
     }
 
     function processControls() {
-        var mouse_position = Main.mouseScreenPosition;
+        var mouse_position = context.mouse.position;
 
-        if(Main.mouseButtons[2]) {
+        if(context.mouse.buttons[2]) {
             if(!isPanning) {
                 isPanning = true;
                 startPanPosition.copyFrom(mouse_position);
@@ -526,19 +526,19 @@ class EditorSystem extends ecs.System {
             isPanning = false;
         }
 
-        if(Main.isMouseButtonJustPressed(0)) {
+        if(context.mouse.isJustPressed(0)) {
             onMouseLeftPressed();
         }
 
-        if(Main.isMouseButtonJustReleased(0)) {
+        if(context.mouse.isJustReleased(0)) {
             onMouseLeftReleased();
         }
 
-        if(Main.isMouseButtonJustPressed(2)) {
+        if(context.mouse.isJustPressed(2)) {
             onMouseRightPressed();
         }
 
-        if(Main.isMouseButtonJustReleased(2)) {
+        if(context.mouse.isJustReleased(2)) {
             onMouseRightReleased();
         }
 
@@ -546,11 +546,11 @@ class EditorSystem extends ecs.System {
             onSpacePressed();
         }
 
-        if(Main.isJustPressed('-') || Main.mouseWheelDelta < 0) {
+        if(Main.isJustPressed('-') || context.mouse.wheelDelta < 0) {
             zoom *= 1.4;
         }
 
-        if(Main.isJustPressed('+') || Main.mouseWheelDelta > 0) {
+        if(Main.isJustPressed('+') || context.mouse.wheelDelta > 0) {
             zoom /= 1.4;
         }
     }

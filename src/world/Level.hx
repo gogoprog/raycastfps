@@ -1,13 +1,14 @@
 package world;
 
-
 class Level {
     public var data:def.Level;
+    public var context:Context;
 
     public var sectors:Array<Sector> = [];
     public var skyTexture:display.Framebuffer;
 
-    public function new() {
+    public function new(context) {
+        this.context = context;
     }
 
     public function old() {
@@ -149,21 +150,21 @@ class Level {
 
     public function update() {
         if(skyTexture == null) {
-            skyTexture = Main.context.textureManager.get(data.skyTextureName);
+            skyTexture = context.textureManager.get(data.skyTextureName);
         }
 
         for(sector in sectors) {
             if(sector.floorTexture == null && sector.floorTextureName != null) {
-                sector.floorTexture = Main.context.textureManager.get(sector.floorTextureName);
+                sector.floorTexture = context.textureManager.get(sector.floorTextureName);
             }
 
             for(wall in sector.walls) {
                 if(wall.texture == null && wall.textureName != null) {
-                    wall.texture = Main.context.textureManager.get(wall.textureName);
+                    wall.texture = context.textureManager.get(wall.textureName);
                 }
 
                 if(wall.bottomTexture == null && wall.bottomTextureName != null) {
-                    wall.bottomTexture = Main.context.textureManager.get(wall.bottomTextureName);
+                    wall.bottomTexture = context.textureManager.get(wall.bottomTextureName);
                 }
             }
         }
@@ -171,17 +172,21 @@ class Level {
 
     function createDoor(sector:Sector) {
         var e = new ecs.Entity();
+
         e.add(new math.Transform());
+
         var door = new core.Door(sector);
+
         e.add(door);
+
         e.get(math.Transform).position = sector.center;
         door.open = false;
         sector.bottom =sector.initialTop;
-        Main.context.engine.addEntity(e);
+        context.engine.addEntity(e);
     }
 
     public function placeObjects(skip_start = false) {
-        var engine = Main.context.engine;
+        var engine = context.engine;
         var es = engine.getMatchingEntities(core.Object);
 
         for(e in es) {
@@ -200,7 +205,7 @@ class Level {
                     if(!skip_start) {
                         var e = Factory.createPlayer(obj.position);
                         engine.addEntity(e);
-                        Main.context.playerEntity = e;
+                        context.playerEntity = e;
                     }
             }
         }
@@ -208,7 +213,7 @@ class Level {
 
     public function generateSectors() {
         Main.log("Generating sectors...");
-        var engine = Main.context.engine;
+        var engine = context.engine;
         var es = engine.getMatchingEntities(core.Door);
 
         for(e in es) {

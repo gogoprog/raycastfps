@@ -1,22 +1,34 @@
 package;
 
-import math.Point;
+class App {
 
-class Main {
+    static public var instance:App
     static public var context = new Context();
-    static public var previousKeys:Dynamic = {};
-    static public var keys:Dynamic = {};
-    static public var consoleSystem = new core.ConsoleSystem();
-    static public var canvas:js.html.CanvasElement;
 
-    static function main() {
+    public var previousKeys:Dynamic = {};
+    public var keys:Dynamic = {};
+    public var mx:Int = 0;
+    public var mouseButtons:Array<Bool> = [];
+    public var mouseWheelDelta:Int = 0;
+    public var previousMouseButtons:Array<Bool> = [];
+    public var mousePosition:math.Point = [];
+    public var mouseScreenPosition:math.Point = [];
+    public var consoleSystem = new core.ConsoleSystem();
+    public var canvas:js.html.CanvasElement;
+    public var playerEntity:ecs.Entity;
+
+    public function new() {
+        instance = this;
+    }
+
+    public function init() {
         canvas = cast js.Browser.document.getElementById("canvas");
         var engine = context.engine;
         var cameraTransform = context.cameraTransform;
         {
             cameraTransform.position = [1024, 1024];
             cameraTransform.angle = 0;
-            Context.dataRoot = "../data/";
+            context.dataRoot = "../data/";
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
             context.level.old();
@@ -50,25 +62,22 @@ class Main {
             Factory.initialize(init);
         }
         function setupControls() {
-            var mouse = context.mouse;
-            var keyboard = context.keyboard;
-
             canvas.onmousedown = function(e) {
-                mouse.buttons[e.button] = true;
+                mouseButtons[e.button] = true;
             }
             canvas.onmouseup = function(e) {
-                mouse.buttons[e.button] = false;
+                mouseButtons[e.button] = false;
             }
             canvas.onmousemove = function(e) {
-                mouse.moveX += e.movementX;
-                mouse.internalPosition.x = e.x;
-                mouse.internalPosition.y = e.y;
+                mx += e.movementX;
+                mousePosition.x = e.x;
+                mousePosition.y = e.y;
             }
             untyped onkeydown = onkeyup = function(e) {
                 keys[e.key] = e.type[3] == 'd';
             }
             canvas.onwheel = function(e) {
-                mouse.wheelDelta = e.deltaY;
+                mouseWheelDelta = e.deltaY;
             }
             canvas.oncontextmenu = e->false;
         }
@@ -76,11 +85,10 @@ class Main {
         var lastTime = 0.0;
         function loop(t:Float) {
             var deltaTime = (t - lastTime) / 1000;
-            var mouse = context.mouse;
             context.level.update();
             context.renderer.clear();
-            mouse.position.x = ((mouse.internalPosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
-            mouse.position.y = ((mouse.internalPosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
+            mouseScreenPosition.x = ((mousePosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
+            mouseScreenPosition.y = ((mousePosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
             engine.update(deltaTime);
             context.renderer.draw(context.level);
             context.renderer.flush();
@@ -117,9 +125,8 @@ class Main {
             }
 
             previousKeys = js.lib.Object.assign({}, keys);
-            mouse.previousButtons = mouse.buttons.slice(0);
-            mouse.wheelDelta = 0;
-            mouse.moveX = 0;
+            previousMouseButtons = mouseButtons.slice(0);
+            mouseWheelDelta = 0;
             js.Browser.window.requestAnimationFrame(loop);
         }
         loop(0);
@@ -133,6 +140,13 @@ class Main {
         return untyped keys[k];
     }
 
+    static inline public function isMouseButtonJustPressed(i:Int) {
+        return !previousMouseButtons[i] && mouseButtons[i];
+    }
+
+    static inline public function isMouseButtonJustReleased(i:Int) {
+        return previousMouseButtons[i] && !mouseButtons[i];
+    }
 
     static inline public function log(what) {
         consoleSystem.push(what);
@@ -169,4 +183,5 @@ class Main {
         context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
     }
+}
 }

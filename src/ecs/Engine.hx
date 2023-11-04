@@ -1,14 +1,17 @@
 package ecs;
 
 class Engine {
+    private var context:Context;
     private var systems:Array<System> = [];
     private var suspended:Array<System> = [];
     private var entities:Array<Entity> = [];
 
-    public function new() {
+    public function new(context) {
+        this.context = context;
     }
 
     public function addSystem<T:System>(system:T, priority:Int, klass:Class<T> = null):T {
+        system.context = context;
         systems.push(system);
         system.engine = this;
         system.onResume();
@@ -17,6 +20,7 @@ class Engine {
 
     public function removeSystem(system_to_remove:System) {
         system_to_remove.engine = null;
+
         systems.remove(system_to_remove);
     }
 
@@ -27,7 +31,9 @@ class Engine {
             var type = Type.getClassName(Type.getClass(system));
 
             if(type == type_to_suspend) {
+
                 systems.remove(system);
+
                 suspended.push(system);
                 system.onSuspend();
                 break;
@@ -42,7 +48,9 @@ class Engine {
             var type = Type.getClassName(Type.getClass(system));
 
             if(type == type_to_resume) {
+
                 suspended.remove(system);
+
                 systems.push(system);
                 system.onResume();
                 break;
@@ -109,6 +117,7 @@ class Engine {
     }
 
     public function removeEntity(entity:Entity) {
+
         entities.remove(entity);
     }
 }

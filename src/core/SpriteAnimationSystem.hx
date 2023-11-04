@@ -6,11 +6,13 @@ import math.Transform;
 class SpriteAnimationSystem extends ecs.System {
     static var rootPath = Macro.getDataRootPath("animations");
     static var filePaths = Macro.getDataFilePaths("animations");
-    private var loader = new def.Loader<def.Animation>(Main.context.dataRoot);
+    private var loader:def.Loader<def.Animation>;
     private var animations:Map<String, def.Animation> = new Map();
 
     public function new() {
         super();
+        loader = new def.Loader<def.Animation>(Context.dataRoot);
+
         addComponentClass(Sprite);
         addComponentClass(SpriteAnimator);
 
