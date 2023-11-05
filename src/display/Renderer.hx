@@ -577,7 +577,7 @@ class Renderer {
         if(font == null) {return;}
 
         var char_extent:Point = font.charExtent;
-        var texture = Main.context.textureManager.get(font.textureName);
+        var texture = context.textureManager.get(font.textureName);
         var cols = texture.width / char_extent.x;
 
         for(i in 0...content.length) {

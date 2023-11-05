@@ -436,28 +436,28 @@ class EditorSystem extends ecs.System {
                     var room = data.rooms[hoveredRoomIndex];
                     var step = 8;
 
-                    if(Main.isJustPressed("PageUp")) {
+                    if(context.keyboard.isJustPressed("PageUp")) {
                         room.bottom += step;
                         level.generateSectors();
                     }
 
-                    if(Main.isJustPressed("PageDown")) {
+                    if(context.keyboard.isJustPressed("PageDown")) {
                         room.bottom -= step;
                         level.generateSectors();
                     }
 
-                    if(Main.isJustPressed("Home")) {
+                    if(context.keyboard.isJustPressed("Home")) {
                         room.top += step;
                         level.generateSectors();
                     }
 
-                    if(Main.isJustPressed("End")) {
+                    if(context.keyboard.isJustPressed("End")) {
                         room.top -= step;
                         level.generateSectors();
                     }
                 }
 
-                if(Main.isJustPressed("m")) {
+                if(context.keyboard.isJustPressed("m")) {
                     var obj = {
                         type: "monster",
                         name: "grell",
@@ -467,13 +467,13 @@ class EditorSystem extends ecs.System {
                     level.placeObjects(true);
                 }
 
-                if(Main.isJustPressed("s")) {
+                if(context.keyboard.isJustPressed("s")) {
                     save();
                 }
             }
 
             case MovingVertex: {
-                if(!Main.isPressed("Shift")) {
+                if(!context.keyboard.isPressed("Shift")) {
                     var align = 32;
                     new_position.x = Std.int(new_position.x / align) * align;
                     new_position.y = Std.int(new_position.y / align) * align;
@@ -542,15 +542,15 @@ class EditorSystem extends ecs.System {
             onMouseRightReleased();
         }
 
-        if(Main.isJustPressed(' ')) {
+        if(context.keyboard.isJustPressed(' ')) {
             onSpacePressed();
         }
 
-        if(Main.isJustPressed('-') || context.mouse.wheelDelta < 0) {
+        if(context.keyboard.isJustPressed('-') || context.mouse.wheelDelta < 0) {
             zoom *= 1.4;
         }
 
-        if(Main.isJustPressed('+') || context.mouse.wheelDelta > 0) {
+        if(context.keyboard.isJustPressed('+') || context.mouse.wheelDelta > 0) {
             zoom /= 1.4;
         }
     }

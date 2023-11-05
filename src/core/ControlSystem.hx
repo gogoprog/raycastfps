@@ -9,7 +9,7 @@ class ControlSystem extends ecs.System {
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
         var control = e.get(Control);
-        control.keys = Main.keys;
+        control.keys = context.keyboard.keys;
         control.mouseMovement = context.mouse.moveX;
 
         for(i in 0...6) {

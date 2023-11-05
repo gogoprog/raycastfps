@@ -4,8 +4,6 @@ import math.Point;
 
 class Main {
     static public var context = new Context();
-    static public var previousKeys:Dynamic = {};
-    static public var keys:Dynamic = {};
     static public var consoleSystem = new core.ConsoleSystem();
     static public var canvas:js.html.CanvasElement;
 
@@ -52,7 +50,6 @@ class Main {
         function setupControls() {
             var mouse = context.mouse;
             var keyboard = context.keyboard;
-
             canvas.onmousedown = function(e) {
                 mouse.buttons[e.button] = true;
             }
@@ -65,7 +62,7 @@ class Main {
                 mouse.internalPosition.y = e.y;
             }
             untyped onkeydown = onkeyup = function(e) {
-                keys[e.key] = e.type[3] == 'd';
+                keyboard.keys[e.key] = e.type[3] == 'd';
             }
             canvas.onwheel = function(e) {
                 mouse.wheelDelta = e.deltaY;
@@ -77,6 +74,7 @@ class Main {
         function loop(t:Float) {
             var deltaTime = (t - lastTime) / 1000;
             var mouse = context.mouse;
+            var keyboard = context.keyboard;
             context.level.update();
             context.renderer.clear();
             mouse.position.x = ((mouse.internalPosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
@@ -86,7 +84,7 @@ class Main {
             context.renderer.flush();
             lastTime = t;
 
-            if(isJustPressed('Escape')) {
+            if(keyboard.isJustPressed('Escape')) {
                 if(context.engine.isActive(core.ConsoleSystem)) {
                     gotoIngame();
                 } else if(context.engine.isActive(core.MenuSystem)) {
@@ -96,7 +94,7 @@ class Main {
                 }
             }
 
-            if(isJustPressed('`')) {
+            if(keyboard.isJustPressed('`')) {
                 if(context.engine.isActive(core.ConsoleSystem)) {
                     gotoIngame();
                 } else {
@@ -104,7 +102,7 @@ class Main {
                 }
             }
 
-            if(isJustPressed('e')) {
+            if(keyboard.isJustPressed('e')) {
                 if(context.engine.isActive(core.editor.EditorSystem)) {
                     gotoIngame();
                 } else {
@@ -112,11 +110,11 @@ class Main {
                 }
             }
 
-            if(isJustPressed('r')) {
+            if(keyboard.isJustPressed('r')) {
                 context.level.restart();
             }
 
-            previousKeys = js.lib.Object.assign({}, keys);
+            keyboard.previousKeys = js.lib.Object.assign({}, keyboard.keys);
             mouse.previousButtons = mouse.buttons.slice(0);
             mouse.wheelDelta = 0;
             mouse.moveX = 0;
@@ -124,15 +122,6 @@ class Main {
         }
         loop(0);
     }
-
-    static inline public function isJustPressed(k:String) {
-        return untyped !previousKeys[k] && untyped keys[k];
-    }
-
-    static inline public function isPressed(k:String) {
-        return untyped keys[k];
-    }
-
 
     static inline public function log(what) {
         consoleSystem.push(what);

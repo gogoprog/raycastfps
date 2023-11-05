@@ -50,7 +50,7 @@ class MenuSystem extends ecs.System {
             return;
         }
 
-        if(Main.isJustPressed('ArrowUp')) {
+        if(context.keyboard.isJustPressed('ArrowUp')) {
             currentMenuIndex--;
 
             if(currentMenuIndex < 0) {
@@ -58,7 +58,7 @@ class MenuSystem extends ecs.System {
             }
         }
 
-        if(Main.isJustPressed('ArrowDown')) {
+        if(context.keyboard.isJustPressed('ArrowDown')) {
             currentMenuIndex++;
 
             if(currentMenuIndex >= currentMenu.entries.length) {
@@ -66,7 +66,7 @@ class MenuSystem extends ecs.System {
             }
         }
 
-        if(Main.isJustPressed('Enter')) {
+        if(context.keyboard.isJustPressed('Enter')) {
             apply(currentMenu.entries[currentMenuIndex]);
         }
 
