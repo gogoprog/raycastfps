@@ -118,6 +118,7 @@ class EditorSystem extends ecs.System {
             }
 
             renderer.pushRect(sv, [64 * zoom, 64 * zoom], color);
+            renderer.pushText("mini", sv + new math.Point(4, 16), "" + index);
             index++;
         }
     }
@@ -314,7 +315,6 @@ class EditorSystem extends ecs.System {
     function onSpacePressed() {
         var mouse_position = context.mouse.position;
         var new_position = convertFromMap(mouse_position);
-
         alignPoint(new_position);
 
         switch(action) {
@@ -372,6 +372,7 @@ class EditorSystem extends ecs.System {
                     };
                     data.walls.push(wall);
                     movingVertexIndex = null;
+                    findWalls(startVertexIndex, hoveredVertexIndex, currentRoomWalls);
                     previousVertexIndex = null;
                     var missing_wall = findWall(startVertexIndex, hoveredVertexIndex);
 
@@ -403,6 +404,8 @@ class EditorSystem extends ecs.System {
                         for(i in 0...creatingRoomNewVerticesCount - 1) {
                             data.vertices.pop();
                         }
+
+                        currentRoomWalls = [];
                     }
 
                     action = Selecting;
@@ -582,8 +585,49 @@ class EditorSystem extends ecs.System {
 
         return null;
     }
-    
-     function alignPoint(position:math.Point) {
+
+    function findWalls(a:Int, b:Int, excluded:Array<Int>) {
+        var nodes = [[a]];
+        var best = null;
+        trace('findWalls($a,$b)');
+
+        while(nodes.length > 0) {
+            var path = nodes.pop();
+            var last = path[path.length - 1];
+
+            if(last == b) {
+                if(best == null || best.length > path.length) {
+                    best = path;
+                    continue;
+                }
+            }
+
+            if(best != null) {
+                if(best.length < path.length) {
+                    continue;
+                }
+            }
+
+            var wi = 0;
+            for(wall in data.walls) {
+                var next = wall.a == last ? wall.b : (wall.b == last ? wall.a : null);
+
+                if(next != null) {
+                    if(path.indexOf(next) == -1) {
+                        var copy = path.slice(0);
+                        copy.push(next);
+                        nodes.push(copy);
+                    }
+                }
+
+                ++wi;
+            }
+        }
+
+        trace(best);
+    }
+
+    function alignPoint(position:math.Point) {
         var align = 32;
         position.x = Std.int(position.x / align) * align;
         position.y = Std.int(position.y / align) * align;
