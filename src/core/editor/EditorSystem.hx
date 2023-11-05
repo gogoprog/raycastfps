@@ -315,6 +315,8 @@ class EditorSystem extends ecs.System {
         var mouse_position = context.mouse.position;
         var new_position = convertFromMap(mouse_position);
 
+        alignPoint(new_position);
+
         switch(action) {
             case Selecting: {
                 action = CreatingRoom;
@@ -474,9 +476,7 @@ class EditorSystem extends ecs.System {
 
             case MovingVertex: {
                 if(!context.keyboard.isPressed("Shift")) {
-                    var align = 32;
-                    new_position.x = Std.int(new_position.x / align) * align;
-                    new_position.y = Std.int(new_position.y / align) * align;
+                    alignPoint(new_position);
                 }
 
                 data.vertices[movingVertexIndex].copyFrom(new_position);
@@ -581,6 +581,12 @@ class EditorSystem extends ecs.System {
         }
 
         return null;
+    }
+    
+     function alignPoint(position:math.Point) {
+        var align = 32;
+        position.x = Std.int(position.x / align) * align;
+        position.y = Std.int(position.y / align) * align;
     }
 
     function save() {
