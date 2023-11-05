@@ -585,7 +585,7 @@ class EditorSystem extends ecs.System {
 
     function save() {
         var content = haxe.Json.stringify(data, "  ");
-        Main.log(content);
+        App.log(content);
         download("level.json", content);
     }
 

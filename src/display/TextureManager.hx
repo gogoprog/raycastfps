@@ -45,7 +45,7 @@ class TextureManager {
 
             add(name, buffer);
 
-            Main.log('Loaded texture ${name}');
+            App.log('Loaded texture ${name}');
             loadCount--;
         }
     }
@@ -74,7 +74,7 @@ class TextureManager {
                     add('${name}-${index}', buffer);
 
                     index++;
-                    Main.log('Loaded texture sheet ${name}-${index}');
+                    App.log('Loaded texture sheet ${name}-${index}');
                 }
 
                 loadCount--;

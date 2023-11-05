@@ -62,7 +62,7 @@ class SpriteAnimationSystem extends ecs.System {
         var name = filename.substring(0, filename.length - 5);
         loader.load(name, function(data) {
             animations[name] = data;
-            Main.log('Loaded animation ${name}');
+            App.log('Loaded animation ${name}');
         });
     }
 }

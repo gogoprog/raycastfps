@@ -1,34 +1,21 @@
 package;
 
 class App {
-
-    static public var instance:App
-    static public var context = new Context();
-
-    public var previousKeys:Dynamic = {};
-    public var keys:Dynamic = {};
-    public var mx:Int = 0;
-    public var mouseButtons:Array<Bool> = [];
-    public var mouseWheelDelta:Int = 0;
-    public var previousMouseButtons:Array<Bool> = [];
-    public var mousePosition:math.Point = [];
-    public var mouseScreenPosition:math.Point = [];
-    public var consoleSystem = new core.ConsoleSystem();
-    public var canvas:js.html.CanvasElement;
-    public var playerEntity:ecs.Entity;
+    private var context = new Context();
+    static public var consoleSystem = new core.ConsoleSystem();
+    private var canvas:js.html.CanvasElement;
 
     public function new() {
-        instance = this;
     }
 
-    public function init() {
+    public function initialize() {
         canvas = cast js.Browser.document.getElementById("canvas");
         var engine = context.engine;
         var cameraTransform = context.cameraTransform;
         {
             cameraTransform.position = [1024, 1024];
             cameraTransform.angle = 0;
-            context.dataRoot = "../data/";
+            Context.dataRoot = Macro.getDataRootPath();
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
             context.level.old();
@@ -36,25 +23,7 @@ class App {
             context.renderer.registerFont("mini", "font2", 4, 6);
         }
         {
-            engine.addSystem(new core.ControlSystem(), 1);
-            engine.addSystem(new core.TransformControlSystem(), 1);
-            engine.addSystem(new core.PlayerControlSystem(), 1);
-            engine.addSystem(new core.MoveSystem(), 2);
-            engine.addSystem(new core.CameraSystem(), 3);
-            engine.addSystem(new core.CharacterSystem(), 6);
-            engine.addSystem(new core.BulletSystem(), 7);
-            engine.addSystem(new core.DeathSystem(), 8);
-            engine.addSystem(new core.DoorSystem(), 9);
-            engine.addSystem(new core.DoorChangeSystem(), 10);
-            var hudSystem = engine.addSystem(new core.HudSystem(), 9);
-            engine.addSystem(new core.SpriteAnimationSystem(), 97);
-            engine.addSystem(new core.PhysicSystem(), 97);
-            engine.addSystem(new core.ObjectSystem(), 98);
-            engine.addSystem(new core.QuadSystem(), 99);
-            engine.addSystem(new core.MonsterSystem(), 101);
-            engine.addSystem(new core.MenuSystem(), 666);
-            engine.addSystem(new core.editor.EditorSystem(), 666);
-            engine.addSystem(consoleSystem, 667);
+            setupEngine(engine);
             gotoIngame();
             function init() {
                 context.level.restart();
@@ -62,39 +31,47 @@ class App {
             Factory.initialize(init);
         }
         function setupControls() {
+            var mouse = context.mouse;
+            var keyboard = context.keyboard;
             canvas.onmousedown = function(e) {
-                mouseButtons[e.button] = true;
+                mouse.buttons[e.button] = true;
             }
             canvas.onmouseup = function(e) {
-                mouseButtons[e.button] = false;
+                mouse.buttons[e.button] = false;
             }
             canvas.onmousemove = function(e) {
-                mx += e.movementX;
-                mousePosition.x = e.x;
-                mousePosition.y = e.y;
+                mouse.moveX += e.movementX;
+                mouse.internalPosition.x = e.x;
+                mouse.internalPosition.y = e.y;
             }
             untyped onkeydown = onkeyup = function(e) {
-                keys[e.key] = e.type[3] == 'd';
+                keyboard.keys[e.key] = e.type[3] == 'd';
             }
             canvas.onwheel = function(e) {
-                mouseWheelDelta = e.deltaY;
+                mouse.wheelDelta = e.deltaY;
             }
             canvas.oncontextmenu = e->false;
         }
         setupControls();
+    }
+
+    public function run() {
+        var engine = context.engine;
         var lastTime = 0.0;
         function loop(t:Float) {
             var deltaTime = (t - lastTime) / 1000;
+            var mouse = context.mouse;
+            var keyboard = context.keyboard;
             context.level.update();
             context.renderer.clear();
-            mouseScreenPosition.x = ((mousePosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
-            mouseScreenPosition.y = ((mousePosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
+            mouse.position.x = ((mouse.internalPosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
+            mouse.position.y = ((mouse.internalPosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
             engine.update(deltaTime);
             context.renderer.draw(context.level);
             context.renderer.flush();
             lastTime = t;
 
-            if(isJustPressed('Escape')) {
+            if(keyboard.isJustPressed('Escape')) {
                 if(context.engine.isActive(core.ConsoleSystem)) {
                     gotoIngame();
                 } else if(context.engine.isActive(core.MenuSystem)) {
@@ -104,7 +81,7 @@ class App {
                 }
             }
 
-            if(isJustPressed('`')) {
+            if(keyboard.isJustPressed('`')) {
                 if(context.engine.isActive(core.ConsoleSystem)) {
                     gotoIngame();
                 } else {
@@ -112,7 +89,7 @@ class App {
                 }
             }
 
-            if(isJustPressed('e')) {
+            if(keyboard.isJustPressed('e')) {
                 if(context.engine.isActive(core.editor.EditorSystem)) {
                     gotoIngame();
                 } else {
@@ -120,46 +97,26 @@ class App {
                 }
             }
 
-            if(isJustPressed('r')) {
+            if(keyboard.isJustPressed('r')) {
                 context.level.restart();
             }
 
-            previousKeys = js.lib.Object.assign({}, keys);
-            previousMouseButtons = mouseButtons.slice(0);
-            mouseWheelDelta = 0;
+            keyboard.previousKeys = js.lib.Object.assign({}, keyboard.keys);
+            mouse.previousButtons = mouse.buttons.slice(0);
+            mouse.wheelDelta = 0;
+            mouse.moveX = 0;
             js.Browser.window.requestAnimationFrame(loop);
         }
         loop(0);
     }
 
-    static inline public function isJustPressed(k:String) {
-        return untyped !previousKeys[k] && untyped keys[k];
-    }
-
-    static inline public function isPressed(k:String) {
-        return untyped keys[k];
-    }
-
-    static inline public function isMouseButtonJustPressed(i:Int) {
-        return !previousMouseButtons[i] && mouseButtons[i];
-    }
-
-    static inline public function isMouseButtonJustReleased(i:Int) {
-        return previousMouseButtons[i] && !mouseButtons[i];
-    }
-
-    static inline public function log(what) {
-        consoleSystem.push(what);
-        js.Browser.console.log(what);
-    }
-
-    static public function gotoMenu() {
+    public function gotoMenu() {
         canvas.onclick = function() {};
         context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.resumeSystem(core.MenuSystem);
     }
 
-    static public function gotoIngame() {
+    public function gotoIngame() {
         canvas.onclick = e->canvas.requestPointerLock();
         context.engine.suspendSystem(core.editor.EditorSystem);
         context.engine.suspendSystem(core.MenuSystem);
@@ -170,12 +127,12 @@ class App {
         context.engine.resumeSystem(core.HudSystem);
     }
 
-    static public function gotoConsole() {
+    public function gotoConsole() {
         context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.resumeSystem(core.ConsoleSystem);
     }
 
-    static public function gotoEditor() {
+    public function gotoEditor() {
         js.Browser.document.exitPointerLock();
         canvas.onclick = function() {};
         context.engine.suspendSystem(core.TransformControlSystem);
@@ -183,5 +140,31 @@ class App {
         context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
     }
-}
+
+    public function setupEngine(engine:ecs.Engine) {
+        engine.addSystem(new core.ControlSystem(), 1);
+        engine.addSystem(new core.TransformControlSystem(), 1);
+        engine.addSystem(new core.PlayerControlSystem(), 1);
+        engine.addSystem(new core.MoveSystem(), 2);
+        engine.addSystem(new core.CameraSystem(), 3);
+        engine.addSystem(new core.CharacterSystem(), 6);
+        engine.addSystem(new core.BulletSystem(), 7);
+        engine.addSystem(new core.DeathSystem(), 8);
+        engine.addSystem(new core.DoorSystem(), 9);
+        engine.addSystem(new core.DoorChangeSystem(), 10);
+        engine.addSystem(new core.HudSystem(), 9);
+        engine.addSystem(new core.SpriteAnimationSystem(), 97);
+        engine.addSystem(new core.PhysicSystem(), 97);
+        engine.addSystem(new core.ObjectSystem(), 98);
+        engine.addSystem(new core.QuadSystem(), 99);
+        engine.addSystem(new core.MonsterSystem(), 101);
+        engine.addSystem(new core.MenuSystem(), 666);
+        engine.addSystem(new core.editor.EditorSystem(), 666);
+        engine.addSystem(consoleSystem, 667);
+    }
+
+    static inline public function log(what) {
+        consoleSystem.push(what);
+        js.Browser.console.log(what);
+    }
 }

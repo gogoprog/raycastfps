@@ -5,7 +5,7 @@ import haxe.macro.Expr;
 
 class Macro {
 
-    public static macro function getDataRootPath(folder:String) {
+    public static macro function getDataRootPath(folder:String = "") {
         var dataRelativePath = haxe.macro.Context.definedValue("dataRelativePath") + "/";
         return macro $v {dataRelativePath + folder};
     }

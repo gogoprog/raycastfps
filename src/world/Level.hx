@@ -212,7 +212,7 @@ class Level {
     }
 
     public function generateSectors() {
-        Main.log("Generating sectors...");
+        App.log("Generating sectors...");
         var engine = context.engine;
         var es = engine.getMatchingEntities(core.Door);
 
@@ -244,7 +244,7 @@ class Level {
                     createDoor(sector);
                 }
             }
-            Main.log("Sector added.");
+            App.log("Sector added.");
         }
     }
 
