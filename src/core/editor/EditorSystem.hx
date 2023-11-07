@@ -17,7 +17,6 @@ class EditorSystem extends ecs.System {
     static var selectedColor = 0xff11ee11;
     static var objectsColors = [ "monster" => 0xff4444dd, "start" =>  0xffdd5544];
     var font:display.Framebuffer = null;
-    var vertex:display.Framebuffer = null;
     var entries:Array<String> = [];
     var offset:math.Point = [400, 200];
     var zoom = 0.2;
@@ -49,6 +48,7 @@ class EditorSystem extends ecs.System {
     var action = Selecting;
 
     var textureChooserScroll = 0;
+    var textureChooserCallback:String->Void;
 
     public function new() {
         super();
@@ -64,9 +64,8 @@ class EditorSystem extends ecs.System {
     }
 
     override public function update(dt:Float) {
-        if(font == null || vertex == null) {
+        if(font == null) {
             font = context.textureManager.get("font");
-            vertex = context.textureManager.get("door");
             return;
         }
 
@@ -102,7 +101,14 @@ class EditorSystem extends ecs.System {
 
     function processTextureChooser() {
         var mouse_position = context.mouse.position;
-        var textures = [for(name in context.textureManager.getTextureNames()) name];
+        var textures = [];
+
+        for(name in context.textureManager.getTextureNames()) {
+            if(name.substring(0, 6) == "level/") {
+                textures.push(name);
+            }
+        }
+
         var size = 128;
         var padding = 8;
         var x = padding;
@@ -126,6 +132,10 @@ class EditorSystem extends ecs.System {
 
             if(mouse_position.x > pos.x && mouse_position.x < pos.x + size && mouse_position.y > pos.y && mouse_position.y < pos.y + size) {
                 color = 0xffffffff;
+
+                if(context.mouse.isJustPressed(0)) {
+                    textureChooserCallback(name);
+                }
             }
 
             context.renderer.pushRect(center, [size+2, size+2], color);
@@ -529,6 +539,29 @@ class EditorSystem extends ecs.System {
 
                     if(context.keyboard.isJustPressed("t")) {
                         action = ChoosingTexture;
+                        textureChooserCallback = function(name) {
+                            action = Selecting;
+                            data.rooms[hoveredRoomIndex].floorTextureName = name;
+                            level.generateSectors();
+                        }
+                    }
+                } else if(hoveredWallIndex != null) {
+                    if(context.keyboard.isJustPressed("t")) {
+                        action = ChoosingTexture;
+                        textureChooserCallback = function(name) {
+                            action = Selecting;
+                            data.walls[hoveredWallIndex].textureName = name;
+                            level.generateSectors();
+                        }
+                    }
+
+                    if(context.keyboard.isJustPressed("b")) {
+                        action = ChoosingTexture;
+                        textureChooserCallback = function(name) {
+                            action = Selecting;
+                            data.walls[hoveredWallIndex].bottomTextureName = name;
+                            level.generateSectors();
+                        }
                     }
                 } else if(hoveredVertexIndex != null) {
                     if(context.keyboard.isJustPressed("Delete")) {

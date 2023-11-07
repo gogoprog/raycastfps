@@ -26,6 +26,7 @@ class App {
             setupEngine(engine);
             gotoIngame();
             function init() {
+                context.level.load(Factory.levels["first"]);
                 context.level.restart();
             }
             Factory.initialize(init);
