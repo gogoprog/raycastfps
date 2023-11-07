@@ -372,15 +372,10 @@ class EditorSystem extends ecs.System {
                     };
                     data.walls.push(wall);
                     movingVertexIndex = null;
-                    findWalls(startVertexIndex, hoveredVertexIndex, currentRoomWalls);
+                    currentRoomWalls.push(data.walls.length - 1);
                     previousVertexIndex = null;
-                    var missing_wall = findWall(startVertexIndex, hoveredVertexIndex);
 
-                    if(missing_wall != null || startVertexIndex == hoveredVertexIndex) {
-                        if(missing_wall != null) {
-                            currentRoomWalls.push(missing_wall);
-                        }
-
+                    if(startVertexIndex == hoveredVertexIndex) {
                         currentRoomWalls.push(data.walls.length - 1);
                         {
                             data.rooms.push({
@@ -392,20 +387,38 @@ class EditorSystem extends ecs.System {
                             currentRoomWalls = [];
                             level.generateSectors();
                         }
-
-                        if(missing_wall != null) {
-                            data.walls[missing_wall].textureName = null;
-                        }
                     } else {
-                        for(i in 0...currentRoomWalls.length + 1) {
-                            data.walls.pop();
+                        var cancel = true;
+                        var missing_walls = findWalls(startVertexIndex, hoveredVertexIndex, currentRoomWalls);
+
+                        if(missing_walls != null) {
+                            for(w in missing_walls) {
+                                currentRoomWalls.push(w);
+                                data.walls[w].textureName = null;
+                            }
+
+                            data.rooms.push({
+                                walls: currentRoomWalls,
+                                floorTextureName: "floor",
+                                bottom: 0,
+                                top: 64
+                            });
+                            currentRoomWalls = [];
+                            level.generateSectors();
+                            cancel = false;
                         }
 
-                        for(i in 0...creatingRoomNewVerticesCount - 1) {
-                            data.vertices.pop();
-                        }
+                        if(cancel) {
+                            for(i in 0...currentRoomWalls.length) {
+                                data.walls.pop();
+                            }
 
-                        currentRoomWalls = [];
+                            for(i in 0...creatingRoomNewVerticesCount - 1) {
+                                data.vertices.pop();
+                            }
+
+                            currentRoomWalls = [];
+                        }
                     }
 
                     action = Selecting;
@@ -586,10 +599,9 @@ class EditorSystem extends ecs.System {
         return null;
     }
 
-    function findWalls(a:Int, b:Int, excluded:Array<Int>) {
+    function findWalls(a:Int, b:Int, excluded:Array<Int>):Array<Int> {
         var nodes = [[a]];
         var best = null;
-        trace('findWalls($a,$b)');
 
         while(nodes.length > 0) {
             var path = nodes.pop();
@@ -609,14 +621,17 @@ class EditorSystem extends ecs.System {
             }
 
             var wi = 0;
-            for(wall in data.walls) {
-                var next = wall.a == last ? wall.b : (wall.b == last ? wall.a : null);
 
-                if(next != null) {
-                    if(path.indexOf(next) == -1) {
-                        var copy = path.slice(0);
-                        copy.push(next);
-                        nodes.push(copy);
+            for(wall in data.walls) {
+                if(excluded.indexOf(wi) == -1) {
+                    var next = wall.a == last ? wall.b : (wall.b == last ? wall.a : null);
+
+                    if(next != null) {
+                        if(path.indexOf(next) == -1) {
+                            var copy = path.slice(0);
+                            copy.push(next);
+                            nodes.push(copy);
+                        }
                     }
                 }
 
@@ -624,7 +639,20 @@ class EditorSystem extends ecs.System {
             }
         }
 
-        trace(best);
+        if(best != null) {
+            var result = [];
+
+            for(i in 0...best.length - 1) {
+                var a = best[i];
+                var b = best[i+1];
+                var w = findWall(a, b);
+                result.push(w);
+            }
+
+            return result;
+        }
+
+        return null;
     }
 
     function alignPoint(position:math.Point) {
