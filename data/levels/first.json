@@ -1,5 +1,5 @@
 {
-  "skyTextureName": "sky",
+  "skyTextureName": "level/sky",
   "vertices": [
     [
       0,
@@ -38,8 +38,8 @@
     {
       "a": 0,
       "b": 1,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -48,8 +48,8 @@
     {
       "a": 1,
       "b": 2,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -58,8 +58,8 @@
     {
       "a": 2,
       "b": 3,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -68,7 +68,7 @@
     {
       "a": 3,
       "b": 0,
-      "bottomTextureName": "door",
+      "bottomTextureName": "level/door",
       "textureName": null,
       "textureScale": [
         1,
@@ -78,8 +78,8 @@
     {
       "a": 3,
       "b": 4,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -88,7 +88,7 @@
     {
       "a": 4,
       "b": 5,
-      "bottomTextureName": "door",
+      "bottomTextureName": "level/door",
       "textureName": null,
       "textureScale": [
         1,
@@ -98,8 +98,8 @@
     {
       "a": 5,
       "b": 0,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -108,8 +108,8 @@
     {
       "a": 4,
       "b": 6,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -118,8 +118,8 @@
     {
       "a": 6,
       "b": 7,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -128,8 +128,8 @@
     {
       "a": 7,
       "b": 5,
-      "bottomTextureName": "door",
-      "textureName": "wall",
+      "bottomTextureName": "level/door",
+      "textureName": "level/wall",
       "textureScale": [
         1,
         1
@@ -144,7 +144,7 @@
         2,
         3
       ],
-      "floorTextureName": "floor",
+      "floorTextureName": "level/floor",
       "bottom": 0,
       "top": 64
     },
@@ -155,7 +155,7 @@
         5,
         6
       ],
-      "floorTextureName": "door",
+      "floorTextureName": "level/door",
       "bottom": 0,
       "top": 64,
       "door": true
@@ -167,7 +167,7 @@
         9,
         5
       ],
-      "floorTextureName": "floor2",
+      "floorTextureName": "level/floor2",
       "bottom": 0,
       "top": 64
     }

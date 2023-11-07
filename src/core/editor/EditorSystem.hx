@@ -10,12 +10,12 @@ private enum Action {
     MovingRoom;
     Panning;
     CreatingRoom;
+    ChoosingTexture;
 }
 
 class EditorSystem extends ecs.System {
     static var selectedColor = 0xff11ee11;
     static var objectsColors = [ "monster" => 0xff4444dd, "start" =>  0xffdd5544];
-    var editing = true;
     var font:display.Framebuffer = null;
     var vertex:display.Framebuffer = null;
     var entries:Array<String> = [];
@@ -48,6 +48,8 @@ class EditorSystem extends ecs.System {
 
     var action = Selecting;
 
+    var textureChooserScroll = 0;
+
     public function new() {
         super();
     }
@@ -69,14 +71,10 @@ class EditorSystem extends ecs.System {
         }
 
         var renderer = context.renderer;
-
-        if(editing) {
-            var mouse_position = context.mouse.position;
-            draw();
-            processAction();
-            processControls();
-        }
-
+        var mouse_position = context.mouse.position;
+        draw();
+        processAction();
+        processControls();
         renderer.pushText("main", [2, 2], "EDITOR", false);
     }
 
@@ -89,19 +87,66 @@ class EditorSystem extends ecs.System {
     }
 
     function draw() {
-        processVertices();
-        processWalls();
-        processRooms();
-        processObjects();
+        var renderer = context.renderer;
+        var width = display.Renderer.screenWidth;
+        var height = display.Renderer.screenHeight;
+        renderer.pushRect([width/2, height/2], [width, height], 0xaa000000);
+
+        if(action != ChoosingTexture) {
+            processVertices();
+            processWalls();
+            processRooms();
+            processObjects();
+        }
+    }
+
+    function processTextureChooser() {
+        var mouse_position = context.mouse.position;
+        var textures = [for(name in context.textureManager.getTextureNames()) name];
+        var size = 128;
+        var padding = 8;
+        var x = padding;
+        var y = 32 + padding;
+
+        if(context.mouse.wheelDelta < 0) {
+            textureChooserScroll -= 1;
+        }
+
+        if(context.mouse.wheelDelta > 0) {
+            textureChooserScroll += 1;
+        }
+
+        var tex_per_line = Std.int((display.Renderer.screenWidth - padding) / (padding + size));
+
+        for(i in (textureChooserScroll*tex_per_line)...textures.length) {
+            var name = textures[i];
+            var pos:math.Point = [x, y];
+            var center = [x + size/2, y+size/2];
+            var color = 0xff333333;
+
+            if(mouse_position.x > pos.x && mouse_position.x < pos.x + size && mouse_position.y > pos.y && mouse_position.y < pos.y + size) {
+                color = 0xffffffff;
+            }
+
+            context.renderer.pushRect(center, [size+2, size+2], color);
+            context.renderer.pushQuad(context.textureManager.get(name), pos, [size, size]);
+            x += size + padding;
+
+            if(x + size > display.Renderer.screenWidth) {
+                y += size + padding;
+                x = padding;
+
+                if(y + size > display.Renderer.screenHeight) {
+                    break;
+                }
+            }
+        }
     }
 
     function processVertices() {
         var renderer = context.renderer;
         var mouse_position = context.mouse.position;
-        var width = display.Renderer.screenWidth;
-        var height = display.Renderer.screenHeight;
         var index = 0;
-        renderer.pushRect([width/2, height/2], [width, height], 0xaa000000);
         hoveredVertexIndex = null;
 
         for(v in data.vertices) {
@@ -481,6 +526,10 @@ class EditorSystem extends ecs.System {
                     if(context.keyboard.isJustPressed("Delete")) {
                         deleteRoom(hoveredRoomIndex);
                     }
+
+                    if(context.keyboard.isJustPressed("t")) {
+                        action = ChoosingTexture;
+                    }
                 } else if(hoveredVertexIndex != null) {
                     if(context.keyboard.isJustPressed("Delete")) {
                         deleteVertex(hoveredVertexIndex);
@@ -503,10 +552,12 @@ class EditorSystem extends ecs.System {
             }
 
             case MovingVertex: {
+                context.renderer.pushText("main", [128, 2], " : Moving vertex", false);
                 data.vertices[movingVertexIndex].copyFrom(new_position);
             }
 
             case MovingWall: {
+                context.renderer.pushText("main", [128, 2], " : Moving wall", false);
                 var wall = data.walls[movingWallIndex];
                 var delta = new_position - startMoveMousePosition;
                 data.vertices[wall.a].copyFrom(startMoveWallAPosition + delta);
@@ -514,6 +565,7 @@ class EditorSystem extends ecs.System {
             }
 
             case MovingRoom : {
+                context.renderer.pushText("main", [128, 2], " : Moving room", false);
                 var room = data.rooms[movingRoomIndex];
                 var delta = new_position - startMoveMousePosition;
                 var i = 0;
@@ -527,7 +579,13 @@ class EditorSystem extends ecs.System {
             }
 
             case CreatingRoom: {
+                context.renderer.pushText("main", [128, 2], " : Creating room", false);
                 data.vertices[movingVertexIndex].copyFrom(new_position);
+            }
+
+            case ChoosingTexture: {
+                context.renderer.pushText("main", [128, 2], " : Choosing texture", false);
+                processTextureChooser();
             }
 
             default:
@@ -570,12 +628,14 @@ class EditorSystem extends ecs.System {
             onSpacePressed();
         }
 
-        if(context.keyboard.isJustPressed('-') || context.mouse.wheelDelta < 0) {
-            zoom *= 1.4;
-        }
+        if(action != ChoosingTexture) {
+            if(context.keyboard.isJustPressed('-') || context.mouse.wheelDelta < 0) {
+                zoom *= 1.4;
+            }
 
-        if(context.keyboard.isJustPressed('+') || context.mouse.wheelDelta > 0) {
-            zoom /= 1.4;
+            if(context.keyboard.isJustPressed('+') || context.mouse.wheelDelta > 0) {
+                zoom /= 1.4;
+            }
         }
     }
 

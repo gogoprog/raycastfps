@@ -85,6 +85,11 @@ class TextureManager {
     public function get(name:String) {
         return textures[name];
     }
+
+    public function getTextureNames() {
+        return textures.keys();
+    }
+
     public function isLoading() {
         return loadCount > 0;
     }
