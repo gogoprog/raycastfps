@@ -117,8 +117,8 @@ class EditorSystem extends ecs.System {
                 color = selectedColor;
             }
 
-            renderer.pushRect(sv, [64 * zoom, 64 * zoom], color);
-            renderer.pushText("mini", sv + new math.Point(4, 16), "" + index);
+            renderer.pushRect(sv, [32 * zoom, 32 * zoom], color);
+            // renderer.pushText("mini", sv + new math.Point(4, 16), "" + index);
             index++;
         }
     }
@@ -448,6 +448,10 @@ class EditorSystem extends ecs.System {
         var mouse_position = context.mouse.position;
         var new_position = convertFromMap(mouse_position);
 
+        if(!context.keyboard.isPressed("Shift")) {
+            alignPoint(new_position);
+        }
+
         switch(action) {
             case Selecting: {
                 if(hoveredRoomIndex != null) {
@@ -473,6 +477,14 @@ class EditorSystem extends ecs.System {
                         room.top -= step;
                         level.generateSectors();
                     }
+
+                    if(context.keyboard.isJustPressed("Delete")) {
+                        deleteRoom(hoveredRoomIndex);
+                    }
+                } else if(hoveredVertexIndex != null) {
+                    if(context.keyboard.isJustPressed("Delete")) {
+                        deleteVertex(hoveredVertexIndex);
+                    }
                 }
 
                 if(context.keyboard.isJustPressed("m")) {
@@ -491,23 +503,19 @@ class EditorSystem extends ecs.System {
             }
 
             case MovingVertex: {
-                if(!context.keyboard.isPressed("Shift")) {
-                    alignPoint(new_position);
-                }
-
                 data.vertices[movingVertexIndex].copyFrom(new_position);
             }
 
             case MovingWall: {
                 var wall = data.walls[movingWallIndex];
-                var delta = convertFromMap(mouse_position) - startMoveMousePosition;
+                var delta = new_position - startMoveMousePosition;
                 data.vertices[wall.a].copyFrom(startMoveWallAPosition + delta);
                 data.vertices[wall.b].copyFrom(startMoveWallBPosition + delta);
             }
 
             case MovingRoom : {
                 var room = data.rooms[movingRoomIndex];
-                var delta = convertFromMap(mouse_position) - startMoveMousePosition;
+                var delta = new_position - startMoveMousePosition;
                 var i = 0;
 
                 for(w in room.walls) {
@@ -599,6 +607,20 @@ class EditorSystem extends ecs.System {
         return null;
     }
 
+    function findConnectedVertices(index:Int) {
+        var result = [];
+
+        for(wall in data.walls) {
+            var next = wall.a == index ? wall.b : (wall.b == index ? wall.a : null);
+
+            if(next != null) {
+                result.push(next);
+            }
+        }
+
+        return result;
+    }
+
     function findWalls(a:Int, b:Int, excluded:Array<Int>):Array<Int> {
         var nodes = [[a]];
         var best = null;
@@ -675,5 +697,79 @@ class EditorSystem extends ecs.System {
         js.Browser.document.body.appendChild(element);
         element.click();
         js.Browser.document.body.removeChild(element);
+    }
+
+    function deleteRoom(index) {
+    }
+
+    function deleteWall(index) {
+        for(room in data.rooms) {
+
+            room.walls.remove(index);
+
+            for(i in 0...room.walls.length) {
+                var w = room.walls[i];
+
+                if(w > index) {
+                    room.walls[i]--;
+                }
+            }
+        }
+
+        data.walls.splice(index, 1);
+    }
+
+    function deleteVertex(index) {
+        var connecteds = findConnectedVertices(index);
+
+        if(connecteds.length == 2) {
+            var new_w = createWall(connecteds[0], connecteds[1]);
+
+            for(c in connecteds) {
+                var wall = findWall(index, c);
+
+                // deleteWall(wall);
+                for(room in data.rooms) {
+                    var i = room.walls.indexOf(wall);
+
+                    if(i != -1) {
+                        if(room.walls.indexOf(new_w) == -1) {
+                            room.walls.insert(i, new_w);
+                        }
+                    }
+                }
+            }
+
+            for(c in connecteds) {
+                var wall = findWall(index, c);
+                deleteWall(wall);
+            }
+
+            var i = data.walls.length - 1;
+
+            for(wall in data.walls) {
+                if(wall.a > index) {
+                    wall.a--;
+                }
+
+                if(wall.b > index) {
+                    wall.b--;
+                }
+            }
+
+            data.vertices.splice(index, 1);
+        }
+    }
+
+    function createWall(a, b) {
+        var wall:def.Wall = {
+            a: a,
+            b: b,
+            bottomTextureName: "door",
+            textureName: "wall",
+            textureScale: [1, 1]
+        };
+        data.walls.push(wall);
+        return data.walls.length - 1;
     }
 }
