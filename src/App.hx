@@ -21,6 +21,21 @@ class App {
             context.level.old();
             context.renderer.registerFont("main", "font", 20, 20);
             context.renderer.registerFont("mini", "font2", 4, 6);
+            js.Browser.document.addEventListener("visibilitychange", function(e) {
+                trace("Visibility changed ");
+            }, false);
+            js.Browser.document.addEventListener("focus", function(e) {
+                trace("doc focus changed ");
+            }, false);
+            js.Browser.document.addEventListener("blur", function(e) {
+                trace("doc blur changed ");
+            }, false);
+            js.Browser.window.addEventListener("focus", function(e) {
+                trace("win focus changed ");
+            }, false);
+            js.Browser.window.addEventListener("blur", function(e) {
+                trace("win blur changed ");
+            }, false);
         }
         {
             setupEngine(engine);
