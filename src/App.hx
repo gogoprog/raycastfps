@@ -4,8 +4,13 @@ class App {
     private var context = new Context();
     static public var consoleSystem = new core.ConsoleSystem();
     private var canvas:js.html.CanvasElement;
+    private var hasFocus = true;
 
     public function new() {
+    }
+
+    function onFocus(value) {
+        hasFocus = value;
     }
 
     public function initialize() {
@@ -21,20 +26,17 @@ class App {
             context.level.old();
             context.renderer.registerFont("main", "font", 20, 20);
             context.renderer.registerFont("mini", "font2", 4, 6);
-            js.Browser.document.addEventListener("visibilitychange", function(e) {
-                trace("Visibility changed ");
-            }, false);
             js.Browser.document.addEventListener("focus", function(e) {
-                trace("doc focus changed ");
+                onFocus(true);
             }, false);
             js.Browser.document.addEventListener("blur", function(e) {
-                trace("doc blur changed ");
+                onFocus(false);
             }, false);
             js.Browser.window.addEventListener("focus", function(e) {
-                trace("win focus changed ");
+                onFocus(true);
             }, false);
             js.Browser.window.addEventListener("blur", function(e) {
-                trace("win blur changed ");
+                onFocus(false);
             }, false);
         }
         {
@@ -79,11 +81,17 @@ class App {
             var mouse = context.mouse;
             var keyboard = context.keyboard;
             context.level.update();
-            context.renderer.clear();
+
             mouse.position.x = ((mouse.internalPosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
             mouse.position.y = ((mouse.internalPosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
             engine.update(deltaTime);
-            context.renderer.draw(context.level);
+
+            if(hasFocus) {
+                context.renderer.clear();
+                context.renderer.draw(context.level);
+                context.renderer.render();
+            }
+
             context.renderer.flush();
             lastTime = t;
 

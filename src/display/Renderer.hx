@@ -118,7 +118,6 @@ class Renderer {
     var rects:Array<Rect> = [];
     var fonts:Map<String, FontInfo> = new Map();
 
-
     public function new(context) {
         this.context = context;
     }
@@ -300,6 +299,7 @@ class Renderer {
 
                     if(r != null) {
                         var f = Math.cos(a2) * r[0];
+
                         results.add(f, r[1], w, s);
                     }
                 }
@@ -539,8 +539,11 @@ class Renderer {
         drawQuads();
     }
 
-    public function flush() {
+    public function render() {
         canvasContext.putImageData(backbuffer.getImageData(), 0, 0);
+    }
+
+    public function flush() {
         sprites = [];
         quads = [];
         lines = [];
