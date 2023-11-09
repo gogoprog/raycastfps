@@ -7,6 +7,7 @@ class App {
     private var hasFocus = true;
 
     public function new() {
+        context.app = this;
     }
 
     function onFocus(value) {
@@ -23,7 +24,6 @@ class App {
             Context.dataRoot = Macro.getDataRootPath();
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
-            context.level.old();
             context.renderer.registerFont("main", "font", 20, 20);
             context.renderer.registerFont("mini", "font2", 4, 6);
             js.Browser.document.addEventListener("focus", function(e) {
@@ -81,7 +81,6 @@ class App {
             var mouse = context.mouse;
             var keyboard = context.keyboard;
             context.level.update();
-
             mouse.position.x = ((mouse.internalPosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
             mouse.position.y = ((mouse.internalPosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
             engine.update(deltaTime);
@@ -94,37 +93,6 @@ class App {
 
             context.renderer.flush();
             lastTime = t;
-
-            if(keyboard.isJustPressed('Escape')) {
-                if(context.engine.isActive(core.ConsoleSystem)) {
-                    gotoIngame();
-                } else if(context.engine.isActive(core.MenuSystem)) {
-                    gotoIngame();
-                } else {
-                    gotoMenu();
-                }
-            }
-
-            if(keyboard.isJustPressed('`')) {
-                if(context.engine.isActive(core.ConsoleSystem)) {
-                    gotoIngame();
-                } else {
-                    gotoConsole();
-                }
-            }
-
-            if(keyboard.isJustPressed('e')) {
-                if(context.engine.isActive(core.editor.EditorSystem)) {
-                    gotoIngame();
-                } else {
-                    gotoEditor();
-                }
-            }
-
-            if(keyboard.isJustPressed('r')) {
-                context.level.restart();
-            }
-
             keyboard.previousKeys = js.lib.Object.assign({}, keyboard.keys);
             mouse.previousButtons = mouse.buttons.slice(0);
             mouse.wheelDelta = 0;
@@ -136,6 +104,7 @@ class App {
 
     public function gotoMenu() {
         canvas.onclick = function() {};
+        context.engine.suspendSystem(core.InGameSystem);
         context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.resumeSystem(core.MenuSystem);
     }
@@ -149,16 +118,19 @@ class App {
         context.engine.resumeSystem(core.MonsterSystem);
         context.engine.resumeSystem(core.MoveSystem);
         context.engine.resumeSystem(core.HudSystem);
+        context.engine.resumeSystem(core.InGameSystem);
     }
 
     public function gotoConsole() {
         context.engine.suspendSystem(core.TransformControlSystem);
+        context.engine.suspendSystem(core.InGameSystem);
         context.engine.resumeSystem(core.ConsoleSystem);
     }
 
     public function gotoEditor() {
         js.Browser.document.exitPointerLock();
         canvas.onclick = function() {};
+        context.engine.suspendSystem(core.InGameSystem);
         context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.suspendSystem(core.MonsterSystem);
         context.engine.suspendSystem(core.HudSystem);
@@ -183,6 +155,7 @@ class App {
         engine.addSystem(new core.QuadSystem(), 99);
         engine.addSystem(new core.MonsterSystem(), 101);
         engine.addSystem(new core.MenuSystem(), 666);
+        engine.addSystem(new core.InGameSystem(), 666);
         engine.addSystem(new core.editor.EditorSystem(), 666);
         engine.addSystem(consoleSystem, 667);
     }

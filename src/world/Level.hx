@@ -9,6 +9,13 @@ class Level {
 
     public function new(context) {
         this.context = context;
+        data = {
+            skyTextureName: "",
+            vertices:[],
+            walls:[],
+            rooms:[],
+            objects:[]
+        }
     }
 
     public function old() {
@@ -118,7 +125,6 @@ class Level {
                 top: 64
             }
             ],
-            startPosition: [-512, 128],
             objects:[
             {
                 type: "start",
@@ -135,7 +141,6 @@ class Level {
 
             ]
         };
-        generateSectors();
     }
 
     public function load(data:def.Level) {

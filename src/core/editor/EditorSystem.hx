@@ -48,6 +48,7 @@ class EditorSystem extends ecs.System {
     var action = Selecting;
 
     var textureChooserScroll = 0;
+    var textureChooserCurrent:String;
     var textureChooserCallback:String->Void;
 
     public function new() {
@@ -102,6 +103,7 @@ class EditorSystem extends ecs.System {
     function processTextureChooser() {
         var mouse_position = context.mouse.position;
         var textures = [];
+        textures.push(null);
 
         for(name in context.textureManager.getTextureNames()) {
             if(name.substring(0, 6) == "level/") {
@@ -539,6 +541,7 @@ class EditorSystem extends ecs.System {
 
                     if(context.keyboard.isJustPressed("t")) {
                         action = ChoosingTexture;
+                        textureChooserCurrent = data.rooms[hoveredRoomIndex].floorTextureName;
                         textureChooserCallback = function(name) {
                             action = Selecting;
                             data.rooms[hoveredRoomIndex].floorTextureName = name;
@@ -548,6 +551,7 @@ class EditorSystem extends ecs.System {
                 } else if(hoveredWallIndex != null) {
                     if(context.keyboard.isJustPressed("t")) {
                         action = ChoosingTexture;
+                        textureChooserCurrent = data.walls[hoveredWallIndex].textureName;
                         textureChooserCallback = function(name) {
                             action = Selecting;
                             data.walls[hoveredWallIndex].textureName = name;
@@ -557,6 +561,7 @@ class EditorSystem extends ecs.System {
 
                     if(context.keyboard.isJustPressed("b")) {
                         action = ChoosingTexture;
+                        textureChooserCurrent = data.walls[hoveredWallIndex].bottomTextureName;
                         textureChooserCallback = function(name) {
                             action = Selecting;
                             data.walls[hoveredWallIndex].bottomTextureName = name;
@@ -659,6 +664,10 @@ class EditorSystem extends ecs.System {
 
         if(context.keyboard.isJustPressed(' ')) {
             onSpacePressed();
+        }
+
+        if(context.keyboard.isJustPressed('e') || context.keyboard.isJustPressed('Escape')) {
+            context.app.gotoIngame();
         }
 
         if(action != ChoosingTexture) {

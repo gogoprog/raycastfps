@@ -2,8 +2,9 @@ package core;
 
 typedef MenuEntry = {
     var content:String;
-    var action:String;
+    @:optional var action:String;
     @:optional var param:String;
+    @:optional var submenu:Menu;
 }
 
 typedef Menu = {
@@ -12,12 +13,13 @@ typedef Menu = {
 }
 
 class MenuSystem extends ecs.System {
+    var menus:Array<Menu>;
     var currentMenu:Menu;
-    var currentMenuIndex:Int;
+    var cursorIndices:Array<Int> = [];
 
     public function new() {
         super();
-        currentMenu = {
+        menus = [ {
             title: "Main Menu",
             entries: [
             {
@@ -26,7 +28,24 @@ class MenuSystem extends ecs.System {
             },
             {
                 content: "Load Game",
-                action: ""
+                action: "",
+                submenu: {
+                    title:"what",
+                    entries:[
+                    {
+                        content: "Pif",
+                        action: ""
+                    },
+                    {
+                        content: "Pif",
+                        action: ""
+                    },
+                    {
+                        content: "Pouff",
+                        action: ""
+                    }
+                    ]
+                }
             },
             {
                 content: "Options",
@@ -41,8 +60,9 @@ class MenuSystem extends ecs.System {
                 action: ""
             }
             ]
-        };
-        currentMenuIndex = 0;
+        }];
+        currentMenu = menus[0];
+        cursorIndices.push(0);
     }
 
     override public function update(dt:Float) {
@@ -50,24 +70,34 @@ class MenuSystem extends ecs.System {
             return;
         }
 
-        if(context.keyboard.isJustPressed('ArrowUp')) {
-            currentMenuIndex--;
+        var cursorIndex = cursorIndices[cursorIndices.length - 1];
 
-            if(currentMenuIndex < 0) {
-                currentMenuIndex = currentMenu.entries.length - 1;
+        if(context.keyboard.isJustPressed('ArrowUp')) {
+            cursorIndex--;
+
+            if(cursorIndex < 0) {
+                cursorIndex = currentMenu.entries.length - 1;
             }
+
+            cursorIndices[cursorIndices.length - 1] = cursorIndex;
         }
 
         if(context.keyboard.isJustPressed('ArrowDown')) {
-            currentMenuIndex++;
+            cursorIndex++;
 
-            if(currentMenuIndex >= currentMenu.entries.length) {
-                currentMenuIndex = 0;
+            if(cursorIndex >= currentMenu.entries.length) {
+                cursorIndex = 0;
             }
+
+            cursorIndices[cursorIndices.length - 1] = cursorIndex;
         }
 
         if(context.keyboard.isJustPressed('Enter')) {
-            apply(currentMenu.entries[currentMenuIndex]);
+            apply(currentMenu.entries[cursorIndex]);
+        }
+
+        if(context.keyboard.isJustPressed('Escape')) {
+            doEscape();
         }
 
         var renderer = context.renderer;
@@ -80,7 +110,7 @@ class MenuSystem extends ecs.System {
         for(entry in currentMenu.entries) {
             var text = entry.content;
 
-            if(currentMenuIndex == index) {
+            if(cursorIndex == index) {
                 text = "> " + entry.content + " <";
             }
 
@@ -91,6 +121,13 @@ class MenuSystem extends ecs.System {
     }
 
     function apply(entry:MenuEntry) {
+        if(entry.submenu != null) {
+            menus.push(entry.submenu);
+            cursorIndices.push(0);
+            currentMenu = menus[menus.length - 1];
+            return;
+        }
+
         switch(entry.action) {
             case "list_levels": {
                 var menu:Menu = {
@@ -114,6 +151,16 @@ class MenuSystem extends ecs.System {
                 context.level.load(level);
                 context.level.restart();
             }
+        }
+    }
+
+    function doEscape() {
+        if(menus.length > 1) {
+            menus.pop();
+            currentMenu = menus[menus.length - 1];
+            cursorIndices.pop();
+        } else {
+            context.app.gotoIngame();
         }
     }
 }

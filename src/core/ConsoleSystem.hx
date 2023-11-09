@@ -30,6 +30,10 @@ class ConsoleSystem extends ecs.System {
 
             offset_y -= 7;
         }
+
+        if(context.keyboard.isJustPressed('`') || context.keyboard.isJustPressed('Escape')) {
+            context.app.gotoIngame();
+        }
     }
 
     public function push(entry) {
