@@ -408,8 +408,8 @@ class Renderer {
     }
 
     function drawQuad(texture:Framebuffer, source_position:Point, source_extent:Point, position:Point, extent:Point) {
-        var w = Std.int(extent.x);
-        var h = Std.int(extent.y);
+        var w = extent != null ? Std.int(extent.x) : texture.width;
+        var h = extent != null ? Std.int(extent.y) : texture.height;
         var ox = Std.int(position.x);
         var oy = Std.int(position.y);
         var sx = source_position != null ? source_position.x : 0;
@@ -562,7 +562,7 @@ class Renderer {
         }
     }
 
-    public function pushQuad(texture:Framebuffer, position:Point, extent:Point, source_position:Point = null, source_extent:Point = null) {
+    public function pushQuad(texture:Framebuffer, position:Point, extent:Point = null, source_position:Point = null, source_extent:Point = null) {
         if(texture != null) {
             var quad = new Quad();
             quad.sourcePosition = source_position;
@@ -570,6 +570,16 @@ class Renderer {
             quad.texture = texture;
             quad.position = position;
             quad.extent = extent;
+            quads.push(quad);
+        }
+    }
+
+    public function pushQuad2(texture:Framebuffer, position:Point) {
+        if(texture != null) {
+            var quad = new Quad();
+            quad.texture = texture;
+            quad.position = position - [texture.width / 2, texture.height / 2];
+            quad.extent = [texture.width, texture.height];
             quads.push(quad);
         }
     }

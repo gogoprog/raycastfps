@@ -1,0 +1,41 @@
+[{
+    "image": "title",
+    "title": "Main Menu",
+    "entries": [{
+            "content": "Load Level",
+            "action": "list_levels"
+        },
+        {
+            "content": "Load Game",
+            "action": "",
+            "submenu": {
+                "title": "what",
+                "entries": [{
+                        "content": "Pif",
+                        "action": ""
+                    },
+                    {
+                        "content": "Pif",
+                        "action": ""
+                    },
+                    {
+                        "content": "Pouff",
+                        "action": ""
+                    }
+                ]
+            }
+        },
+        {
+            "content": "Options",
+            "action": ""
+        },
+        {
+            "content": "Credits",
+            "action": ""
+        },
+        {
+            "content": "Quit",
+            "action": ""
+        }
+    ]
+}]

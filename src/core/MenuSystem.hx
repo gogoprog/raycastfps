@@ -8,59 +8,20 @@ typedef MenuEntry = {
 }
 
 typedef Menu = {
+    @:optional var image:String;
     var title:String;
     var entries:Array<MenuEntry>;
 }
 
 class MenuSystem extends ecs.System {
+    static var fileContent = Macro.getFileContent("menu.json");
     var menus:Array<Menu>;
     var currentMenu:Menu;
     var cursorIndices:Array<Int> = [];
 
     public function new() {
         super();
-        menus = [ {
-            title: "Main Menu",
-            entries: [
-            {
-                content: "Load Level",
-                action: "list_levels"
-            },
-            {
-                content: "Load Game",
-                action: "",
-                submenu: {
-                    title:"what",
-                    entries:[
-                    {
-                        content: "Pif",
-                        action: ""
-                    },
-                    {
-                        content: "Pif",
-                        action: ""
-                    },
-                    {
-                        content: "Pouff",
-                        action: ""
-                    }
-                    ]
-                }
-            },
-            {
-                content: "Options",
-                action: ""
-            },
-            {
-                content: "Credits",
-                action: ""
-            },
-            {
-                content: "Quit",
-                action: ""
-            }
-            ]
-        }];
+        menus = cast haxe.Json.parse(fileContent);
         currentMenu = menus[0];
         cursorIndices.push(0);
     }
@@ -102,8 +63,10 @@ class MenuSystem extends ecs.System {
 
         var renderer = context.renderer;
         var center_x = Std.int(display.Renderer.screenWidth * 0.5);
-        var offset_y = 150;
+        var offset_y = 100;
         var index = 0;
+        renderer.pushQuad2(context.textureManager.get(currentMenu.image), [center_x, offset_y]);
+        offset_y += 100;
         renderer.pushText("main", [center_x, offset_y], currentMenu.title, true);
         offset_y += 100;
 

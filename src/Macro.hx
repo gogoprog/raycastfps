@@ -36,4 +36,10 @@ class Macro {
         var exprs = [for(file in result) macro $v {file}];
         return macro $a {exprs};
     }
+
+    public static macro function getFileContent(file:String) {
+        var path = haxe.macro.Context.definedValue("dataPath") + "/" + file;
+        var content = sys.io.File.getContent(path);
+        return macro $v {content};
+    }
 }
