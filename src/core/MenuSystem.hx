@@ -106,13 +106,23 @@ class MenuSystem extends ecs.System {
                     });
                 }
 
-                currentMenu = menu;
+                menus.push(menu);
+                cursorIndices.push(0);
+                currentMenu = menus[menus.length - 1];
             }
 
             case "load_level": {
                 var level = Factory.levels[entry.param];
                 context.level.load(level);
                 context.level.restart();
+                context.app.gotoIngame();
+
+                while(menus.length > 1) {
+                    menus.pop();
+                    cursorIndices.pop();
+                }
+
+                currentMenu = menus[0];
             }
         }
     }
