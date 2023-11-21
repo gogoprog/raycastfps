@@ -548,6 +548,12 @@ class EditorSystem extends ecs.System {
                             level.generateSectors();
                         }
                     }
+
+                    {
+                        var texture = context.textureManager.get(data.rooms[hoveredRoomIndex].floorTextureName);
+                        context.renderer.pushText("main", [840, 4], "floor", false);
+                        context.renderer.pushQuad(texture, [840, 32], [128, 128]);
+                    }
                 } else if(hoveredWallIndex != null) {
                     if(context.keyboard.isJustPressed("t")) {
                         action = ChoosingTexture;
@@ -567,6 +573,15 @@ class EditorSystem extends ecs.System {
                             data.walls[hoveredWallIndex].bottomTextureName = name;
                             level.generateSectors();
                         }
+                    }
+
+                    {
+                        var texture = context.textureManager.get(data.walls[hoveredWallIndex].textureName);
+                        context.renderer.pushText("main", [840, 4], "wall", false);
+                        context.renderer.pushQuad(texture, [840, 32], [128, 128]);
+                        var texture = context.textureManager.get(data.walls[hoveredWallIndex].bottomTextureName);
+                        context.renderer.pushText("main", [840, 160], "bottom", false);
+                        context.renderer.pushQuad(texture, [840, 188], [128, 128]);
                     }
                 } else if(hoveredVertexIndex != null) {
                     if(context.keyboard.isJustPressed("Delete")) {
@@ -666,8 +681,12 @@ class EditorSystem extends ecs.System {
             onSpacePressed();
         }
 
-        if(context.keyboard.isJustPressed('e') || context.keyboard.isJustPressed('Escape')) {
+        if(context.keyboard.isJustPressed('e')) {
             context.app.gotoIngame();
+        }
+
+        if(context.keyboard.isJustPressed('Escape')) {
+            action = Selecting;
         }
 
         if(action != ChoosingTexture) {
