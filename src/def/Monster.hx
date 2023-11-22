@@ -1,10 +1,12 @@
 package def;
 
+typedef Animations = {
+    var idle:String;
+    var death:String;
+}
+
 typedef Monster = {
     var name:String;
     var life:Int;
-    var animations:{
-        idle:String,
-        death:String
-    };
+    var animations:Animations;
 }
