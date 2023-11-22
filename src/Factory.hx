@@ -2,7 +2,7 @@ package;
 
 class Factory {
     static var levelFilePaths = Macro.getDataFilePaths("levels");
-    static private var monsters = new Map<String, def.Monster>();
+    static public var monsters = new Map<String, def.Monster>();
     static private var weapons = new Map<String, def.Weapon>();
     static public var levels = new Map<String, def.Level>();
     static public var context:Context;

@@ -42,6 +42,8 @@ class EditorSystem extends ecs.System {
     var hoveredRoomIndex:Int;
     var movingRoomIndex:Int;
 
+    var hoveredObjectIndex:Int;
+
     var currentRoomWalls:Array<Int> = [];
     var creatingRoomNewVerticesCount = 0;
 
@@ -255,31 +257,45 @@ class EditorSystem extends ecs.System {
     function processObjects() {
         var mouse_position = context.mouse.position;
         var renderer = context.renderer;
+
+        hoveredObjectIndex = null;
+
         renderer.pushRect(mouse_position, [2, 2], 0xff55dd44);
         {
             var camTransform = context.cameraTransform;
             var pos = convertToMap(camTransform.position);
-            renderer.pushRect(pos, [4, 4], 0xffffffff);
 
-            tmp.setFromAngle(camTransform.angle - 0.5, 20);
+            tmp.setFromAngle(camTransform.angle - 0.5, 60 * zoom);
 
             tmp.add(pos);
 
             renderer.pushLine(pos, tmp, 0xffffffff);
 
-            tmp.setFromAngle(camTransform.angle + 0.5, 20);
+            tmp.setFromAngle(camTransform.angle + 0.5, 60 * zoom);
 
             tmp.add(pos);
 
             renderer.pushLine(pos, tmp, 0xffffffff);
         }
+
+        var size = 32 * zoom;
+        var vsize = [size, size];
+
+        var index = 0;
 
         for(obj in data.objects) {
             var pos = convertToMap(obj.position);
-            renderer.pushRect(pos, [8, 8], objectsColors[obj.type]);
+            var delta = (mouse_position - pos);
+
+            if(delta.getLength() < size) {
+                hoveredObjectIndex = index;
+                renderer.pushRect(pos, [size + 4, size + 4], 0xffffffff);
+            }
+
+            renderer.pushRect(pos, vsize, objectsColors[obj.type]);
+            ++index;
         }
 
-        return;
     }
 
     function onMouseLeftPressed() {
@@ -511,7 +527,11 @@ class EditorSystem extends ecs.System {
 
         switch(action) {
             case Selecting: {
-                if(hoveredRoomIndex != null) {
+                if(hoveredObjectIndex != null) {
+                    if(context.keyboard.isJustPressed("Delete")) {
+                        deleteObject(hoveredObjectIndex);
+                    }
+                } else if(hoveredRoomIndex != null) {
                     var room = data.rooms[hoveredRoomIndex];
                     var step = 8;
 
@@ -580,8 +600,8 @@ class EditorSystem extends ecs.System {
                         context.renderer.pushText("main", [840, 4], "wall", false);
                         context.renderer.pushQuad(texture, [840, 32], [128, 128]);
                         var texture = context.textureManager.get(data.walls[hoveredWallIndex].bottomTextureName);
-                        context.renderer.pushText("main", [840, 160], "bottom", false);
-                        context.renderer.pushQuad(texture, [840, 188], [128, 128]);
+                        context.renderer.pushText("main", [840, 180], "bottom", false);
+                        context.renderer.pushQuad(texture, [840, 208], [128, 128]);
                     }
                 } else if(hoveredVertexIndex != null) {
                     if(context.keyboard.isJustPressed("Delete")) {
@@ -592,11 +612,21 @@ class EditorSystem extends ecs.System {
                 if(context.keyboard.isJustPressed("m")) {
                     var obj = {
                         type: "monster",
-                        name: "grell",
+                        name: Factory.monsters.keys().next(),
                         position:new_position
                     };
                     data.objects.push(obj);
                     level.placeObjects(true);
+                }
+
+                if(context.keyboard.isJustPressed("p")) {
+                    var obj = {
+                        type: "start",
+                        name: "player",
+                        position:new_position
+                    };
+                    data.objects.push(obj);
+                    level.placeObjects(false);
                 }
 
                 if(context.keyboard.isJustPressed("s")) {
@@ -880,6 +910,10 @@ class EditorSystem extends ecs.System {
 
             data.vertices.splice(index, 1);
         }
+    }
+
+    function deleteObject(index) {
+        data.objects.splice(index, 1);
     }
 
     function createWall(a, b) {
