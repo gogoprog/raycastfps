@@ -614,6 +614,10 @@ class EditorSystem extends ecs.System {
                     if(context.keyboard.isJustPressed("ArrowDown")) {
                         wall.textureScale.y += step;
                     }
+
+                    if(context.keyboard.isJustPressed("Delete")) {
+                        deleteWall(hoveredWallIndex);
+                    }
                 } else if(hoveredVertexIndex != null) {
                     if(context.keyboard.isJustPressed("Delete")) {
                         deleteVertex(hoveredVertexIndex);
@@ -882,7 +886,7 @@ class EditorSystem extends ecs.System {
     function deleteRoom(index) {
     }
 
-    function deleteWall(index) {
+    function deleteWallDirect(index) {
         for(room in data.rooms) {
 
             room.walls.remove(index);
@@ -899,6 +903,33 @@ class EditorSystem extends ecs.System {
         data.walls.splice(index, 1);
     }
 
+    function deleteWall(index) {
+        var rooms = [];
+
+        for(room in data.rooms) {
+            for(wall in room.walls) {
+                if(wall == index) {
+                    rooms.push(room);
+                    break;
+                }
+            }
+        }
+
+        if(rooms.length == 2) {
+            var i = rooms[0].walls.indexOf(index);
+            var j = 0;
+
+            for(w in rooms[1].walls) {
+                if(w != index) {
+                    rooms[0].walls.insert(i + j, w);
+                    ++j;
+                }
+            }
+
+            data.rooms.remove(rooms[1]);
+        }
+    }
+
     function deleteVertex(index) {
         var connecteds = findConnectedVertices(index);
 
@@ -908,7 +939,6 @@ class EditorSystem extends ecs.System {
             for(c in connecteds) {
                 var wall = findWall(index, c);
 
-                // deleteWall(wall);
                 for(room in data.rooms) {
                     var i = room.walls.indexOf(wall);
 
@@ -922,7 +952,7 @@ class EditorSystem extends ecs.System {
 
             for(c in connecteds) {
                 var wall = findWall(index, c);
-                deleteWall(wall);
+                deleteWallDirect(wall);
             }
 
             var i = data.walls.length - 1;
