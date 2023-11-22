@@ -137,7 +137,7 @@ class EditorSystem extends ecs.System {
             if(mouse_position.x > pos.x && mouse_position.x < pos.x + size && mouse_position.y > pos.y && mouse_position.y < pos.y + size) {
                 color = 0xffffffff;
 
-                if(context.mouse.isJustPressed(0)) {
+                if(context.mouse.isJustReleased(0)) {
                     textureChooserCallback(name);
                 }
             }
@@ -367,18 +367,6 @@ class EditorSystem extends ecs.System {
                     var wall = data.walls[hoveredWallIndex];
                     wall.textureName = null;
                 }
-            }
-
-            default:
-        }
-    }
-
-    function onMouseRightReleased() {
-        switch(action) {
-            case MovingVertex: {
-            }
-
-            case MovingWall: {
             }
 
             default:
@@ -652,6 +640,32 @@ class EditorSystem extends ecs.System {
                     level.placeObjects(false);
                 }
 
+                if(context.mouse.isJustPressed(0)) {
+                    if(hoveredVertexIndex != null) {
+                        action = MovingVertex;
+                        movingVertexIndex = hoveredVertexIndex;
+                    } else if(hoveredWallIndex != null) {
+                        action = MovingWall;
+                        movingWallIndex = hoveredWallIndex;
+                        var wall = data.walls[movingWallIndex];
+                        startMoveMousePosition.copyFrom(convertFromMap(mouse_position));
+                        startMoveWallAPosition.copyFrom(data.vertices[wall.a]);
+                        startMoveWallBPosition.copyFrom(data.vertices[wall.b]);
+                    } else if(hoveredRoomIndex != null) {
+                        action = MovingRoom;
+                        movingRoomIndex = hoveredRoomIndex;
+                        startMoveMousePosition.copyFrom(convertFromMap(mouse_position));
+                        var room = data.rooms[movingRoomIndex];
+                        startMoveRoomVertexPosition = [];
+
+                        for(w in room.walls) {
+                            var wall = data.walls[w];
+                            startMoveRoomVertexPosition.push(data.vertices[wall.a].getCopy());
+                            startMoveRoomVertexPosition.push(data.vertices[wall.b].getCopy());
+                        }
+                    }
+                }
+
                 if(context.keyboard.isJustPressed("s")) {
                     save();
                 }
@@ -714,20 +728,12 @@ class EditorSystem extends ecs.System {
             isPanning = false;
         }
 
-        if(context.mouse.isJustPressed(0)) {
-            onMouseLeftPressed();
-        }
-
         if(context.mouse.isJustReleased(0)) {
             onMouseLeftReleased();
         }
 
         if(context.mouse.isJustPressed(2)) {
             onMouseRightPressed();
-        }
-
-        if(context.mouse.isJustReleased(2)) {
-            onMouseRightReleased();
         }
 
         if(context.keyboard.isJustPressed(' ')) {
