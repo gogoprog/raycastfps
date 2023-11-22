@@ -575,33 +575,56 @@ class EditorSystem extends ecs.System {
                         context.renderer.pushQuad(texture, [840, 32], [128, 128]);
                     }
                 } else if(hoveredWallIndex != null) {
+                    var wall = data.walls[hoveredWallIndex];
+
                     if(context.keyboard.isJustPressed("t")) {
                         action = ChoosingTexture;
-                        textureChooserCurrent = data.walls[hoveredWallIndex].textureName;
+                        textureChooserCurrent = wall.textureName;
                         textureChooserCallback = function(name) {
                             action = Selecting;
-                            data.walls[hoveredWallIndex].textureName = name;
+                            wall.textureName = name;
                             level.generateSectors();
                         }
                     }
 
                     if(context.keyboard.isJustPressed("b")) {
                         action = ChoosingTexture;
-                        textureChooserCurrent = data.walls[hoveredWallIndex].bottomTextureName;
+                        textureChooserCurrent = wall.bottomTextureName;
                         textureChooserCallback = function(name) {
                             action = Selecting;
-                            data.walls[hoveredWallIndex].bottomTextureName = name;
+                            wall.bottomTextureName = name;
                             level.generateSectors();
                         }
                     }
 
                     {
-                        var texture = context.textureManager.get(data.walls[hoveredWallIndex].textureName);
+                        var texture = context.textureManager.get(wall.textureName);
                         context.renderer.pushText("main", [840, 4], "wall", false);
                         context.renderer.pushQuad(texture, [840, 32], [128, 128]);
-                        var texture = context.textureManager.get(data.walls[hoveredWallIndex].bottomTextureName);
+                        var texture = context.textureManager.get(wall.bottomTextureName);
                         context.renderer.pushText("main", [840, 180], "bottom", false);
                         context.renderer.pushQuad(texture, [840, 208], [128, 128]);
+                        context.renderer.pushText("main", [840, 380], "scale", false);
+                        context.renderer.pushText("main", [840, 400], " x: " + Std.int(wall.textureScale.x*100)/100, false);
+                        context.renderer.pushText("main", [840, 420], " y: " + Std.int(wall.textureScale.y*100)/100, false);
+                    }
+
+                    var step = 0.1;
+
+                    if(context.keyboard.isJustPressed("ArrowLeft")) {
+                        wall.textureScale.x += step;
+                    }
+
+                    if(context.keyboard.isJustPressed("ArrowRight")) {
+                        wall.textureScale.x -= step;
+                    }
+
+                    if(context.keyboard.isJustPressed("ArrowUp")) {
+                        wall.textureScale.y -= step;
+                    }
+
+                    if(context.keyboard.isJustPressed("ArrowDown")) {
+                        wall.textureScale.y += step;
                     }
                 } else if(hoveredVertexIndex != null) {
                     if(context.keyboard.isJustPressed("Delete")) {

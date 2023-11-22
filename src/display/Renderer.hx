@@ -323,7 +323,7 @@ class Renderer {
                     var depth = wr.distance * 1024;
 
                     if(texture != null) {
-                        var tx = Std.int(wr.gamma * wr.wall.length * 4 * wr.wall.textureScale.x) % texture.width;
+                        var tx = Std.int(wr.gamma * wr.wall.length * wr.wall.textureScale.x) % texture.width;
                         var delta = sector.top - sector.bottom;
                         var ratio = magic * delta/wallH;
                         var tex_scale = delta / (sector.initialTop - sector.initialBottom);
