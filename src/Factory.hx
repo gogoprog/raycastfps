@@ -31,21 +31,22 @@ class Factory {
             e.add(new core.Sprite());
 
             e.add(new core.Object());
+            e.get(core.Object).isStatic = true;
 
             e.add(new math.Transform());
 
             var distance = 1;
             e.get(math.Transform).position = [position.x + Math.random() * distance - distance/2, position.y + Math.random() * distance - distance/2];
             e.get(math.Transform).y = 32;
-            e.get(math.Transform).scale = 0.2;
+            e.get(math.Transform).scale = 0.4;
 
             e.add(new core.SpriteAnimator());
 
             e.get(core.SpriteAnimator).push("explosion");
             var physic = new core.Physic();
             physic.velocity.setFromAngle(Math.random() * Math.PI * 2);
-            physic.velocity *= 10 + Math.random() * 10;
-            physic.yVelocity = 100 + Math.random() * 20;
+            physic.velocity *= 30 + Math.random() * 50;
+            physic.yVelocity = 200 + Math.random() * 100;
 
             e.add(physic);
 
