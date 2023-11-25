@@ -1,4 +1,6 @@
-# Unnamed raycast fps
+# urfps
+
+  Unnamed retro FPS. Also "your fps"!
 
 ## Goal
 
@@ -13,73 +15,42 @@ I will use the `Haxe` language on top of that, basically to have a statically ty
 
 ## Dev blog
 
-### Start
+### 2023-06 Stairway to Hell
 
-I decided to continue on my raycasted game from the @js1024fun jam.
+  * Sectors now have a 'bottom' value and texture.
 
-First steps:
- * Support wide ratio
- * Keyboard controls
- * Cleaner code (original was aimed to be minimal)
+  So now I have cool floors. But I need to work on depth masks because objects can be seen when on lower floors.
 
-![start](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-start.png)
+![stairs](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-stairs.gif)
 
-### Floor
+### 2023-06 Camera height
 
-First acceptable floor rendering : I could not figure it out by myself so I read stuff about `mode7` and `rotozoomer` to achieve this.
+  * New concept : Camera height.
 
-In the end I have a simple implementation supporting only 1 floor. That will be enough for now.
+  Now I can work on floors with different heights!
 
-![floor](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-floor.gif)
+![y](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-y.gif)
 
-### First sprite
+### 2023-06 Introducing sectors
 
-First step on sprite rendering :
-  * (almost) correctly positionned in "3D"
-  * Correct size depending on the distance
+  * New concept : Sectors with attached walls and a floor texture.
+  * Walls can be transparent.
 
-The maths were pretty easy :
-  * Get angle from camera, check if it is inside the field-of-view to render it
-  * Compute distance and use it to alter the rendering size
-  * Use angle divided by Fov to know the exact location on the screen : this works but I do it in a linear way which is not fully correct
+  With this 2 new features I can now render different floors properly. Next step : floor height support!
 
+![floors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-floors.gif)
 
-![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-sprite.gif)
+### 2023-05 Text rendering and ugly flat doors
 
-### Sprite again
+  * Display text in screenspace.
+  * Started working on doors.
 
-Continuing on sprite rendering :
-  * Snap to the ground
-  * Support depth (hidden by walls)
-  * Support transparency (just skipping transparent pixels)
+ An issue appeared : The renderer should be able to draw partial floors/ceilings to avoid flat doors.
+ This was not planned so I need to investigate.
 
-For the depth I just keep the wall distance from camera for every column, assuming the sprites will always be smaller than the walls. Then I do a simple comparison when rendering the sprite columns.
+![doors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-doors.gif)
 
-![sprite2](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-sprite2.gif)
-
-
-### Sprite rotations and ECS
-
-Adding useful stuff for the future:
-  * ECS architecture
-  * Sprite System with rotation handling
-  * Sorted sprite rendering
-
-I introduced ECS to have a Sprite system which will take care of animations and rotations. This system is feeding the renderer with sprites, and now the renderer sorts the sprites.
-
-![rotations](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-rotations.gif)
-
-### It is getting alive!
-
-  * Definitions loader : basically helpers to load the json data files.
-  * SpriteAnimationSystem : updates the Sprite component to display the correct animation frame.
-  * Sky rendering
-
-The code is getting cleaner and is ready to be completely data-driven. I also updated the textures to make it look better.
-
-![life](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-life.gif)
-
-### First interaction : Killing of course
+### 2022-12 First interaction : Killing of course
 
   * Display quads in screenspace for Hud.
   * HudSystem displaying and animating the weapon depending on the speed.
@@ -90,42 +61,69 @@ Finally we can shoot these ugly monsters!
 
 ![kill](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-kill.gif)
 
-### Text rendering and ugly flat doors
+### 2022-08 It is getting alive!
 
-  * Display text in screenspace.
-  * Started working on doors.
+  * Definitions loader : basically helpers to load the json data files.
+  * SpriteAnimationSystem : updates the Sprite component to display the correct animation frame.
+  * Sky rendering
 
- An issue appeared : The renderer should be able to draw partial floors/ceilings to avoid flat doors.
- This was not planned so I need to investigate.
+The code is getting cleaner and is ready to be completely data-driven. I also updated the textures to make it look better.
 
-![doors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-doors.gif)
+![life](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-life.gif)
 
-### Introducing sectors
+### 2022-08 Sprite rotations and ECS
 
-  * New concept : Sectors with attached walls and a floor texture.
-  * Walls can be transparent.
+Adding useful stuff for the future:
+  * ECS architecture
+  * Sprite System with rotation handling
+  * Sorted sprite rendering
 
-  With this 2 new features I can now render different floors properly. Next step : floor height support!
+I introduced ECS to have a Sprite system which will take care of animations and rotations. This system is feeding the renderer with sprites, and now the renderer sorts the sprites.
 
-![floors](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-floors.gif)
+![rotations](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-rotations.gif)
 
-### Camera height
+### 2022-07 Sprite again
 
-  * New concept : Camera height.
+Continuing on sprite rendering :
+  * Snap to the ground
+  * Support depth (hidden by walls)
+  * Support transparency (just skipping transparent pixels)
 
-  Now I can work on floors with different heights!
+For the depth I just keep the wall distance from camera for every column, assuming the sprites will always be smaller than the walls. Then I do a simple comparison when rendering the sprite columns.
 
-![y](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-y.gif)
+![sprite2](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-sprite2.gif)
 
-### Stairway to Hell
+### 2022-07 First sprite
 
-  * Sectors now have a 'bottom' value and texture.
+First step on sprite rendering :
+  * (almost) correctly positionned in "3D"
+  * Correct size depending on the distance
 
-  So now I have cool floors. But I need to work on depth masks because objects can be seen when on lower floors.
+The maths were pretty easy :
+  * Get angle from camera, check if it is inside the field-of-view to render it
+  * Compute distance and use it to alter the rendering size
+  * Use angle divided by Fov to know the exact location on the screen : this works but I do it in a linear way which is not fully correct
 
+![sprite](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-sprite.gif)
 
-![stairs](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-stairs.gif)
+### 2022-07 Floor
 
+First acceptable floor rendering : I could not figure it out by myself so I read stuff about `mode7` and `rotozoomer` to achieve this.
+
+In the end I have a simple implementation supporting only 1 floor. That will be enough for now.
+
+![floor](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-floor.gif)
+
+### 2022-07 Start
+
+I decided to continue on my raycasted game from the @js1024fun jam.
+
+First steps:
+ * Support wide ratio
+ * Keyboard controls
+ * Cleaner code (original was aimed to be minimal)
+
+![start](https://github.com/gogoprog/raycastfps/raw/master/res/rfps-start.png)
 
 ## Credits
 
@@ -134,4 +132,3 @@ Finally we can shoot these ugly monsters!
   * Floor: https://opengameart.org/content/grey-stone-wall-256px (Tiziana)
   * Wall: https://opengameart.org/content/dusty-exterior-wall-01 (Sindwiller)
   * Sky: https://www.doomworld.com/forum/topic/93966-post-your-sky-textures/ (Fuzzball)
-
