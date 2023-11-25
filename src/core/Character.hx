@@ -9,6 +9,7 @@ class Character {
     public var didFire = false;
     public var weapon:def.Weapon;
     public var animations:def.Animations;
+    public var effects:def.Effects;
 
     public function new() {
     }

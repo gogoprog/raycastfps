@@ -24,8 +24,8 @@ class Factory {
         loader.fill2(levels, levelFilePaths, localcallback);
     }
 
-    static public function createGibs(engine:ecs.Engine, position:math.Point) {
-        for(i in 0...128) {
+    static public function createEffect(engine:ecs.Engine, position:math.Point, name:String) {
+        for(i in 0...32) {
             var e = new ecs.Entity();
 
             e.add(new core.Sprite());
@@ -36,16 +36,16 @@ class Factory {
 
             var distance = 1;
             e.get(math.Transform).position = [position.x + Math.random() * distance - distance/2, position.y + Math.random() * distance - distance/2];
-            e.get(math.Transform).y = -200 + Std.random(10);
-            e.get(math.Transform).scale = 0.05;
+            e.get(math.Transform).y = 32;
+            e.get(math.Transform).scale = 0.2;
 
             e.add(new core.SpriteAnimator());
 
             e.get(core.SpriteAnimator).push("explosion");
             var physic = new core.Physic();
             physic.velocity.setFromAngle(Math.random() * Math.PI * 2);
-            physic.velocity *= 10 + Math.random() * 100;
-            physic.yVelocity = 1000 + Math.random() * 2000;
+            physic.velocity *= 10 + Math.random() * 10;
+            physic.yVelocity = 100 + Math.random() * 20;
 
             e.add(physic);
 
@@ -95,6 +95,9 @@ class Factory {
         e.add(new core.SpriteAnimator());
 
         e.get(core.SpriteAnimator).push(monster.animations.idle);
+
+        e.get(core.Character).animations = monster.animations;
+        e.get(core.Character).effects = monster.effects;
 
         e.add(new core.Monster());
 

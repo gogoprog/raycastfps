@@ -80,6 +80,8 @@ class BulletSystem extends ecs.System {
             if(best_entity != null) {
                 hit(best_entity);
             }
+
+            Factory.createEffect(engine, position, "gibs");
         }
     }
 
