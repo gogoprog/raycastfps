@@ -25,6 +25,10 @@ class CharacterSystem extends ecs.System {
                 character.didFire = true;
                 character.requestFire = false;
 
+                if(weapon.sounds.fire != null) {
+                    context.audioManager.play(weapon.sounds.fire);
+                }
+
                 if(weapon.type == "instant") {
                     var gap = weapon.fireGap;
                     var offset = (weapon.fireCount - 1) * gap * 0.5;

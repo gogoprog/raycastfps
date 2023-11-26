@@ -24,6 +24,7 @@ class App {
             Context.dataRoot = Macro.getDataRootPath();
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
+            context.audioManager.initialize();
             context.renderer.registerFont("main", "font", 20, 20);
             context.renderer.registerFont("mini", "font2", 4, 6);
             js.Browser.document.addEventListener("focus", function(e) {

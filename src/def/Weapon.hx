@@ -10,4 +10,7 @@ typedef Weapon = {
         idle:String,
         fire:String
     };
+    var sounds:{
+        fire:String
+    };
 }
