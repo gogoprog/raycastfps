@@ -19,7 +19,7 @@ class BulletSystem extends ecs.System {
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
-        /* var bullet = e.get(core.Bullet); */
+        var bullet = e.get(core.Bullet);
         var transform = e.get(Transform);
         engine.removeEntity(e);
         var direction:Point = [];
@@ -73,9 +73,11 @@ class BulletSystem extends ecs.System {
 
         if(best_distance != 10000000) {
             var position = start + direction * Math.sqrt(best_distance - 100);
-            var e = Factory.createImpact(engine, position);
-            e.get(math.Transform).y = transform.y + 32;
-            engine.addEntity(e);
+            var impact = bullet.weapon?.effects?.impact;
+
+            if(impact != null) {
+                Factory.createEffect(engine, position, impact);
+            }
 
             if(best_entity != null) {
                 hit(best_entity);

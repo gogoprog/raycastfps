@@ -4,11 +4,12 @@ class Factory {
     static var levelFilePaths = Macro.getDataFilePaths("levels");
     static public var monsters = new Map<String, def.Monster>();
     static private var weapons = new Map<String, def.Weapon>();
+    static private var effects = new Map<String, def.Effect >();
     static public var levels = new Map<String, def.Level>();
     static public var context:Context;
 
     static public function initialize(callback) {
-        var loaders = 3;
+        var loaders = 4;
         function localcallback() {
             --loaders;
 
@@ -20,33 +21,38 @@ class Factory {
         loader.fill(monsters, localcallback);
         var loader = new def.Loader<def.Weapon>(Context.dataRoot);
         loader.fill(weapons, localcallback);
+        var loader = new def.Loader<def.Effect>(Context.dataRoot);
+        loader.fill(effects, localcallback);
         var loader = new def.Loader<def.Level>(Context.dataRoot);
         loader.fill2(levels, levelFilePaths, localcallback);
     }
 
-    static public function createEffect(engine:ecs.Engine, position:math.Point, name:String) {
-        for(i in 0...32) {
+    static public function createEffect(engine:ecs.Engine, position:math.Point, which:String) {
+        var effect = effects[which];
+
+        for(i in 0...effect.spriteCount) {
             var e = new ecs.Entity();
 
             e.add(new core.Sprite());
 
             e.add(new core.Object());
+
             e.get(core.Object).isStatic = true;
 
             e.add(new math.Transform());
 
             var distance = 1;
             e.get(math.Transform).position = [position.x + Math.random() * distance - distance/2, position.y + Math.random() * distance - distance/2];
-            e.get(math.Transform).y = 32;
-            e.get(math.Transform).scale = 0.4;
+            e.get(math.Transform).y = effect.startY;
+            e.get(math.Transform).scale = effect.scale;
 
             e.add(new core.SpriteAnimator());
 
-            e.get(core.SpriteAnimator).push("explosion");
+            e.get(core.SpriteAnimator).push(effect.animation);
             var physic = new core.Physic();
             physic.velocity.setFromAngle(Math.random() * Math.PI * 2);
-            physic.velocity *= 30 + Math.random() * 50;
-            physic.yVelocity = 200 + Math.random() * 100;
+            physic.velocity *= math.Utils.getRandom(effect.speedMin, effect.speedMax);
+            physic.yVelocity = math.Utils.getRandom(effect.upSpeedMin, effect.upSpeedMax);
 
             e.add(physic);
 
@@ -97,7 +103,6 @@ class Factory {
         e.add(new core.SpriteAnimator());
 
         e.get(core.SpriteAnimator).push(monster.animations.idle);
-
         e.get(core.Character).animations = monster.animations;
         e.get(core.Character).effects = monster.effects;
 

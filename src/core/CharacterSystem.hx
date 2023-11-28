@@ -36,7 +36,7 @@ class CharacterSystem extends ecs.System {
                     var offset = (weapon.fireCount - 1) * gap * 0.5;
 
                     for(i in 0...weapon.fireCount) {
-                        spawnBullet(transform, -offset + gap * i);
+                        spawnBullet(weapon, transform, -offset + gap * i);
                     }
                 } else {
                     throw "Unsupported";
@@ -66,10 +66,11 @@ class CharacterSystem extends ecs.System {
         character.timeSinceLastFire += dt;
     }
 
-    private function spawnBullet(transform, angle_offset) {
+    private function spawnBullet(weapon, transform, angle_offset) {
         var b = new ecs.Entity();
 
         b.add(new core.Bullet());
+        b.get(core.Bullet).weapon = weapon;
 
         b.add(new math.Transform());
 

@@ -13,4 +13,7 @@ typedef Weapon = {
     var sounds:{
         fire:String
     };
+    var effects:{
+        impact:String
+    };
 }

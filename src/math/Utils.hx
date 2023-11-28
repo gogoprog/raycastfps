@@ -1,6 +1,5 @@
 package math;
 
-
 typedef SmoothDampResult = {
     var value:Float;
     var velocity:Float;
@@ -86,5 +85,9 @@ class Utils {
         var h:Point = [(ab[0] * t + a.x) - c.x, (ab[1] * t + a.y) - c.y];
         var h2 = Point.dot(h, h);
         return h2 <= radius * radius;
+    }
+
+    static public function getRandom(min:Float, max:Float):Float {
+        return min + Math.random() * (max - min);
     }
 }
