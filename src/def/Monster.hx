@@ -12,6 +12,7 @@ typedef Effects = {
 typedef Monster = {
     var name:String;
     var life:Int;
+    var scale:Float;
     var animations:Animations;
     var effects:Effects;
 }

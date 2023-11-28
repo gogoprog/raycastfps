@@ -92,6 +92,7 @@ class Factory {
 
         e.get(math.Transform).position.copyFrom(position);
         e.get(math.Transform).angle = Math.random() * Math.PI * 2;
+        e.get(math.Transform).scale = monster.scale;
 
         e.add(new core.SpriteAnimator());
 

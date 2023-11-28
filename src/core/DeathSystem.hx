@@ -23,6 +23,8 @@ class DeathSystem extends ecs.System {
 
             if(anims.death != null) {
                 animator.push(anims.death);
+            } else {
+                e.remove(core.Sprite);
             }
 
             if(effects != null) {

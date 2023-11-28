@@ -928,6 +928,8 @@ class EditorSystem extends ecs.System {
 
             data.rooms.remove(rooms[1]);
         }
+
+        deleteWallDirect(index);
     }
 
     function deleteVertex(index) {

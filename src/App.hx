@@ -107,6 +107,7 @@ class App {
         canvas.onclick = function() {};
         context.engine.suspendSystem(core.InGameSystem);
         context.engine.suspendSystem(core.TransformControlSystem);
+        context.engine.suspendSystem(core.PlayerControlSystem);
         context.engine.resumeSystem(core.MenuSystem);
     }
 
@@ -120,6 +121,7 @@ class App {
         context.engine.resumeSystem(core.MoveSystem);
         context.engine.resumeSystem(core.HudSystem);
         context.engine.resumeSystem(core.InGameSystem);
+        context.engine.resumeSystem(core.PlayerControlSystem);
     }
 
     public function gotoConsole() {
@@ -133,6 +135,7 @@ class App {
         canvas.onclick = function() {};
         context.engine.suspendSystem(core.InGameSystem);
         context.engine.suspendSystem(core.TransformControlSystem);
+        context.engine.suspendSystem(core.PlayerControlSystem);
         context.engine.suspendSystem(core.MonsterSystem);
         context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.editor.EditorSystem);
