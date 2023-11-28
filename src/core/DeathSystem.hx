@@ -25,8 +25,10 @@ class DeathSystem extends ecs.System {
                 animator.push(anims.death);
             }
 
-            if(effects.death != null) {
-                Factory.createEffect(engine, e.get(Transform).position, effects.death);
+            if(effects != null) {
+                if(effects.death != null) {
+                    Factory.createEffect(engine, e.get(Transform).position, effects.death);
+                }
             }
 
             e.remove(Hittable);

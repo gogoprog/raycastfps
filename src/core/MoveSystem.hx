@@ -27,7 +27,11 @@ class MoveSystem extends ecs.System {
 
                 for(s in context.level.sectors) {
                     for(w in s.walls) {
-                        if(w.texture == null) { continue; }
+                        if(w.texture == null && object.currentSector != null) {
+                            if(s.bottom - object.currentSector.bottom < 20) {
+                                continue;
+                            }
+                        }
 
                         var r = math.Utils.getSegmentPointDistance(w.a, w.b, test_position);
 
@@ -112,12 +116,13 @@ class MoveSystem extends ecs.System {
                 object.velocityY = 0;
             }
         } else {
-            for(s in context.level.sectors) {
-                if(s.contains(test_position)) {
-                    object.currentSector = s;
-                    transform.y = object.currentSector.bottom + 32;
-                }
+            var sector = context.level.findSector(test_position);
+
+            if(sector != null) {
+                object.currentSector = sector;
             }
+
+            transform.y = object.currentSector.bottom + 32;
         }
     }
 }

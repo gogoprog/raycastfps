@@ -257,4 +257,14 @@ class Level {
         generateSectors();
         placeObjects();
     }
+
+    public function findSector(test_position:math.Point):Sector {
+        for(s in sectors) {
+            if(s.contains(test_position)) {
+                return s;
+            }
+        }
+
+        return null;
+    }
 }

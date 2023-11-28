@@ -25,8 +25,10 @@ class CharacterSystem extends ecs.System {
                 character.didFire = true;
                 character.requestFire = false;
 
-                if(weapon.sounds.fire != null) {
-                    context.audioManager.play(weapon.sounds.fire);
+                if(weapon.sounds != null) {
+                    if(weapon.sounds.fire != null) {
+                        context.audioManager.play(weapon.sounds.fire);
+                    }
                 }
 
                 if(weapon.type == "instant") {
