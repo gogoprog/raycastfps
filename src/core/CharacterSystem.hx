@@ -64,12 +64,29 @@ class CharacterSystem extends ecs.System {
         }
 
         character.timeSinceLastFire += dt;
+        character.time += dt;
+        var seconds = Std.int(character.time);
+
+        if(seconds != character.lastSeconds) {
+            character.lastSeconds = seconds;
+            var r = Math.random();
+            var sounds = character.sounds;
+
+            if(sounds != null) {
+                if(sounds.gruntrate != null) {
+                    if(r < sounds.gruntrate) {
+                        context.audioManager.play(sounds.grunt);
+                    }
+                }
+            }
+        }
     }
 
     private function spawnBullet(weapon, transform, angle_offset) {
         var b = new ecs.Entity();
 
         b.add(new core.Bullet());
+
         b.get(core.Bullet).weapon = weapon;
 
         b.add(new math.Transform());

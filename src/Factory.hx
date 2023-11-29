@@ -105,6 +105,7 @@ class Factory {
         e.get(core.SpriteAnimator).push(monster.animations.idle);
         e.get(core.Character).animations = monster.animations;
         e.get(core.Character).effects = monster.effects;
+        e.get(core.Character).sounds = monster.sounds;
 
         e.add(new core.Monster());
 
