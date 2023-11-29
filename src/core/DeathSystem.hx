@@ -34,8 +34,8 @@ class DeathSystem extends ecs.System {
             }
 
             e.remove(Hittable);
-
             e.remove(Move);
+            e.remove(Character);
         }
     }
 }
