@@ -31,6 +31,7 @@ class AudioSourceSystem extends ecs.System {
 
             if(audio.currentTime >= audio.duration) {
                 audioSource.internalSoundName = null;
+                audioSource.soundName = null;
                 audioSource.sound = null;
             }
         }

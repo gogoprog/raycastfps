@@ -11,7 +11,7 @@ typedef Effects = {
 
 typedef Sounds = {
     var death:String;
-    var grunt:String;
+    var grunts:Array<String>;
     var gruntrate:Float;
 }
 

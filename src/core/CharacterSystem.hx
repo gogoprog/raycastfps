@@ -75,7 +75,10 @@ class CharacterSystem extends ecs.System {
             if(sounds != null) {
                 if(sounds.gruntrate != null) {
                     if(r < sounds.gruntrate) {
-                        e.get(AudioSource).soundName = sounds.grunt;
+                        if(e.get(AudioSource).soundName == null) {
+                            var r = Std.random(sounds.grunts.length);
+                            e.get(AudioSource).soundName = sounds.grunts[r];
+                        }
                     }
                 }
             }
