@@ -29,4 +29,5 @@ typedef Level = {
     var rooms:Array<Room>;
     var objects:Array<Object>;
     var skyTextureName:String;
+    @:optional var effect:String;
 }

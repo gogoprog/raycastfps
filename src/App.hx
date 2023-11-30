@@ -144,6 +144,7 @@ class App {
     public function setupEngine(engine:ecs.Engine) {
         engine.addSystem(new core.ControlSystem(), 1);
         engine.addSystem(new core.TransformControlSystem(), 1);
+        engine.addSystem(new core.PlayerSystem(), 1);
         engine.addSystem(new core.PlayerControlSystem(), 1);
         engine.addSystem(new core.MoveSystem(), 2);
         engine.addSystem(new core.CameraSystem(), 3);

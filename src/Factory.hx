@@ -54,6 +54,10 @@ class Factory {
             physic.velocity *= math.Utils.getRandom(effect.speedMin, effect.speedMax);
             physic.yVelocity = math.Utils.getRandom(effect.upSpeedMin, effect.upSpeedMax);
 
+            if(effect.gravity != null) {
+                physic.gravity = effect.gravity;
+            }
+
             e.add(physic);
 
             engine.addEntity(e);
