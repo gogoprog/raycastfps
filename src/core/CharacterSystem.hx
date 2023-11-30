@@ -75,7 +75,7 @@ class CharacterSystem extends ecs.System {
             if(sounds != null) {
                 if(sounds.gruntrate != null) {
                     if(r < sounds.gruntrate) {
-                        context.audioManager.play(sounds.grunt);
+                        e.get(AudioSource).soundName = sounds.grunt;
                     }
                 }
             }

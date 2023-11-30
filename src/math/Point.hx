@@ -44,6 +44,13 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         return dx * dx + dy *dy;
     }
 
+    static public function getRotated(vector:Point, angle:Float):Point {
+        var cosinus = Math.cos(angle);
+        var sinus = Math.sin(angle);
+
+        return new Point(vector.x * cosinus - vector.y * sinus, vector.x * sinus + vector.y * cosinus);
+    }
+
     public function normalize() {
         var len = getLength();
         this[0] /= len;

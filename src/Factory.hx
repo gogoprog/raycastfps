@@ -109,6 +109,8 @@ class Factory {
 
         e.add(new core.Monster());
 
+        e.add(new core.AudioSource());
+
         return e;
     }
 

@@ -40,6 +40,7 @@ class SoundInstances {
         instance.play();
         index++;
         index %= instances.length;
+        return instance;
     }
 }
 
@@ -65,6 +66,6 @@ class AudioManager {
 
     public function play(name) {
         audioContext.resume();
-        sounds[name].play();
+        return sounds[name].play();
     }
 }
