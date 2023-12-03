@@ -41,7 +41,7 @@ class Factory {
 
             e.add(new math.Transform());
 
-            var distance = 1;
+            var distance = effect.distance != null ? effect.distance : 1;
             e.get(math.Transform).position = [position.x + Math.random() * distance - distance/2, position.y + Math.random() * distance - distance/2];
             e.get(math.Transform).y = effect.startY;
             e.get(math.Transform).scale = effect.scale;
@@ -59,6 +59,8 @@ class Factory {
             }
 
             e.add(physic);
+
+            e.add(new core.AutoRemove(effect.lifetime));
 
             engine.addEntity(e);
         }

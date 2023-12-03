@@ -13,16 +13,16 @@ class PlayerSystem extends ecs.System {
     override public function updateSingle(dt:Float, e:ecs.Entity) {
         var player = e.get(Player);
         player.time += dt;
-        var seconds = Std.int(player.time);
+        player.timeSinceLastEffect += dt;
 
-        if(seconds != player.lastSeconds) {
-            player.lastSeconds = seconds;
+        if(player.timeSinceLastEffect > 0.2) {
             var effect = context.level.data.effect;
 
             if(effect != null) {
-                trace(effect);
                 Factory.createEffect(engine, e.get(Transform).position, effect);
             }
+
+            player.timeSinceLastEffect = 0;
         }
     }
 }

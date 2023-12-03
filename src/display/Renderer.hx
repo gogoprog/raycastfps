@@ -387,22 +387,25 @@ class Renderer {
         if(Math.abs(delta_angle) < halfHorizontalFov + 0.1) {
             var x = Math.tan(delta_angle) * halfScreenHeightByTanFov + halfScreenWidth;
             var distance = delta.getLength();
-            distance = Math.cos(delta_angle) * distance;
-            var hh = (buffer.height / distance) * 600 * scale;
-            var ratio = scale * 600 / distance;
-            var w = Std.int(buffer.width * ratio);
-            var h = Std.int(hh);
-            var floorHeight = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - heightOffset + 32) / distance);
 
-            for(xx in 0...w) {
-                var dest_x = Std.int(x + xx - w/ 2);
-                var tx = Std.int((xx / w) * buffer.width);
+            if(distance > 16) {
+                distance = Math.cos(delta_angle) * distance;
+                var hh = (buffer.height / distance) * 600 * scale;
+                var ratio = scale * 600 / distance;
+                var w = Std.int(buffer.width * ratio);
+                var h = Std.int(hh);
+                var floorHeight = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - heightOffset + 32) / distance);
 
-                if(flip) {
-                    tx = buffer.width - tx;
+                for(xx in 0...w) {
+                    var dest_x = Std.int(x + xx - w/ 2);
+                    var tx = Std.int((xx / w) * buffer.width);
+
+                    if(flip) {
+                        tx = buffer.width - tx;
+                    }
+
+                    drawSpriteColumn(buffer, tx, dest_x, h, floorHeight, distance);
                 }
-
-                drawSpriteColumn(buffer, tx, dest_x, h, floorHeight, distance);
             }
         }
     }

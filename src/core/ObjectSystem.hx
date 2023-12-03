@@ -34,14 +34,19 @@ class ObjectSystem extends ecs.System {
             delta_angle += Math.PI;
             var frameIndex = Std.int((delta_angle / (Math.PI * 2)) * sprite.textures.length);
             var texture = sprite.textures[frameIndex];
-            renderer.pushSprite(textureManager.get(texture.name), transform.position, Std.int(transform.y) + (texture.offset != null ? texture.offset : 0), texture.flip, transform.scale);
+            var sector = object.currentSector;
+
+            if(sector != null && transform.y > sector.bottom - 1) {
+                renderer.pushSprite(textureManager.get(texture.name), transform.position, Std.int(transform.y) + (texture.offset != null ? texture.offset : 0), texture.flip, transform.scale);
+            }
         }
 
-        if(!object.isStatic) {
-            if(object.currentSector == null) {
-                for(s in context.level.sectors) {
-                    if(s.contains(position)) {
-                        object.currentSector = s;
+        if(object.currentSector == null) {
+            for(s in context.level.sectors) {
+                if(s.contains(position)) {
+                    object.currentSector = s;
+
+                    if(!object.isStatic) {
                         transform.y = object.currentSector.bottom + 32;
                     }
                 }

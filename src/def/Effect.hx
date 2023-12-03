@@ -11,4 +11,6 @@ typedef Effect = {
     var upSpeedMin:Float;
     var upSpeedMax:Float;
     var gravity:Float;
+    var distance:Float;
+    var lifetime:Float;
 }

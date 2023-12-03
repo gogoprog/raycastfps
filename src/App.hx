@@ -164,6 +164,7 @@ class App {
         engine.addSystem(new core.InGameSystem(), 666);
         engine.addSystem(new core.editor.EditorSystem(), 666);
         engine.addSystem(consoleSystem, 667);
+        engine.addSystem(new core.AutoRemoveSystem(), 2048);
     }
 
     static inline public function log(what) {
