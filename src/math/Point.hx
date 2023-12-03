@@ -92,4 +92,9 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         this[0] += other.x;
         this[1] += other.y;
     }
+
+    public function mul(value:Float) {
+        this[0] *= value;
+        this[1] *= value;
+    }
 }

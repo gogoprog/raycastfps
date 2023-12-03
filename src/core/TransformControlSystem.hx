@@ -33,34 +33,40 @@ class TransformControlSystem extends ecs.System {
         var a = transform.angle;
         var forward:Point = [Math.cos(a), Math.sin(a)];
         var lateral:Point = [Math.cos(a + Math.PI/2), Math.sin(a + Math.PI/2)];
-        var requested_direction:Point = [0, 0];
+        var direction = control.direction;
 
         if(untyped keys['w']) {
-            requested_direction.y = 1;
-        }
-
-        if(untyped keys['s']) {
-            requested_direction.y = -1;
+            direction.y = 1;
+            control.speed = Math.min(control.speed + control.acceleration * dt, control.maxSpeed);
+        } else if(untyped keys['s']) {
+            direction.y = -1;
+            control.speed = Math.min(control.speed + control.acceleration * dt, control.maxSpeed);
+        } else {
+            control.speed = Math.max(control.speed - control.deceleration * dt, 0);
         }
 
         if(untyped keys['d']) {
-            requested_direction.x = 1;
+            direction.x = 1;
+            control.lateralSpeed = Math.min(control.lateralSpeed + control.acceleration * dt, control.maxSpeed);
+        } else if(untyped keys['a']) {
+            direction.x = -1;
+            control.lateralSpeed = Math.min(control.lateralSpeed + control.acceleration * dt, control.maxSpeed);
+        } else {
+            control.lateralSpeed = Math.max(control.lateralSpeed - control.deceleration * dt, 0);
         }
 
-        if(untyped keys['a']) {
-            requested_direction.x = -1;
+        var fs = control.speed * dt;
+        var ls = control.lateralSpeed * dt;
+        var move:Point = [forward.x * fs * direction.y + lateral.x * ls * direction.x, forward.y * fs * direction.y + lateral.y * ls * direction.x];
+
+        if(move.getLength() > control.maxSpeed * dt) {
+            move.normalize();
+            move.mul(control.maxSpeed * dt);
         }
 
-        if(requested_direction.getSquareLength() > 0) {
-            requested_direction.normalize();
-        }
+        translation.add(move);
 
-        var s = 400 * dt;
-        translation.x += forward.x * requested_direction.y * s;
-        translation.y += forward.y * requested_direction.y * s;
-        translation.x += lateral.x * requested_direction.x * s;
-        translation.y += lateral.y * requested_direction.x * s;
-        transform.angle += control.mouseMovement * 0.005;
+        transform.angle += control.mouseMovement * 0.002;
 
         if(untyped keys['o']) {
             transform.y += 100 * dt;
