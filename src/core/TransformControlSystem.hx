@@ -36,9 +36,17 @@ class TransformControlSystem extends ecs.System {
         var direction = control.direction;
 
         if(untyped keys['w']) {
+            if(direction.y == -1) {
+                control.speed = 0;
+            }
+
             direction.y = 1;
             control.speed = Math.min(control.speed + control.acceleration * dt, control.maxSpeed);
         } else if(untyped keys['s']) {
+            if(direction.y == 1) {
+                control.speed = 0;
+            }
+
             direction.y = -1;
             control.speed = Math.min(control.speed + control.acceleration * dt, control.maxSpeed);
         } else {
@@ -46,9 +54,17 @@ class TransformControlSystem extends ecs.System {
         }
 
         if(untyped keys['d']) {
+            if(direction.x == -1) {
+                control.lateralSpeed = 0;
+            }
+
             direction.x = 1;
             control.lateralSpeed = Math.min(control.lateralSpeed + control.acceleration * dt, control.maxSpeed);
         } else if(untyped keys['a']) {
+            if(direction.x == 1) {
+                control.lateralSpeed = 0;
+            }
+
             direction.x = -1;
             control.lateralSpeed = Math.min(control.lateralSpeed + control.acceleration * dt, control.maxSpeed);
         } else {
