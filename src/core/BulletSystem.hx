@@ -72,11 +72,13 @@ class BulletSystem extends ecs.System {
         }
 
         if(best_distance != 10000000) {
-            var position = start + direction * Math.sqrt(best_distance - 100);
+            var new_transform = new math.Transform();
+            new_transform.position = start + direction * Math.sqrt(best_distance - 100);
+            new_transform.y = transform.y;
             var impact = bullet.weapon?.effects?.impact;
 
             if(impact != null) {
-                Factory.createEffect(engine, position, impact);
+                Factory.createEffect(engine, new_transform, impact);
             }
 
             if(best_entity != null) {

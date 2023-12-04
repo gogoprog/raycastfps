@@ -158,6 +158,7 @@ class App {
         engine.addSystem(new core.PhysicSystem(), 97);
         engine.addSystem(new core.ObjectSystem(), 98);
         engine.addSystem(new core.QuadSystem(), 99);
+        engine.addSystem(new core.SpriteSystem(), 100);
         engine.addSystem(new core.MonsterSystem(), 101);
         engine.addSystem(new core.AudioSourceSystem(), 200);
         engine.addSystem(new core.MenuSystem(), 666);

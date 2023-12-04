@@ -99,7 +99,7 @@ class MoveSystem extends ecs.System {
         }
 
         if(object.currentSector != null) {
-            var floor_height = object.currentSector.bottom + 32;
+            var floor_height = object.currentSector.bottom;
 
             if(floor_height < transform.y) {
                 object.velocityY -= 1000 * dt;
@@ -122,7 +122,7 @@ class MoveSystem extends ecs.System {
                 object.currentSector = sector;
             }
 
-            transform.y = object.currentSector.bottom + 32;
+            transform.y = object.currentSector.bottom;
         }
     }
 }

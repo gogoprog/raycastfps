@@ -27,8 +27,9 @@ class Factory {
         loader.fill2(levels, levelFilePaths, localcallback);
     }
 
-    static public function createEffect(engine:ecs.Engine, position:math.Point, which:String) {
+    static public function createEffect(engine:ecs.Engine, transform:math.Transform, which:String) {
         var effect = effects[which];
+        var position = transform.position;
 
         for(i in 0...effect.spriteCount) {
             var e = new ecs.Entity();
@@ -43,7 +44,7 @@ class Factory {
 
             var distance = effect.distance != null ? effect.distance : 1;
             e.get(math.Transform).position = [position.x + Math.random() * distance - distance/2, position.y + Math.random() * distance - distance/2];
-            e.get(math.Transform).y = effect.startY;
+            e.get(math.Transform).y = transform.y + effect.startY;
             e.get(math.Transform).scale = effect.scale;
 
             e.add(new core.SpriteAnimator());
@@ -137,7 +138,6 @@ class Factory {
 
         e.get(math.Transform).position.copyFrom(position);
         e.get(math.Transform).scale = 0.2;
-        e.get(math.Transform).y = 32;
         e.get(core.Object).radius = 32;
         e.get(core.Character).weapon = weapons["shotgun"];
         return e;

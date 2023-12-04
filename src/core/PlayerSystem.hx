@@ -19,7 +19,7 @@ class PlayerSystem extends ecs.System {
             var effect = context.level.data.effect;
 
             if(effect != null) {
-                Factory.createEffect(engine, e.get(Transform).position, effect);
+                Factory.createEffect(engine, e.get(Transform), effect);
             }
 
             player.timeSinceLastEffect = 0;

@@ -54,6 +54,7 @@ private class Sprite {
     public var heightOffset = 0;
     public var flip:Bool;
     public var scale:Float;
+    public var floor:Float;
     private var distance:Float;
 
     public function new() {
@@ -357,7 +358,7 @@ class Renderer {
         }
     }
 
-    function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH, depth) {
+    function drawSpriteColumn(texture:Framebuffer, tx, x, h, offsetH, floor, depth) {
         if(x < 0 || x >= screenWidth) { return; }
 
         var toi = h+1;
@@ -369,6 +370,8 @@ class Renderer {
                 break;
             }
 
+            if(y >= floor) { break; }
+
             if(depth < getDepth(x, y)) {
                 var texY = Std.int((i/h) * texture.height);
                 var texIndex = (texY * texture.width + tx);
@@ -377,7 +380,7 @@ class Renderer {
         }
     }
 
-    function drawSprite(buffer:Framebuffer, position:Point, heightOffset:Int, flip:Bool, scale:Float) {
+    function drawSprite(buffer:Framebuffer, position:Point, heightOffset:Int, flip:Bool, scale:Float, floor:Float) {
         var cam_pos = cameraTransform.position;
         var cam_ang = cameraTransform.angle;
         var delta = position - cam_pos;
@@ -394,7 +397,8 @@ class Renderer {
                 var ratio = scale * 600 / distance;
                 var w = Std.int(buffer.width * ratio);
                 var h = Std.int(hh);
-                var floorHeight = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - heightOffset + 32) / distance);
+                var hoffset = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - heightOffset) / distance);
+                var floorHeight = Std.int(halfScreenHeight + 1000 * (cameraTransform.y - floor) / distance);
 
                 for(xx in 0...w) {
                     var dest_x = Std.int(x + xx - w/ 2);
@@ -404,7 +408,7 @@ class Renderer {
                         tx = buffer.width - tx;
                     }
 
-                    drawSpriteColumn(buffer, tx, dest_x, h, floorHeight, distance);
+                    drawSpriteColumn(buffer, tx, dest_x, h, hoffset, floorHeight, distance);
                 }
             }
         }
@@ -504,7 +508,7 @@ class Renderer {
         sprites.sort(sort);
 
         for(sprite in sprites) {
-            drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip, sprite.scale);
+            drawSprite(sprite.texture, sprite.position, sprite.heightOffset, sprite.flip, sprite.scale, sprite.floor);
         }
     }
 
@@ -553,7 +557,7 @@ class Renderer {
         rects = [];
     }
 
-    public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int, flip:Bool, scale:Float) {
+    public function pushSprite(texture:Framebuffer, position:Point, heightOffset:Int, flip:Bool, scale:Float, floor:Float) {
         if(texture != null) {
             var sprite = new Sprite();
             sprite.texture = texture;
@@ -561,6 +565,7 @@ class Renderer {
             sprite.heightOffset = heightOffset;
             sprite.flip = flip;
             sprite.scale = scale;
+            sprite.floor = floor;
             sprites.push(sprite);
         }
     }

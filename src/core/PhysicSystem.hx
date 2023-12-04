@@ -20,5 +20,16 @@ class PhysicSystem extends ecs.System {
         transform.position = transform.position + physic.velocity * dt;
         transform.y += physic.yVelocity * dt;
         physic.yVelocity -= physic.gravity * dt;
+        var sector = object.currentSector;
+
+        if(sector != null) {
+            var sprite = e.get(Sprite);
+
+            if(transform.y < sector.bottom) {
+                transform.y = sector.bottom;
+                physic.yVelocity = 0;
+                physic.velocity.set(0, 0);
+            }
+        }
     }
 }
