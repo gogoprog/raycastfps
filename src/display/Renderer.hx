@@ -362,8 +362,13 @@ class Renderer {
         if(x < 0 || x >= screenWidth) { return; }
 
         var toi = h+1;
+        var fromi = 0;
 
-        for(i in 0...toi) {
+        if(offsetH - toi < 0) {
+            fromi -= offsetH - toi;
+        }
+
+        for(i in fromi...toi) {
             var y:Int = offsetH - toi + i;
 
             if(y>=screenHeight) {
