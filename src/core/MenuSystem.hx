@@ -31,6 +31,13 @@ class MenuSystem extends ecs.System {
             return;
         }
 
+        {
+            var renderer = context.renderer;
+            var width = display.Renderer.screenWidth;
+            var height = display.Renderer.screenHeight;
+            renderer.pushRect([width/2, height/2], [width, height], 0xbb000010);
+        }
+
         var cursorIndex = cursorIndices[cursorIndices.length - 1];
 
         if(context.keyboard.isJustPressed('ArrowUp')) {

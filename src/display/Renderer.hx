@@ -170,7 +170,8 @@ class Renderer {
         var dst_b = Std.int((dst >> 16) & 0xff);
         var dst_g = Std.int((dst >> 8) & 0xff);
         var dst_r = Std.int((dst >> 0) & 0xff);
-        var value = Std.int(src_r * inv_alpha);
+        var value = Std.int(src_r * inv_alpha) | Std.int(src_g * inv_alpha) << 8 | Std.int(src_b * inv_alpha) << 16;
+        value += Std.int(dst_r * alpha) | Std.int(dst_g * alpha) << 8 | Std.int(dst_b * alpha) << 16;
         toBuffer.data32[toBuffer.width * y + x] = value | 0xff000000;
     }
 
@@ -262,7 +263,7 @@ class Renderer {
         return screenHeight;
     }
 
-    function drawWallColumn(texture:Framebuffer, tx, x, h, h_factor:Float, offset:Int, tex_scale:Float, depth:Float) {
+    function drawWallColumn(texture:Framebuffer, tx, x, h:Float, h_factor:Float, offset:Int, tex_scale:Float, depth:Float) {
         var toi = Std.int(h * h_factor) + 1;
         setDepthColumn2(x, depth, halfScreenHeight - toi - offset, halfScreenHeight - offset);
         var theight = texture.height;
@@ -328,7 +329,7 @@ class Renderer {
                         var delta = sector.top - sector.bottom;
                         var ratio = magic * delta/wallH;
                         var tex_scale = delta / (sector.initialTop - sector.initialBottom);
-                        drawWallColumn(texture, tx, x, Std.int(h), ratio, Std.int(offset), wall.textureScale.y * tex_scale, depth);
+                        drawWallColumn(texture, tx, x, h, ratio, Std.int(offset), wall.textureScale.y * tex_scale, depth);
                         setDepthColumn2(x, depth, bottom, screenHeight);
                     } else if(previous_sector != null) {
                         var delta = previous_sector.bottom - sector.bottom;
@@ -340,7 +341,7 @@ class Renderer {
                             if(texture != null) {
                                 var tx = Std.int(wr.gamma * wr.wall.length * wr.wall.textureScale.x) % texture.width;
                                 var ratio = magic * delta/wallH;
-                                drawWallColumn(texture, tx, x, Std.int(h), ratio, Std.int(offset), wall.textureScale.y * ratio, depth);
+                                drawWallColumn(texture, tx, x, h, ratio, Std.int(offset), wall.textureScale.y * ratio, depth);
                             }
                         } else {
                             setDepthColumn2(x, depth, bottom, screenHeight);

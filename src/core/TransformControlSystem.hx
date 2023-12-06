@@ -12,6 +12,17 @@ class TransformControlSystem extends ecs.System {
         addComponentClass(Transform);
     }
 
+    override public function onSuspend() {
+        for(e in entities) {
+            var move = e.get(core.Move);
+
+            if(move != null) {
+
+                e.remove(core.Move);
+            }
+        }
+    }
+
     override public function onResume() {
         cameraTransform = context.cameraTransform;
     }
