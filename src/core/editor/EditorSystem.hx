@@ -15,7 +15,11 @@ private enum Action {
 
 class EditorSystem extends ecs.System {
     static var selectedColor = 0xff11ee11;
-    static var objectsColors = [ "monster" => 0xff4444dd, "start" =>  0xffdd5544];
+    static var objectsColors = [
+                                   "monster" => 0xff4444dd,
+                                   "start" =>  0xffdd5544,
+                                   "item" =>  0xff44dd44,
+                               ];
     var font:display.Framebuffer = null;
     var entries:Array<String> = [];
     var offset:math.Point = [400, 200];
@@ -628,6 +632,16 @@ class EditorSystem extends ecs.System {
                     var obj = {
                         type: "monster",
                         name: Factory.monsters.keys().next(),
+                        position:new_position
+                    };
+                    data.objects.push(obj);
+                    level.placeObjects(true);
+                }
+
+                if(context.keyboard.isJustPressed("i")) {
+                    var obj = {
+                        type: "item",
+                        name: Factory.items.keys().next(),
                         position:new_position
                     };
                     data.objects.push(obj);

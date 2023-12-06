@@ -206,6 +206,10 @@ class Level {
                     var e = Factory.createMonster(obj.name, obj.position);
                     engine.addEntity(e);
 
+                case "item":
+                    var e = Factory.createItem(obj.name, obj.position);
+                    engine.addEntity(e);
+
                 case "start":
                     if(!skip_start) {
                         var e = Factory.createPlayer(obj.position);

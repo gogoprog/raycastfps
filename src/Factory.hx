@@ -3,13 +3,14 @@ package;
 class Factory {
     static var levelFilePaths = Macro.getDataFilePaths("levels");
     static public var monsters = new Map<String, def.Monster>();
+    static public var items = new Map<String, def.Item>();
     static private var weapons = new Map<String, def.Weapon>();
     static private var effects = new Map<String, def.Effect >();
     static public var levels = new Map<String, def.Level>();
     static public var context:Context;
 
     static public function initialize(callback) {
-        var loaders = 4;
+        var loaders = 5;
         function localcallback() {
             --loaders;
 
@@ -19,6 +20,8 @@ class Factory {
         }
         var loader = new def.Loader<def.Monster>(Context.dataRoot);
         loader.fill(monsters, localcallback);
+        var loader = new def.Loader<def.Item>(Context.dataRoot);
+        loader.fill(items, localcallback);
         var loader = new def.Loader<def.Weapon>(Context.dataRoot);
         loader.fill(weapons, localcallback);
         var loader = new def.Loader<def.Effect>(Context.dataRoot);
@@ -118,6 +121,28 @@ class Factory {
 
         e.add(new core.AudioSource());
 
+        return e;
+    }
+
+    static public function createItem(which:String, position:math.Point) {
+        var item = items[which];
+        var e = new ecs.Entity();
+
+        e.add(new core.Sprite());
+
+        e.add(new core.Object());
+
+        e.add(new core.Character());
+
+        e.add(new math.Transform());
+
+        e.get(math.Transform).position.copyFrom(position);
+        e.get(math.Transform).angle = 0;
+        e.get(math.Transform).scale = item.scale;
+
+        e.add(new core.SpriteAnimator());
+
+        e.get(core.SpriteAnimator).push(item.animations.idle);
         return e;
     }
 
