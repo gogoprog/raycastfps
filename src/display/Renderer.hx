@@ -387,7 +387,7 @@ class Renderer {
         var angle = delta.getAngle();
         var delta_angle = math.Utils.fixAngle(angle - cam_ang);
 
-        if(Math.abs(delta_angle) < halfHorizontalFov + 0.1) {
+        if(Math.abs(delta_angle) < halfHorizontalFov + 0.4) {
             var x = Math.tan(delta_angle) * halfScreenHeightByTanFov + halfScreenWidth;
             var distance = delta.getLength();
 
