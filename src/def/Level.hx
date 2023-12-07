@@ -30,4 +30,5 @@ typedef Level = {
     var objects:Array<Object>;
     var skyTextureName:String;
     @:optional var effect:String;
+    @:optional var music:String;
 }

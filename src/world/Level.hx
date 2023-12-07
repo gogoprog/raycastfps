@@ -1,11 +1,15 @@
 package world;
 
+import sound.AudioManager;
+
 class Level {
     public var data:def.Level;
     public var context:Context;
 
     public var sectors:Array<Sector> = [];
     public var skyTexture:display.Framebuffer;
+
+    private var music:Sound;
 
     public function new(context) {
         this.context = context;
@@ -260,6 +264,7 @@ class Level {
     public function restart() {
         generateSectors();
         placeObjects();
+        music = context.audioManager.play(data.music);
     }
 
     public function findSector(test_position:math.Point):Sector {
