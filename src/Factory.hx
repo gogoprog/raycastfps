@@ -104,6 +104,8 @@ class Factory {
 
         e.add(new core.Character());
 
+        e.get(core.Character).weapon = weapons[monster.weapon];
+
         e.add(new math.Transform());
 
         e.get(math.Transform).position.copyFrom(position);
@@ -118,6 +120,9 @@ class Factory {
         e.get(core.Character).sounds = monster.sounds;
 
         e.add(new core.Monster());
+
+        e.get(core.Monster).def = monster;
+        e.get(core.Monster).weapon = weapons[monster.weapon];
 
         e.add(new core.AudioSource());
 
@@ -161,6 +166,8 @@ class Factory {
 
         e.add(new core.Camera());
 
+        e.add(new core.AudioSource());
+
         e.get(math.Transform).position.copyFrom(position);
         e.get(math.Transform).scale = 0.2;
         e.get(core.Object).radius = 32;
@@ -181,7 +188,26 @@ class Factory {
 
         e.get(math.Transform).position = [10, 10];
         e.get(core.Quad).extent = [640, 400];
-        // e.get(core.SpriteAnimator).push("shotgun-idle");
+        return e;
+    }
+
+    static public function createProjectile(weapon:def.Weapon) {
+        var e = new ecs.Entity();
+
+        e.add(new core.Sprite());
+
+        e.add(new core.Object());
+
+        e.get(core.Object).isStatic = true;
+
+        e.add(new math.Transform());
+
+        e.add(new core.SpriteAnimator());
+
+        e.add(new core.Projectile());
+
+        e.get(core.SpriteAnimator).push(weapon.animations.projectile);
+        e.get(core.Projectile).weapon = weapon;
         return e;
     }
 }

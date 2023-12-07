@@ -22,4 +22,7 @@ typedef Monster = {
     var animations:Animations;
     var effects:Effects;
     var sounds:Sounds;
+    var attackIntervalMin:Float;
+    var attackIntervalMax:Float;
+    var weapon:String;
 }

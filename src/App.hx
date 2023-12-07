@@ -155,6 +155,7 @@ class App {
         engine.addSystem(new core.CameraSystem(), 3);
         engine.addSystem(new core.CharacterSystem(), 6);
         engine.addSystem(new core.BulletSystem(), 7);
+        engine.addSystem(new core.ProjectileSystem(), 7);
         engine.addSystem(new core.DeathSystem(), 8);
         engine.addSystem(new core.DoorSystem(), 9);
         engine.addSystem(new core.DoorChangeSystem(), 10);

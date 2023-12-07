@@ -27,16 +27,23 @@ class CharacterSystem extends ecs.System {
 
                 if(weapon.sounds != null) {
                     if(weapon.sounds.fire != null) {
-                        context.audioManager.play(weapon.sounds.fire);
+                        e.get(core.AudioSource).soundName = weapon.sounds.fire;
                     }
                 }
 
-                if(weapon.type == "instant") {
+                if(weapon.type == "bullet") {
                     var gap = weapon.fireGap;
                     var offset = (weapon.fireCount - 1) * gap * 0.5;
 
                     for(i in 0...weapon.fireCount) {
-                        spawnBullet(weapon, transform, -offset + gap * i);
+                        spawnBullet(e, weapon, transform, -offset + gap * i);
+                    }
+                } else if(weapon.type == "projectile") {
+                    var gap = weapon.fireGap;
+                    var offset = (weapon.fireCount - 1) * gap * 0.5;
+
+                    for(i in 0...weapon.fireCount) {
+                        spawnProjectile(e, weapon, transform, -offset + gap * i);
                     }
                 } else {
                     throw "Unsupported";
@@ -85,12 +92,13 @@ class CharacterSystem extends ecs.System {
         }
     }
 
-    private function spawnBullet(weapon, transform, angle_offset) {
+    private function spawnBullet(source, weapon, transform, angle_offset) {
         var b = new ecs.Entity();
 
         b.add(new core.Bullet());
 
         b.get(core.Bullet).weapon = weapon;
+        b.get(core.Bullet).source = source;
 
         b.add(new math.Transform());
 
@@ -98,5 +106,15 @@ class CharacterSystem extends ecs.System {
         b.get(Transform).y += 28;
         b.get(Transform).angle += angle_offset;
         engine.addEntity(b);
+    }
+
+    private function spawnProjectile(source, weapon, transform, angle_offset) {
+        var e = Factory.createProjectile(weapon);
+        e.get(core.Projectile).source = source;
+        e.get(Transform).copyFrom(transform);
+        e.get(Transform).y += 32;
+        e.get(Transform).angle += angle_offset;
+        e.get(Transform).scale = weapon.projectile.scale;
+        engine.addEntity(e);
     }
 }

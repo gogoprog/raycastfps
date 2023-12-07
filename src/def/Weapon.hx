@@ -8,12 +8,18 @@ typedef Weapon = {
     var fireGap:Float;
     var animations:{
         idle:String,
-        fire:String
+        fire:String,
+        projectile:String
     };
     var sounds:{
         fire:String
     };
     var effects:{
         impact:String
+    };
+    var projectile: {
+        speed:Float,
+        lifetime:Float,
+        scale:Float
     };
 }

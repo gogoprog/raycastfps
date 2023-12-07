@@ -33,14 +33,17 @@ class BulletSystem extends ecs.System {
         for(h in hittables) {
             var htransform = h.get(Transform);
             var hobject = h.get(Object);
-            var collides = math.Utils.lineCircleIntersection(start, end, htransform.position, hobject.radius);
 
-            if(collides) {
-                var distance = Point.getSquareDistance(htransform.position, start);
+            if(bullet.source != h) {
+                var collides = math.Utils.lineCircleIntersection(start, end, htransform.position, hobject.radius);
 
-                if(distance < best_distance) {
-                    best_distance = distance;
-                    best_entity = h;
+                if(collides) {
+                    var distance = Point.getSquareDistance(htransform.position, start);
+
+                    if(distance < best_distance) {
+                        best_distance = distance;
+                        best_entity = h;
+                    }
                 }
             }
         }
