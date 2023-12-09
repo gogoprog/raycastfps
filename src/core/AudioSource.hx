@@ -9,6 +9,11 @@ class AudioSource {
     public function new() {
     }
 
+    public function force(name) {
+        soundName = name;
+        internalSoundName = null;
+    }
+
     private var internalSoundName:String;
     private var sound:Sound;
 }

@@ -46,14 +46,14 @@ class TransformControlSystem extends ecs.System {
         var lateral:Point = [Math.cos(a + Math.PI/2), Math.sin(a + Math.PI/2)];
         var direction = control.direction;
 
-        if(untyped keys['w']) {
+        if(untyped keys['w'] || untyped keys['ArrowUp']) {
             if(direction.y == -1) {
                 control.speed = 0;
             }
 
             direction.y = 1;
             control.speed = Math.min(control.speed + control.acceleration * dt, control.maxSpeed);
-        } else if(untyped keys['s']) {
+        } else if(untyped keys['s'] || untyped keys['ArrowDown']) {
             if(direction.y == 1) {
                 control.speed = 0;
             }
@@ -64,14 +64,14 @@ class TransformControlSystem extends ecs.System {
             control.speed = Math.max(control.speed - control.deceleration * dt, 0);
         }
 
-        if(untyped keys['d']) {
+        if(untyped keys['d'] || untyped keys['ArrowLeft']) {
             if(direction.x == -1) {
                 control.lateralSpeed = 0;
             }
 
             direction.x = 1;
             control.lateralSpeed = Math.min(control.lateralSpeed + control.acceleration * dt, control.maxSpeed);
-        } else if(untyped keys['a']) {
+        } else if(untyped keys['a'] || untyped keys['ArrowRight']) {
             if(direction.x == 1) {
                 control.lateralSpeed = 0;
             }
@@ -93,7 +93,7 @@ class TransformControlSystem extends ecs.System {
 
         translation.add(move);
 
-        transform.angle += control.mouseMovement * 0.002;
+        transform.angle += control.mouseMovement * 0.001;
 
         if(untyped keys['o']) {
             transform.y += 100 * dt;

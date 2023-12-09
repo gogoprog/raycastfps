@@ -47,8 +47,9 @@ class Factory {
 
             var distance = effect.distance != null ? effect.distance : 1;
             e.get(math.Transform).position = [position.x + Math.random() * distance - distance/2, position.y + Math.random() * distance - distance/2];
-            e.get(math.Transform).y = transform.y + effect.startY;
-            e.get(math.Transform).scale = effect.scale;
+            e.get(math.Transform).y = transform.y + effect.startYMin + (effect.startYMax - effect.startYMin) * Math.random();
+            var scale = effect.scale != null ? effect.scale : (effect.scaleMin + (effect.scaleMax - effect.scaleMin) * Math.random());
+            e.get(math.Transform).scale = scale;
 
             e.add(new core.SpriteAnimator());
 

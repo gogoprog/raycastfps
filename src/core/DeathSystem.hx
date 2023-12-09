@@ -18,6 +18,7 @@ class DeathSystem extends ecs.System {
         if(hittable.life <= 0) {
             var anims = character.animations;
             var effects = character.effects;
+            var sounds = character.sounds;
             var animator = e.get(core.SpriteAnimator);
             animator.clear();
 
@@ -32,6 +33,10 @@ class DeathSystem extends ecs.System {
                 if(effects.death != null) {
                     Factory.createEffect(engine, e.get(Transform), effects.death);
                 }
+            }
+
+            if(sounds.death != null) {
+                e.get(core.AudioSource).force(sounds.death);
             }
 
             e.remove(Hittable);

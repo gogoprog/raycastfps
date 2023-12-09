@@ -18,6 +18,10 @@ class Sound {
         audio.currentTime = 0;
         audio.play();
     }
+
+    public function stop() {
+        audio.pause();
+    }
 }
 
 class SoundInstances {

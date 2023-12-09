@@ -39,6 +39,11 @@ class App {
             js.Browser.window.addEventListener("blur", function(e) {
                 onFocus(false);
             }, false);
+            js.Browser.document.addEventListener("pointerlockchange", function(e) {
+                if(js.Browser.document.pointerLockElement == null) {
+                    gotoMenu();
+                }
+            }, false);
         }
         {
             setupEngine(engine);
@@ -113,7 +118,11 @@ class App {
     }
 
     public function gotoIngame() {
-        canvas.onclick = e->canvas.requestPointerLock();
+        canvas.onclick = e-> {
+            if(js.Browser.document.pointerLockElement == null) {
+                canvas.requestPointerLock();
+            }
+        }
         context.engine.suspendSystem(core.editor.EditorSystem);
         context.engine.suspendSystem(core.MenuSystem);
         context.engine.suspendSystem(core.ConsoleSystem);

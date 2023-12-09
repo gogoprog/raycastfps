@@ -264,7 +264,12 @@ class Level {
     public function restart() {
         generateSectors();
         placeObjects();
-        music = context.audioManager.play(data.music);
+
+        if(music != null) {
+            music.play();
+        } else {
+            music = context.audioManager.play(data.music);
+        }
     }
 
     public function findSector(test_position:math.Point):Sector {

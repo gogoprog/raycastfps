@@ -27,7 +27,7 @@ class CharacterSystem extends ecs.System {
 
                 if(weapon.sounds != null) {
                     if(weapon.sounds.fire != null) {
-                        e.get(core.AudioSource).soundName = weapon.sounds.fire;
+                        e.get(core.AudioSource).force(weapon.sounds.fire);
                     }
                 }
 

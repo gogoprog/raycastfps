@@ -25,7 +25,7 @@ class AudioSourceSystem extends ecs.System {
             var audio = audioSource.sound.audio;
             var delta = transform.position - listenerTransform.position;
             delta = math.Point.getRotated(delta, -listenerTransform.angle - Math.PI/2);
-            var factor = 0.01;
+            var factor = 0.03;
             sound.panner.positionX.value = delta.x * factor;
             sound.panner.positionZ.value = delta.y * factor;
 
