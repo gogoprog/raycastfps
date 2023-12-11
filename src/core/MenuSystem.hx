@@ -18,6 +18,7 @@ class MenuSystem extends ecs.System {
     var menus:Array<Menu>;
     var currentMenu:Menu;
     var cursorIndices:Array<Int> = [];
+    var lastMousePosition:math.Point = [];
 
     public function new() {
         super();
@@ -38,6 +39,15 @@ class MenuSystem extends ecs.System {
             renderer.pushRect([width/2, height/2], [width, height], 0xbb000010);
         }
 
+        var use_mouse = false;
+        var mouse_position = context.mouse.position;
+        {
+            if(mouse_position.squareDistance(lastMousePosition) > 0) {
+                use_mouse = true;
+            }
+
+            lastMousePosition.copyFrom(mouse_position);
+        }
         var cursorIndex = cursorIndices[cursorIndices.length - 1];
 
         if(context.keyboard.isJustPressed('ArrowUp')) {
@@ -85,6 +95,18 @@ class MenuSystem extends ecs.System {
             }
 
             renderer.pushText("main", [center_x, offset_y], text, true);
+
+            if(Math.abs(offset_y - mouse_position.y) < 32) {
+                if(use_mouse) {
+                    cursorIndex = index;
+                    cursorIndices[cursorIndices.length - 1] = cursorIndex;
+                }
+
+                if(context.mouse.isJustPressed(0)) {
+                    apply(currentMenu.entries[cursorIndex]);
+                }
+            }
+
             offset_y += 50;
             index++;
         }

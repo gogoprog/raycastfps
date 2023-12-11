@@ -269,6 +269,7 @@ class Level {
             music.play();
         } else {
             music = context.audioManager.play(data.music);
+            music.audio.loop = true;
         }
     }
 

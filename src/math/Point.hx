@@ -74,6 +74,12 @@ abstract Point(Array<Float>) from Array<Float> to Array<Float> {
         this[1] = other[1];
     }
 
+    public function squareDistance(other:Point) {
+        var dx = this[0] - other[0];
+        var dy = this[1] - other[1];
+        return dx * dx + dy * dy;
+    }
+
     public function set(x, y) {
         this[0] = x;
         this[1] = y;

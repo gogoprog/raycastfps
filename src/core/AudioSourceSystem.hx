@@ -18,6 +18,7 @@ class AudioSourceSystem extends ecs.System {
         if(audioSource.soundName != audioSource.internalSoundName) {
             audioSource.sound = context.audioManager.play(audioSource.soundName);
             audioSource.internalSoundName = audioSource.soundName;
+            audioSource.sound.audio.loop = audioSource.loop;
         }
 
         if(audioSource.sound != null) {
@@ -29,10 +30,12 @@ class AudioSourceSystem extends ecs.System {
             sound.panner.positionX.value = delta.x * factor;
             sound.panner.positionZ.value = delta.y * factor;
 
-            if(audio.currentTime >= audio.duration) {
-                audioSource.internalSoundName = null;
-                audioSource.soundName = null;
-                audioSource.sound = null;
+            if(!audioSource.loop) {
+                if(audio.currentTime >= audio.duration) {
+                    audioSource.internalSoundName = null;
+                    audioSource.soundName = null;
+                    audioSource.sound = null;
+                }
             }
         }
     }

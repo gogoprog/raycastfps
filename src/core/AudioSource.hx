@@ -5,6 +5,7 @@ import sound.AudioManager;
 @:allow(core.AudioSourceSystem)
 class AudioSource {
     public var soundName:String;
+    public var loop:Bool = false;
 
     public function new() {
     }
