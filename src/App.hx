@@ -41,7 +41,9 @@ class App {
             }, false);
             js.Browser.document.addEventListener("pointerlockchange", function(e) {
                 if(js.Browser.document.pointerLockElement == null) {
-                    gotoMenu();
+                    if(engine.isActive(core.InGameSystem)) {
+                        gotoMenu();
+                    }
                 }
             }, false);
         }
@@ -114,6 +116,7 @@ class App {
         context.engine.suspendSystem(core.ControlSystem);
         context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.suspendSystem(core.PlayerControlSystem);
+        context.engine.suspendSystem(core.HudSystem);
         context.engine.resumeSystem(core.MenuSystem);
     }
 
@@ -180,6 +183,7 @@ class App {
         engine.addSystem(new core.InGameSystem(), 666);
         engine.addSystem(new core.editor.EditorSystem(), 666);
         engine.addSystem(consoleSystem, 667);
+        engine.addSystem(new core.LevelSystem(), 1024);
         engine.addSystem(new core.AutoRemoveSystem(), 2048);
     }
 

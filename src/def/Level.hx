@@ -24,6 +24,8 @@ typedef Object = {
 
 typedef Level = {
     @:optional var name:String;
+    @:optional var type:String;
+    @:optional var endMenu:Int;
     var vertices:Array<math.Point>;
     var walls:Array<Wall>;
     var rooms:Array<Room>;

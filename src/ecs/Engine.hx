@@ -23,6 +23,19 @@ class Engine {
 
         systems.remove(system_to_remove);
     }
+    public function getSystem<T:System>(klass:Class<T> = null):T {
+        var requested_type = Type.getClassName(klass);
+
+        for(system in systems) {
+            var type = Type.getClassName(Type.getClass(system));
+
+            if(type == requested_type) {
+                return cast system;
+            }
+        }
+
+        return null;
+    }
 
     public function suspendSystem<T:System>(klass:Class<T> = null) {
         var type_to_suspend = Type.getClassName(klass);
@@ -40,7 +53,6 @@ class Engine {
             }
         }
     }
-
     public function resumeSystem<T:System>(klass:Class<T> = null) {
         var type_to_resume = Type.getClassName(klass);
 
@@ -57,7 +69,6 @@ class Engine {
             }
         }
     }
-
     public function isActive<T:System>(klass:Class<T> = null) {
         var type_to_check = Type.getClassName(klass);
 
@@ -71,7 +82,6 @@ class Engine {
 
         return false;
     }
-
     public function update(dt:Float) {
         var systems_copy = systems.slice(0);
         var entities_copy = entities.slice(0);
@@ -97,7 +107,6 @@ class Engine {
             system.update(dt);
         }
     }
-
     public function getMatchingEntities(klass:Class<Dynamic>):Array<Entity> {
         var name = Type.getClassName(klass);
         var result = [];
@@ -111,11 +120,9 @@ class Engine {
         return result;
 
     }
-
     public function addEntity(entity:Entity) {
         entities.push(entity);
     }
-
     public function removeEntity(entity:Entity) {
 
         entities.remove(entity);

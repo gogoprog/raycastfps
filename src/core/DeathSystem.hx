@@ -40,10 +40,9 @@ class DeathSystem extends ecs.System {
             }
 
             e.remove(Hittable);
-
             e.remove(Move);
-
             e.remove(Character);
+            e.add(new core.AutoRemove(1.0));
         }
     }
 }

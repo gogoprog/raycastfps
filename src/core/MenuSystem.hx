@@ -9,12 +9,14 @@ typedef MenuEntry = {
 
 typedef Menu = {
     @:optional var image:String;
+    @:optional var offset:Int;
     var title:String;
     var entries:Array<MenuEntry>;
 }
 
 class MenuSystem extends ecs.System {
     static var fileContent = Macro.getFileContent("menu.json");
+    var fileMenus:Array<Menu>;
     var menus:Array<Menu>;
     var currentMenu:Menu;
     var cursorIndices:Array<Int> = [];
@@ -22,9 +24,14 @@ class MenuSystem extends ecs.System {
 
     public function new() {
         super();
-        menus = cast haxe.Json.parse(fileContent);
+        fileMenus = cast haxe.Json.parse(fileContent);
+        setMenu(0);
+    }
+
+    public function setMenu(index) {
+        menus = [fileMenus[index]];
         currentMenu = menus[0];
-        cursorIndices.push(0);
+        cursorIndices = [0];
     }
 
     override public function update(dt:Float) {
@@ -81,6 +88,11 @@ class MenuSystem extends ecs.System {
         var renderer = context.renderer;
         var center_x = Std.int(display.Renderer.screenWidth * 0.5);
         var offset_y = 100;
+
+        if(currentMenu.offset != null) {
+            offset_y += currentMenu.offset;
+        }
+
         var index = 0;
         renderer.pushQuad2(context.textureManager.get(currentMenu.image), [center_x, offset_y]);
         offset_y += 100;
@@ -152,6 +164,10 @@ class MenuSystem extends ecs.System {
                 }
 
                 currentMenu = menus[0];
+            }
+
+            case "main_menu": {
+                setMenu(0);
             }
         }
     }

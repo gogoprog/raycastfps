@@ -271,6 +271,8 @@ class Level {
             music = context.audioManager.play(data.music);
             music.audio.loop = true;
         }
+
+        context.engine.getSystem(core.LevelSystem).restart();
     }
 
     public function findSector(test_position:math.Point):Sector {
