@@ -31,35 +31,42 @@ class HudSystem extends ecs.System {
         var len = translation.getLength();
         factor = len / (30 * dt);
 
-        if(len != 0) {
-            time += dt * factor;
-            weaponOffset.x = Math.sin(time) * 30;
-            weaponOffset.y = Math.cos(time * 2) * 10;
-        } else {
-            var r = math.Utils.smoothDamp(weaponOffset.x, 0.0, velocity.x, 0.5, dt);
-            weaponOffset.x = r.value;
-            velocity.x = r.velocity;
-            var r = math.Utils.smoothDamp(weaponOffset.y, 0.0, velocity.y, 0.5, dt);
-            weaponOffset.y = r.value;
-            velocity.y = r.velocity;
-            time = 0;
-        }
+        if(context.playerEntity != null) {
+            var character = context.playerEntity.get(Character);
 
-        weaponEntity.get(math.Transform).position.copyFrom(weaponPosition+weaponOffset);
-        {
-            if(context.playerEntity != null) {
-                var character = context.playerEntity.get(Character);
+            if(character != null) {
+                if(len != 0) {
+                    time += dt * factor;
+                    weaponOffset.x = Math.sin(time) * 30;
+                    weaponOffset.y = Math.cos(time * 2) * 10;
+                } else {
+                    var r = math.Utils.smoothDamp(weaponOffset.x, 0.0, velocity.x, 0.5, dt);
+                    weaponOffset.x = r.value;
+                    velocity.x = r.velocity;
+                    var r = math.Utils.smoothDamp(weaponOffset.y, 0.0, velocity.y, 0.5, dt);
+                    weaponOffset.y = r.value;
+                    velocity.y = r.velocity;
+                    time = 0;
+                }
+
+                weaponEntity.get(math.Transform).position.copyFrom(weaponPosition+weaponOffset);
                 var animator = weaponEntity.get(SpriteAnimator);
 
-                if(character.didFire) {
-                    animator.replace1(character.weapon.animations.fire);
-                }
+                if(character != null) {
+                    if(character.didFire) {
+                        animator.replace1(character.weapon.animations.fire);
+                    }
 
-                if(animator.getAnimationsCount() == 0) {
-                    animator.push(character.weapon.animations.idle);
+                    if(animator.getAnimationsCount() == 0) {
+                        animator.push(character.weapon.animations.idle);
+                    }
                 }
+            } else {
+                engine.removeEntity(weaponEntity);
             }
         }
+
+        drawInfos();
     }
 
     override public function onResume() {
@@ -73,5 +80,16 @@ class HudSystem extends ecs.System {
 
     public function setWeaponEntity(e:ecs.Entity) {
         weaponEntity = e;
+    }
+
+    private function drawInfos() {
+        var player = context.playerEntity;
+        var hittable = player.get(Hittable);
+        var renderer = context.renderer;
+        var offset_x = Std.int(display.Renderer.screenWidth * 0.05);
+        var offset_y = Std.int(display.Renderer.screenHeight * 0.95);
+        renderer.pushText("main", [offset_x, offset_y], "HP: " + hittable.life, false);
+        var offset_x = Std.int(display.Renderer.screenWidth * 0.8);
+        renderer.pushText("main", [offset_x, offset_y], "AMMO: 100", false);
     }
 }

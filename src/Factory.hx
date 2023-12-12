@@ -161,6 +161,10 @@ class Factory {
 
         e.add(new core.Character());
 
+        e.add(new core.Hittable());
+
+        e.get(core.Hittable).life = 100;
+
         e.add(new core.Object());
 
         e.add(new core.Control());

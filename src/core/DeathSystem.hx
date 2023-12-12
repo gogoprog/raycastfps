@@ -20,13 +20,16 @@ class DeathSystem extends ecs.System {
             var effects = character.effects;
             var sounds = character.sounds;
             var animator = e.get(core.SpriteAnimator);
-            animator.clear();
 
-            if(anims.death != null) {
-                animator.push(anims.death);
-            } else {
+            if(animator != null) {
+                animator.clear();
 
-                e.remove(core.Sprite);
+                if(anims.death != null) {
+                    animator.push(anims.death);
+                } else {
+
+                    e.remove(core.Sprite);
+                }
             }
 
             if(effects != null) {
@@ -35,14 +38,24 @@ class DeathSystem extends ecs.System {
                 }
             }
 
-            if(sounds.death != null) {
-                e.get(core.AudioSource).force(sounds.death);
+            if(sounds != null) {
+                if(sounds.death != null) {
+                    e.get(core.AudioSource).force(sounds.death);
+                }
             }
 
-            e.remove(Hittable);
             e.remove(Move);
             e.remove(Character);
-            e.add(new core.AutoRemove(1.0));
+
+            if(e.get(core.Player) != null) {
+
+                e.remove(core.Control);
+            } else {
+
+                e.remove(Hittable);
+
+                e.add(new core.AutoRemove(1.0));
+            }
         }
     }
 }

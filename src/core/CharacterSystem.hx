@@ -111,6 +111,7 @@ class CharacterSystem extends ecs.System {
     private function spawnProjectile(source, weapon, transform, angle_offset) {
         var e = Factory.createProjectile(weapon);
         e.get(core.Projectile).source = source;
+        e.get(core.Projectile).weapon = weapon;
         e.get(Transform).copyFrom(transform);
         e.get(Transform).y += 32;
         e.get(Transform).angle += angle_offset;
