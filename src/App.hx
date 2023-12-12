@@ -6,6 +6,10 @@ class App {
     private var canvas:js.html.CanvasElement;
     private var hasFocus = true;
 
+    static public function isMobile() {
+        return js.Syntax.code("(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))");
+    }
+
     public function new() {
         context.app = this;
     }
@@ -69,6 +73,26 @@ class App {
                 mouse.moveX += e.movementX;
                 mouse.internalPosition.x = e.x;
                 mouse.internalPosition.y = e.y;
+            }
+            {
+                var touchx = 0.0;
+                var touchy = 0.0;
+                canvas.ontouchstart = function(e) {
+                    var touch = e.touches[0];
+                    touchx = touch.clientX;
+                }
+                canvas.ontouchmove = function(e) {
+                    var touch = e.touches[0];
+                    mouse.internalPosition.x = touch.clientX;
+                    mouse.internalPosition.y = touch.clientY;
+                    mouse.moveX += touch.clientX - touchx;
+                    untyped keyboard.keys["ArrowUp"] = touch.clientY < touchy;
+                    touchx = touch.clientX;
+                    touchy = touch.clientY;
+                }
+                canvas.ontouchend = function(e) {
+                    untyped keyboard.keys["ArrowUp"] = false;
+                }
             }
             untyped onkeydown = onkeyup = function(e) {
                 keyboard.keys[e.key] = e.type[3] == 'd';

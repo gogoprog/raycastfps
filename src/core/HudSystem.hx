@@ -87,9 +87,9 @@ class HudSystem extends ecs.System {
         var hittable = player.get(Hittable);
         var renderer = context.renderer;
         var offset_x = Std.int(display.Renderer.screenWidth * 0.05);
-        var offset_y = Std.int(display.Renderer.screenHeight * 0.95);
+        var offset_y = Std.int(display.Renderer.screenHeight * 0.92);
         renderer.pushText("main", [offset_x, offset_y], "HP: " + hittable.life, false);
-        var offset_x = Std.int(display.Renderer.screenWidth * 0.8);
-        renderer.pushText("main", [offset_x, offset_y], "AMMO: 100", false);
+        var offset_x = Std.int(display.Renderer.screenWidth * 0.7);
+        renderer.pushText("main", [offset_x, offset_y], "A: 100", false);
     }
 }

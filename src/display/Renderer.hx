@@ -118,9 +118,11 @@ class Renderer {
     var lines:Array<Line> = [];
     var rects:Array<Rect> = [];
     var fonts:Map<String, FontInfo> = new Map();
+    var textScale = 1.0;
 
     public function new(context) {
         this.context = context;
+        if(App.isMobile()) textScale = 2.0;
     }
 
     public function initialize(cameraTransform) {
@@ -605,7 +607,9 @@ class Renderer {
 
         var char_extent:Point = font.charExtent;
         var texture = context.textureManager.get(font.textureName);
-        if(texture == null) return;
+
+        if(texture == null) { return; }
+
         var cols = texture.width / char_extent.x;
 
         for(i in 0...content.length) {
@@ -613,13 +617,15 @@ class Renderer {
             code = code - 32;
             var offset = .0;
 
+
+            var scale = textScale;
             if(centered) {
-                offset -= content.length * char_extent.x * 0.5;
+                offset -= content.length * char_extent.x * 0.5 * scale;
             }
 
-            var pos:Point = [position.x + char_extent.x*i + offset, position.y];
+            var pos:Point = [position.x + char_extent.x*i*scale + offset, position.y];
             var src_pos:Point = [char_extent.x * (code % cols), Std.int(code/cols) * char_extent.y];
-            pushQuad(texture, pos, char_extent, src_pos, char_extent);
+            pushQuad(texture, pos, char_extent * scale, src_pos, char_extent);
         }
     }
 
