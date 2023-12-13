@@ -83,6 +83,7 @@ class HudSystem extends ecs.System {
     }
 
     private function drawInfos() {
+        var monsters = engine.getMatchingEntities(core.Monster);
         var player = context.playerEntity;
         var hittable = player.get(Hittable);
         var renderer = context.renderer;
@@ -90,6 +91,6 @@ class HudSystem extends ecs.System {
         var offset_y = Std.int(display.Renderer.screenHeight * 0.92);
         renderer.pushText("main", [offset_x, offset_y], "HP: " + hittable.life, false);
         var offset_x = Std.int(display.Renderer.screenWidth * 0.7);
-        renderer.pushText("main", [offset_x, offset_y], "A: 100", false);
+        renderer.pushText("main", [offset_x, offset_y], "L: " + monsters.length, false);
     }
 }
