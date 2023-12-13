@@ -51,7 +51,7 @@ class ProjectileSystem extends ecs.System {
                 var collides = math.Utils.lineCircleIntersection(start, end, htransform.position, hobject.radius);
 
                 if(collides) {
-                    h.get(Hittable).life -= 2;
+                    h.get(Hittable).life -= 5;
                     engine.removeEntity(e);
                     return;
                 }

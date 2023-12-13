@@ -6,6 +6,7 @@ class CameraSystem extends ecs.System {
     public function new() {
         super();
         addComponentClass(Camera);
+        addComponentClass(Player);
         addComponentClass(math.Transform);
     }
 
@@ -15,8 +16,9 @@ class CameraSystem extends ecs.System {
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
         var transform = e.get(math.Transform);
+        var player = e.get(Player);
         cameraTransform.position.copyFrom(transform.position);
-        cameraTransform.y = transform.y + 32;
+        cameraTransform.y = transform.y + player.cameraOffsetY;
         cameraTransform.angle = transform.angle;
     }
 }

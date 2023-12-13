@@ -8,10 +8,12 @@ class PlayerSystem extends ecs.System {
         super();
         addComponentClass(Transform);
         addComponentClass(Player);
+        addComponentClass(Hittable);
     }
 
     override public function updateSingle(dt:Float, e:ecs.Entity) {
         var player = e.get(Player);
+        var hittable = e.get(Hittable);
         player.time += dt;
         player.timeSinceLastEffect += dt;
 
@@ -23,6 +25,10 @@ class PlayerSystem extends ecs.System {
             }
 
             player.timeSinceLastEffect = 0;
+        }
+
+        if(hittable.life < 0) {
+            player.cameraOffsetY = Math.max(player.cameraOffsetY - dt * 20, 2);
         }
     }
 }

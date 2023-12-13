@@ -45,6 +45,7 @@ class DeathSystem extends ecs.System {
             }
 
             e.remove(Move);
+
             e.remove(Character);
 
             if(e.get(core.Player) != null) {
