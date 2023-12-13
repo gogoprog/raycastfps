@@ -5,6 +5,10 @@ class App {
     static public var consoleSystem = new core.ConsoleSystem();
     private var canvas:js.html.CanvasElement;
     private var hasFocus = true;
+    private var itIsMobile = false;
+    private var touchStart:math.Point = [0, 0];
+    private var touchActive = 0;
+    private var keyboardActive = false;
 
     static public function isMobile() {
         return js.Syntax.code("(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))");
@@ -12,6 +16,7 @@ class App {
 
     public function new() {
         context.app = this;
+        itIsMobile = isMobile();
     }
 
     function onFocus(value) {
@@ -53,7 +58,7 @@ class App {
         }
         {
             setupEngine(engine);
-            gotoIngame();
+            gotoMenu();
             function init() {
                 context.level.load(Factory.levels["first"]);
                 context.level.restart();
@@ -75,27 +80,56 @@ class App {
                 mouse.internalPosition.y = e.y;
             }
             {
-                var touchx = 0.0;
-                var touchy = 0.0;
+                js.Browser.window.ontouchstart = function(e) {
+                    untyped keyboard.keys["Escape"] = true;
+                }
+                js.Browser.window.ontouchend = function(e) {
+                    untyped keyboard.keys["Escape"] = false;
+                }
                 canvas.ontouchstart = function(e) {
-                    var touch = e.touches[0];
-                    touchx = touch.clientX;
+                    var touch = e.changedTouches[0];
+
+                    if(e.touches.length == 1) {
+                        touchStart.x = touch.clientX;
+                        touchStart.y = touch.clientY;
+                        mouse.internalPosition.x = touch.clientX;
+                        mouse.internalPosition.y = touch.clientY;
+                    } else {
+                        mouse.buttons[0] = true;
+                    }
+
+                    if(!engine.isActive(core.InGameSystem)) {
+                        mouse.buttons[0] = true;
+                    }
+
+                    touchActive++;
+                    e.stopPropagation();
                 }
                 canvas.ontouchmove = function(e) {
-                    var touch = e.touches[0];
-                    mouse.internalPosition.x = touch.clientX;
-                    mouse.internalPosition.y = touch.clientY;
-                    mouse.moveX += touch.clientX - touchx;
-                    untyped keyboard.keys["ArrowUp"] = touch.clientY < touchy;
-                    touchx = touch.clientX;
-                    touchy = touch.clientY;
+                    if(e.touches.length == 1) {
+                        var touch = e.changedTouches[0];
+                        mouse.internalPosition.x = touch.clientX;
+                        mouse.internalPosition.y = touch.clientY;
+                    }
+
+                    e.stopPropagation();
                 }
                 canvas.ontouchend = function(e) {
-                    untyped keyboard.keys["ArrowUp"] = false;
+                    if(e.touches.length == 1) {
+                        mouse.buttons[0] = false;
+                    }
+
+                    if(!engine.isActive(core.InGameSystem)) {
+                        mouse.buttons[0] = false;
+                    }
+
+                    touchActive--;
+                    e.stopPropagation();
                 }
             }
             untyped onkeydown = onkeyup = function(e) {
                 keyboard.keys[e.key] = e.type[3] == 'd';
+                keyboardActive = true;
             }
             canvas.onwheel = function(e) {
                 mouse.wheelDelta = e.deltaY;
@@ -115,6 +149,11 @@ class App {
             context.level.update();
             mouse.position.x = ((mouse.internalPosition.x - canvas.offsetLeft) / canvas.clientWidth) * display.Renderer.screenWidth;
             mouse.position.y = ((mouse.internalPosition.y - canvas.offsetTop) / canvas.clientHeight) * display.Renderer.screenHeight;
+
+            if(itIsMobile) {
+                touchUpdate();
+            }
+
             engine.update(deltaTime);
 
             if(hasFocus) {
@@ -134,22 +173,70 @@ class App {
         loop(0);
     }
 
+    public function touchUpdate() {
+        var mouse = context.mouse;
+        var keyboard = context.keyboard;
+
+        if(touchActive > 0) {
+            var mindx = 16;
+            var mindy = 16;
+            var dx = mouse.internalPosition.x - touchStart.x;
+            var dy = mouse.internalPosition.y - touchStart.y;
+            var center_x = Std.int(display.Renderer.screenWidth * 0.75);
+
+            if(Math.abs(dx) > mindx) {
+                mouse.moveX = (dx - mindx) * 0.5;
+            }
+
+            if(mouse.position.x < center_x) {
+                if(!keyboardActive) {
+                    if(dy < -mindy) {
+                        untyped keyboard.keys["ArrowUp"] = true;
+                    } else {
+                        untyped keyboard.keys["ArrowUp"] = false;
+                    }
+
+                    if(dy > mindy) {
+                        untyped keyboard.keys["ArrowDown"] = true;
+                    } else {
+                        untyped keyboard.keys["ArrowDown"] = false;
+                    }
+                }
+            } else {
+                mouse.buttons[0] = true;
+            }
+        } else {
+            if(!keyboardActive) {
+                untyped keyboard.keys["ArrowUp"] = false;
+                untyped keyboard.keys["ArrowDown"] = false;
+            }
+
+            mouse.buttons[0] = false;
+        }
+    }
+
     public function gotoMenu() {
         canvas.onclick = function() {};
+        context.engine.suspendSystem(core.editor.EditorSystem);
+        context.engine.suspendSystem(core.ConsoleSystem);
         context.engine.suspendSystem(core.InGameSystem);
         context.engine.suspendSystem(core.ControlSystem);
         context.engine.suspendSystem(core.TransformControlSystem);
         context.engine.suspendSystem(core.PlayerControlSystem);
         context.engine.suspendSystem(core.HudSystem);
+        context.engine.suspendSystem(core.MonsterSystem);
         context.engine.resumeSystem(core.MenuSystem);
     }
 
     public function gotoIngame() {
-        canvas.onclick = e-> {
-            if(js.Browser.document.pointerLockElement == null) {
-                canvas.requestPointerLock();
+        if(!itIsMobile) {
+            canvas.onclick = e-> {
+                if(js.Browser.document.pointerLockElement == null) {
+                    canvas.requestPointerLock();
+                }
             }
         }
+
         context.engine.suspendSystem(core.editor.EditorSystem);
         context.engine.suspendSystem(core.MenuSystem);
         context.engine.suspendSystem(core.ConsoleSystem);

@@ -5,7 +5,7 @@ class Mouse {
     public var wheelDelta:Int = 0;
     public var previousButtons:Array<Bool> = [];
     public var position:math.Point = [];
-    public var internalPosition:math.Point = [];
+    public var internalPosition:math.Point = [0, 0];
     public var moveX = 0.0;
 
     public function new() {

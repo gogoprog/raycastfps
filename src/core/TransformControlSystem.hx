@@ -64,14 +64,14 @@ class TransformControlSystem extends ecs.System {
             control.speed = Math.max(control.speed - control.deceleration * dt, 0);
         }
 
-        if(untyped keys['d'] || untyped keys['ArrowLeft']) {
+        if(untyped keys['d'] || untyped keys['ArrowRight']) {
             if(direction.x == -1) {
                 control.lateralSpeed = 0;
             }
 
             direction.x = 1;
             control.lateralSpeed = Math.min(control.lateralSpeed + control.acceleration * dt, control.maxSpeed);
-        } else if(untyped keys['a'] || untyped keys['ArrowRight']) {
+        } else if(untyped keys['a'] || untyped keys['ArrowLeft']) {
             if(direction.x == 1) {
                 control.lateralSpeed = 0;
             }
