@@ -1,6 +1,5 @@
 package core;
 
-
 @:allow(core.PlayerSystem)
 class Player {
     public function new() {
@@ -8,5 +7,7 @@ class Player {
 
     private var time = 0.0;
     private var timeSinceLastEffect = 0.0;
+    private var lastLife = 0.0;
+    public var hitFeedbackTimeLeft = 0.0;
     public var cameraOffsetY = 32.0;
 }

@@ -66,7 +66,7 @@ class HudSystem extends ecs.System {
             }
         }
 
-        drawInfos();
+        drawInfos(dt);
     }
 
     override public function onResume() {
@@ -82,7 +82,7 @@ class HudSystem extends ecs.System {
         weaponEntity = e;
     }
 
-    private function drawInfos() {
+    private function drawInfos(dt:Float) {
         var monsters = engine.getMatchingEntities(core.Monster);
         var player = context.playerEntity;
         var hittable = player.get(Hittable);
@@ -92,5 +92,20 @@ class HudSystem extends ecs.System {
         renderer.pushText("main", [offset_x, offset_y], "HP: " + hittable.life, false);
         var offset_x = Std.int(display.Renderer.screenWidth * 0.7);
         renderer.pushText("main", [offset_x, offset_y], "L: " + monsters.length, false);
+        {
+            var player_player = player.get(Player);
+            var hf = player_player.hitFeedbackTimeLeft;
+
+            if(hf > 0.0) {
+                hf -= dt;
+                hf = Math.max(0, hf);
+                player_player.hitFeedbackTimeLeft = hf;
+                var alpha = Std.int((hf/0.5) * 200);
+                var color = (alpha << 24) | 0xdd;
+                var width = display.Renderer.screenWidth;
+                var height = display.Renderer.screenHeight;
+                renderer.pushRect([width/2, height/2], [width, height], color);
+            }
+        }
     }
 }

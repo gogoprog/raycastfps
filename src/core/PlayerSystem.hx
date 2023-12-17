@@ -29,6 +29,12 @@ class PlayerSystem extends ecs.System {
 
         if(hittable.life < 0) {
             player.cameraOffsetY = Math.max(player.cameraOffsetY - dt * 20, 2);
+        } else {
+            if(hittable.life < player.lastLife) {
+                player.hitFeedbackTimeLeft = 0.5;
+            }
+
+            player.lastLife = hittable.life;
         }
     }
 }
