@@ -27,7 +27,11 @@ I will use the `Haxe` language on top of that, basically to have a statically ty
   * Fully functional in-game editor
   * And more!
 
-![longstory](https://github.com/gogoprog/raycastfps/raw/master/res/urfps-longstory.mp4)
+
+
+https://github.com/gogoprog/urfps/assets/1249453/10d6af1d-f2c0-498d-bff0-a6274703de63
+
+
 
 ### 2023-06 Stairway to Hell
 
