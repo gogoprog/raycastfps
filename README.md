@@ -15,6 +15,20 @@ I will use the `Haxe` language on top of that, basically to have a statically ty
 
 ## Dev blog
 
+### 2024-01 Long story short
+
+  I progressed a lot on this project, I even released a game using it! See [here](https://gogoprog.itch.io/mariah-carnage) !
+
+  In summary:
+
+  * Solid doors
+  * In-game menu
+  * Transparent UIs
+  * Fully functional in-game editor
+  * And more!
+
+![longstory](https://github.com/gogoprog/raycastfps/raw/master/res/urfps-longstory.mp4)
+
 ### 2023-06 Stairway to Hell
 
   * Sectors now have a 'bottom' value and texture.
