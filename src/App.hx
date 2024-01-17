@@ -23,8 +23,15 @@ class App {
         hasFocus = value;
     }
 
-    public function initialize() {
+    public function start() {
         canvas = cast js.Browser.document.getElementById("canvas");
+        Data.initialize(function() {
+            initialize();
+            run();
+        });
+    }
+
+    function initialize() {
         var engine = context.engine;
         var cameraTransform = context.cameraTransform;
         {
@@ -300,6 +307,6 @@ class App {
 
     static inline public function log(what) {
         consoleSystem.push(what);
-        js.Browser.console.log(what);
+        js.Browser.console.log("[urfps] " + what);
     }
 }

@@ -1,10 +1,6 @@
 package display;
 
 class TextureManager {
-    static var rootPath = Macro.getDataRootPath("textures");
-    static var filePaths = Macro.getDataFilePaths("textures");
-    static var sheetRootPath = Macro.getDataRootPath("sheets");
-    static var sheetFilePaths = Macro.getDataFilePaths("sheets");
     var context:Context;
     var textures:Map<String, Framebuffer> = new Map();
     var textureCanvas:js.html.CanvasElement = cast js.Browser.document.createElement("canvas");
@@ -17,6 +13,8 @@ class TextureManager {
 
     public function initialize() {
         textureContext = textureCanvas.getContext("2d");
+        var filePaths = Data.getFilePaths("textures");
+        var sheetFilePaths = Data.getFilePaths("sheets");
 
         for(file in filePaths) {
             load(file);
@@ -32,9 +30,10 @@ class TextureManager {
     }
 
     function load(filename) {
+        var root = Data.getRootPath("textures");
         loadCount++;
         var img = new js.html.Image();
-        img.src = '${rootPath}/${filename}';
+        img.src = '${root}/${filename}';
         img.onload = function() {
             textureCanvas.width = img.width;
             textureCanvas.height = img.height;
@@ -52,13 +51,14 @@ class TextureManager {
 
     function loadSheet(filename:String) {
         var ext = filename.substring(filename.length - 4);
+        var root = Data.getRootPath("sheets");
 
         if(ext != "json") { return; }
 
         var name = filename.substring(0, filename.length - 5);
         loadCount++;
         var img = new js.html.Image();
-        img.src = '${sheetRootPath}/${name}.png';
+        img.src = '${root}/${name}.png';
         img.onload = function() {
             var loader = new def.Loader<def.Sheet>(Context.dataRoot);
             loader.load(name, function(data) {
