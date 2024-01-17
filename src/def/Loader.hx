@@ -10,7 +10,7 @@ class Loader<T: {name:String}> {
         var className = Type.getClassName(Type.getClass(this));
         type = className.split('_')[2].toLowerCase();
         this.prefixOnly = prefix;
-        this.prefix = prefix + type + 's';
+        this.prefix = prefix + '/' + type + 's';
     }
 
     public function load(name, ondatacallback:T->Void) {

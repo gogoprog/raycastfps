@@ -25,13 +25,12 @@ class Sound {
 }
 
 class SoundInstances {
-    static var rootPath = Macro.getDataRootPath("sounds");
-
     var instances:Array<Sound> = [];
     var index = 0;
 
     public function new(audioContext, filename) {
-        var src = '${rootPath}/${filename}';
+        var root = Data.getRootPath("sounds");
+        var src = '${root}/${filename}';
 
         for(i in 0...6) {
             var instance = new Sound(audioContext, src);
@@ -49,8 +48,6 @@ class SoundInstances {
 }
 
 class AudioManager {
-    static var filePaths = Macro.getDataFilePaths("sounds");
-
     var sounds:Map<String, SoundInstances> = new Map();
 
     var audioContext:js.html.audio.AudioContext;
@@ -60,6 +57,7 @@ class AudioManager {
 
     public function initialize() {
         audioContext = new js.html.audio.AudioContext();
+        var filePaths = Data.getFilePaths("sounds");
 
         for(file in filePaths) {
             var name = file.substring(0, file.length - 4);

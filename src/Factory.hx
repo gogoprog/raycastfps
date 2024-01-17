@@ -1,7 +1,6 @@
 package;
 
 class Factory {
-    static var levelFilePaths = Macro.getDataFilePaths("levels");
     static public var monsters = new Map<String, def.Monster>();
     static public var items = new Map<String, def.Item>();
     static private var weapons = new Map<String, def.Weapon>();
@@ -18,15 +17,16 @@ class Factory {
                 callback();
             }
         }
-        var loader = new def.Loader<def.Monster>(Context.dataRoot);
+        var levelFilePaths = Data.getFilePaths("levels");
+        var loader = new def.Loader<def.Monster>(Data.dataPath);
         loader.fill(monsters, localcallback);
-        var loader = new def.Loader<def.Item>(Context.dataRoot);
+        var loader = new def.Loader<def.Item>(Data.dataPath);
         loader.fill(items, localcallback);
-        var loader = new def.Loader<def.Weapon>(Context.dataRoot);
+        var loader = new def.Loader<def.Weapon>(Data.dataPath);
         loader.fill(weapons, localcallback);
-        var loader = new def.Loader<def.Effect>(Context.dataRoot);
+        var loader = new def.Loader<def.Effect>(Data.dataPath);
         loader.fill(effects, localcallback);
-        var loader = new def.Loader<def.Level>(Context.dataRoot);
+        var loader = new def.Loader<def.Level>(Data.dataPath);
         loader.fill2(levels, levelFilePaths, localcallback);
     }
 

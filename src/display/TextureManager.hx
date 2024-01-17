@@ -60,7 +60,7 @@ class TextureManager {
         var img = new js.html.Image();
         img.src = '${root}/${name}.png';
         img.onload = function() {
-            var loader = new def.Loader<def.Sheet>(Context.dataRoot);
+            var loader = new def.Loader<def.Sheet>(Data.dataPath);
             loader.load(name, function(data) {
                 var index = 0;
 

@@ -1,7 +1,6 @@
 package;
 
 class Context {
-    static public var dataRoot:String;
     public var app:App;
     public var renderer:display.Renderer;
     public var cameraTransform:math.Transform;

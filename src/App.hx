@@ -37,7 +37,6 @@ class App {
         {
             cameraTransform.position = [1024, 1024];
             cameraTransform.angle = 0;
-            Context.dataRoot = Macro.getDataRootPath();
             context.renderer.initialize(cameraTransform);
             context.textureManager.initialize();
             context.audioManager.initialize();

@@ -15,7 +15,6 @@ typedef Menu = {
 }
 
 class MenuSystem extends ecs.System {
-    static var fileContent = Macro.getFileContent("menu.json");
     var fileMenus:Array<Menu>;
     var menus:Array<Menu>;
     var currentMenu:Menu;
@@ -24,8 +23,10 @@ class MenuSystem extends ecs.System {
 
     public function new() {
         super();
-        fileMenus = cast haxe.Json.parse(fileContent);
-        setMenu(0);
+        Data.getFileContent("menu.json", function(fileContent) {
+            fileMenus = cast haxe.Json.parse(fileContent);
+            setMenu(0);
+        });
     }
 
     public function setMenu(index) {

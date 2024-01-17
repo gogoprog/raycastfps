@@ -2,7 +2,7 @@ package;
 
 class Data {
     private static var filePaths:Array<String>;
-    private static var dataPath:String = "./data";
+    public static var dataPath:String = "./data";
 
     public static function initialize(callback) {
         if(untyped js.Browser.document.urfpsData) {
@@ -34,5 +34,13 @@ class Data {
 
     public static function getRootPath(folder:String) {
         return dataPath + "/" + folder;
+    }
+
+    public static function getFileContent(file, callback) {
+        var req = new haxe.Http('${dataPath}/${file}');
+        req.onData = function(datatxt) {
+            callback(datatxt);
+        };
+        req.request(false);
     }
 }
