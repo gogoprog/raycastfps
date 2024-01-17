@@ -1,0 +1,41 @@
+[{
+        "name": "gibs",
+        "animation": "explosion",
+        "spriteCount": 64,
+        "startYMin": 0,
+        "startYMax": 38,
+        "scaleMin": 0.1,
+        "scaleMax": 0.2,
+        "speedMin": 10,
+        "speedMax": 150,
+        "upSpeedMin": 100,
+        "upSpeedMax": 200,
+        "lifetime": 2
+    },
+    {
+        "name": "impact",
+        "animation": "impact",
+        "spriteCount": 4,
+        "startYMin": 0,
+        "startYMax": 0,
+        "scale": 0.3,
+        "speedMin": 5,
+        "speedMax": 10,
+        "upSpeedMin": 50,
+        "upSpeedMax": 100,
+        "lifetime": 2
+    },
+    {
+        "name": "impact2",
+        "animation": "impact",
+        "spriteCount": 4,
+        "startYMin": 0,
+        "startYMax": 0,
+        "scale": 0.9,
+        "speedMin": 5,
+        "speedMax": 10,
+        "upSpeedMin": 50,
+        "upSpeedMax": 100,
+        "lifetime": 2
+    }
+]

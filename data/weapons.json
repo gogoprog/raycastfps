@@ -1,11 +1,18 @@
 [{
-    "name": "shotgun",
-    "rate": 1.4,
-    "type": "instant",
-    "fireCount": 3,
-    "fireGap": 0.01,
-    "animations": {
-        "fire": "shotgun-fire",
-        "idle": "shotgun-idle"
+        "name": "shotgun",
+        "rate": 1.5,
+        "type": "bullet",
+        "fireCount": 7,
+        "fireGap": 0.01,
+        "animations": {
+            "fire": "shotgun-fire",
+            "idle": "shotgun-idle"
+        },
+        "sounds": {
+            "fire": "shotgun-fire"
+        },
+        "effects": {
+            "impact": "impact"
+        }
     }
-}]
+]

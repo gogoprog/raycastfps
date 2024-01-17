@@ -268,8 +268,10 @@ class Level {
         if(music != null) {
             music.play();
         } else {
-            music = context.audioManager.play(data.music);
-            music.audio.loop = true;
+            if(data.music != null) {
+                music = context.audioManager.play(data.music);
+                music.audio.loop = true;
+            }
         }
 
         context.engine.getSystem(core.LevelSystem).restart();

@@ -120,9 +120,8 @@ class MoveSystem extends ecs.System {
 
             if(sector != null) {
                 object.currentSector = sector;
+                transform.y = sector.bottom;
             }
-
-            transform.y = object.currentSector.bottom;
         }
     }
 }

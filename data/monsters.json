@@ -1,15 +1,16 @@
-[
-    {
-        "name":"grell",
+[{
+        "name": "grell",
         "life": 100,
+        "scale": 1,
         "animations": {
             "idle": "grell-idle",
             "death": "grell-death"
         }
     },
     {
-        "name":"supergrell",
+        "name": "supergrell",
         "life": 1000,
+        "scale": 2,
         "animations": {
             "idle": "grell-idle",
             "death": "grell-death"
