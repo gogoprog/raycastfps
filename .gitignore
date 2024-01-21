@@ -4,3 +4,6 @@ urfps.js
 temp
 *.zip
 /tags
+/tools/*.wad
+/tools/*.hl
+

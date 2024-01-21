@@ -1,5 +1,11 @@
 -cp src
 -js build/urfps.js
 -main Main
--D dataPath=./data
--D dataRelativePath=./data
+
+--next
+
+-cp src/tools
+-main WadConverter
+-hl tools/wad-converter.hl
+
+
