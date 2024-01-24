@@ -5,6 +5,7 @@
 --next
 
 -cp src/tools
+-cp src
 -main WadConverter
 -hl tools/wad-converter.hl
 
