@@ -39,18 +39,32 @@ class Reader {
                     var level = file.getLevel(occurrences[entry.name] - 1);
                     input.position = entry.pointer;
                     var count = Std.int(entry.size / 2);
-
                     level.vertices = [];
 
                     for(i in 0...count) {
                         var x = input.readInt16();
                         var y = input.readInt16();
                         level.vertices.push({x:x, y:y});
-
-                        trace('$x, $y');
                     }
+                }
 
-                    trace(level.vertices.length + " vertices");
+                case "LINEDEFS": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    var count = Std.int(entry.size / 14);
+
+                    for(i in 0...count) {
+                        var begin = input.readInt16();
+                        var end = input.readInt16();
+                        var flags = input.readInt16();
+                        var type = input.readInt16();
+                        var tag = input.readInt16();
+                        var rightSidedef = input.readInt16();
+                        var leftSidedef = input.readInt16();
+                        level.linedefs.push({
+                            begin:begin, end:end, flags:flags, type:type, tag:tag, rightSidedef:rightSidedef, leftSidedef:leftSidedef
+                        });
+                    }
                 }
             }
         }

@@ -5,11 +5,21 @@ typedef Vertex = {
     var y:Int;
 }
 
+typedef Linedef = {
+    var begin:Int;
+    var end:Int;
+    var flags:Int;
+    var type:Int;
+    var tag:Int;
+    var rightSidedef:Int;
+    var leftSidedef:Int;
+}
+
 class Level {
-    public var vertices:Array<Vertex>;
+    public var vertices:Array<Vertex> = [];
+    public var linedefs:Array<Linedef> = [];
 
     public function new() {
-        vertices = [];
     }
 }
 

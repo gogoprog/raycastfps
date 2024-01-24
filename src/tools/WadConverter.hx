@@ -1,5 +1,7 @@
 package;
 
+import def.Level;
+
 class WadConverter {
 
     static function showUsage() {
@@ -22,20 +24,33 @@ class WadConverter {
         for(i in 0...wad.levels.length) {
             var wadlevel = wad.levels[i];
             var vertices = new Array<math.Point>();
+            var walls = new Array<def.Wall>();
 
             for(v in wadlevel.vertices) {
                 vertices.push([v.x, v.y]);
             }
 
+            for(l in wadlevel.linedefs) {
+                walls.push({
+                    a: l.begin,
+                    b: l.end,
+                    textureName: 'wall',
+                    bottomTextureName: 'wall',
+                    textureScale: [1, 1]
+                });
+            }
+
             var level:def.Level = {
-                vertices:vertices,
-                walls:[],
-                rooms:[],
-                objects:[],
+                vertices: vertices,
+                walls: walls,
+                rooms: [],
+                objects: [],
                 skyTextureName: "",
             };
             var json = haxe.Json.stringify(level);
-            sys.io.File.saveContent('level$i.json', json);
+            var name = 'level$i';
+            sys.io.File.saveContent('${name}.json', json);
+            Sys.println('Extracted ${name} : ${level.vertices.length} vertices, ${level.walls.length} walls');
         }
     }
 }
