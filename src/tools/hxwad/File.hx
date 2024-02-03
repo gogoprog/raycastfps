@@ -15,9 +15,30 @@ typedef Linedef = {
     var leftSidedef:Int;
 }
 
+typedef Sidedef = {
+    var x:Int;
+    var y:Int;
+    var upperTexture:String;
+    var lowerTexture:String;
+    var middleTexture:String;
+    var sector:Int;
+}
+
+typedef Sector = {
+    var floorHeight:Int;
+    var ceilingHeight:Int;
+    var floorTexture:String;
+    var ceilingTexture:String;
+    var lightLevel:Int;
+    var special:Int;
+    var tag:Int;
+}
+
 class Level {
     public var vertices:Array<Vertex> = [];
     public var linedefs:Array<Linedef> = [];
+    public var sidedefs:Array<Sidedef> = [];
+    public var sectors:Array<Sector> = [];
 
     public function new() {
     }

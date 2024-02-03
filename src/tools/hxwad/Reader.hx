@@ -66,6 +66,43 @@ class Reader {
                         });
                     }
                 }
+
+                case "SIDEDEFS": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    var count = Std.int(entry.size / 30);
+
+                    for(i in 0...count) {
+                        var x = input.readInt16();
+                        var y = input.readInt16();
+                        var upperTexture = input.readString(8);
+                        var lowerTexture = input.readString(8);
+                        var middleTexture = input.readString(8);
+                        var sector = input.readInt16();
+                        level.sidedefs.push({
+                            x:x, y:y, upperTexture:upperTexture, lowerTexture:lowerTexture, middleTexture:middleTexture, sector:sector
+                        });
+                    }
+                }
+
+                case "SECTORS": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    var count = Std.int(entry.size / 26);
+
+                    for(i in 0...count) {
+                        var floorHeight = input.readInt16();
+                        var ceilingHeight = input.readInt16();
+                        var floorTexture = input.readString(8);
+                        var ceilingTexture = input.readString(8);
+                        var lightLevel = input.readInt16();
+                        var special = input.readInt16();
+                        var tag = input.readInt16();
+                        level.sectors.push({
+                            floorHeight:floorHeight, ceilingHeight:ceilingHeight, floorTexture:floorTexture, ceilingTexture:ceilingTexture, lightLevel:lightLevel, special:special, tag:tag
+                        });
+                    }
+                }
             }
         }
 
