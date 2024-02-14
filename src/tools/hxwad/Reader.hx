@@ -1,9 +1,18 @@
 package hxwad;
 
+using Reader.InputExtender;
+
 typedef Entry = {
     var pointer:Int;
     var size:Int;
     var name:String;
+}
+
+class InputExtender {
+    static public function readFixed(input:haxe.io.BytesInput):Float {
+        var a = input.readInt32();
+        return a * (1. / (1 << 16));
+    }
 }
 
 class Reader {
@@ -62,7 +71,7 @@ class Reader {
                         var rightSidedef = input.readInt16();
                         var leftSidedef = input.readInt16();
                         level.linedefs.push({
-                            begin:begin, end:end, flags:flags, type:type, tag:tag, rightSidedef:rightSidedef, leftSidedef:leftSidedef
+                            beginVertex:begin, endVertex:end, flags:flags, type:type, tag:tag, rightSidedef:rightSidedef, leftSidedef:leftSidedef
                         });
                     }
                 }
@@ -100,6 +109,90 @@ class Reader {
                         var tag = input.readInt16();
                         level.sectors.push({
                             floorHeight:floorHeight, ceilingHeight:ceilingHeight, floorTexture:floorTexture, ceilingTexture:ceilingTexture, lightLevel:lightLevel, special:special, tag:tag
+                        });
+                    }
+                }
+
+                case "SEGS": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    var count = Std.int(entry.size / 12);
+
+                    for(i in 0...count) {
+                        var beginVertex = input.readUInt16();
+                        var endVertex = input.readUInt16();
+                        var angle = input.readInt16();
+                        var linedef = input.readUInt16();
+                        var direction = input.readInt16();
+                        var offset = input.readInt16();
+                        level.segments.push({
+                            beginVertex:beginVertex, endVertex:endVertex, angle:angle, linedef:linedef, direction:direction, offset:offset
+                        });
+                    }
+                }
+
+                case "SSECTORS": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    var count = Std.int(entry.size / 4);
+
+                    for(i in 0...count) {
+                        var segcount = input.readInt16();
+                        var first_segment = input.readInt16();
+                        level.subsectors.push({
+                            segmentCount: segcount,
+                            firstSegment: first_segment
+                        });
+                    }
+                }
+
+                case "GL_VERT": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    level.glVertices = [];
+                    var str = input.readString(4);
+                    var count = Std.int((entry.size - 4) / 8);
+
+                    for(i in 0...count) {
+                        var x = input.readFixed();
+                        var y = input.readFixed();
+                        level.glVertices.push({x:x, y:y});
+                    }
+                }
+
+                case "GL_SEGS": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    level.glSegments = [];
+                    var count = Std.int(entry.size / 10);
+
+                    for(i in 0...count) {
+                        var beginVertex = input.readUInt16();
+                        var endVertex = input.readUInt16();
+                        var linedef = input.readUInt16();
+                        var side = input.readUInt16();
+                        var partner = input.readUInt16();
+                        level.glSegments.push({
+                            beginVertex:beginVertex,
+                            endVertex:endVertex,
+                            linedef:linedef,
+                            side:side,
+                            partner:partner
+                        });
+                    }
+                }
+
+                case "GL_SSECT": {
+                    var level = file.getLevel(occurrences[entry.name] - 1);
+                    input.position = entry.pointer;
+                    var count = Std.int(entry.size / 4);
+
+                    for(i in 0...count) {
+                        var segcount = input.readInt16();
+                        var first_segment = input.readInt16();
+                        level.glSubsectors.push({
+                            segmentCount: segcount,
+                            firstSegment: first_segment
                         });
                     }
                 }
