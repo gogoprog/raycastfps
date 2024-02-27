@@ -406,7 +406,8 @@ class Renderer {
                                 if(texture != null) {
                                     var tx = Std.int(wr.gamma * wr.wall.length * wr.wall.textureScale.x) % texture.width;
                                     var ratio = magic * -delta/wallH;
-                                    drawWallColumn(texture, tx, x, h, ratio, previous_offset2, wall.textureScale.y * ratio, depth);
+                                    var offset3 = Std.int((-cameraTransform.y + previous_sector.top) / wr.distance);
+                                    drawWallColumn(texture, tx, x, h, ratio, offset3, wall.textureScale.y * ratio, depth);
                                 }
                             } else {
                                 setDepthColumn2(x, depth, 0, top);
